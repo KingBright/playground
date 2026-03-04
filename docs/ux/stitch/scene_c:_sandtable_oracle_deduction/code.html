@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sandtable Oracle Deduction</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#1152d4",
+                "background-light": "#f6f6f8",
+                "background-dark": "#101622",
+                "panel-dark": "#1A2436",
+                "border-dark": "#232f48",
+                "text-secondary": "#92a4c9",
+              },
+              fontFamily: {
+                "display": ["Space Grotesk", "sans-serif"],
+                "body": ["Noto Sans", "sans-serif"],
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+        body {
+            font-family: "Space Grotesk", "Noto Sans", sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col overflow-hidden text-slate-900 dark:text-white">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-border-dark bg-white dark:bg-background-dark px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">grid_view</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em] font-display">Sandtable Simulator</h2>
+</div>
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-primary dark:text-white text-sm font-bold leading-normal" href="#">Simulation</a>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Agents</a>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden sm:flex flex-col min-w-40 h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-border-dark border border-transparent focus-within:border-primary transition-colors">
+<div class="text-slate-400 dark:text-text-secondary flex items-center justify-center pl-3">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full bg-transparent border-none focus:ring-0 text-sm px-3 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-text-secondary font-normal" placeholder="Search simulation..."/>
+</div>
+</label>
+<div class="flex items-center gap-3">
+<button class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-border-dark transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-text-secondary">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full"></span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-slate-200 dark:border-border-dark" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDa32sANY2_jPaU4G59qdykdOb3EnsxYsNxIP7WOg0aT-S_trbncJlfWHhAzXSvzCxeQ6hrbUuoUysHFSnQSRrqt3mO6Qnob3cEw-nYy9qwMqjzbCnwp_ZBXAMI4ZUccbtyBI77jWaPYngMsAqiCgjuEtQwVgDA5_fTUN3htL1oEmFjpk68nxEQcNpTkyx2aTwrT0Fpf7crgkPBEU7XDy4MhUyKV-Djxr7-Ihu3aQ7KoW4ULxr5Ak46Hphi2hkOAHlee60ES-AwBLPt");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-1 overflow-hidden h-[calc(100vh-64px)]">
+<!-- Left Sidebar: Oracle Network -->
+<aside class="w-80 border-r border-gray-200 dark:border-border-dark bg-white dark:bg-panel-dark flex flex-col shrink-0 overflow-y-auto">
+<div class="p-5 flex flex-col gap-6">
+<!-- Header -->
+<div class="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-border-dark/50">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">hub</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-normal font-display">Oracle Network</h1>
+<p class="text-slate-500 dark:text-text-secondary text-xs font-normal">Active Agents: 5/8</p>
+</div>
+</div>
+<!-- Active Strategists Section -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-text-secondary/70">Active Strategists</h3>
+<span class="bg-green-500/10 text-green-600 dark:text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">LIVE</span>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Agent Card 1 (Active) -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-border-dark cursor-pointer border border-transparent hover:border-primary/50 transition-all">
+<div class="relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10" data-alt="Portrait of Agent Alpha" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqWLiBN9Gb5UQS45zIdmUdCL2IbpYshWeg3MCt2O7jLSeX9e3R5nUbul8of9we9fAJ8eKPmzSoaA5Kb2KbLl0io8x9_2ItZwuuuLpzsKVeK5GuIUXhtyvM7PNjZAwRfmXN9rhjoAh7hsTavLaQevQHasnZEZXyH6ulVTacWUR0KCKkz3wf9waXZA2c0sZ1iY8RWmCb1bjRqileoN1-DD3r4UdVEu7FUBF8aD9RsIys_hd-4wx0vgH97Z05maUNDXLRGzB8XgL_QNQm");'></div>
+<span class="absolute bottom-0 right-0 size-2.5 bg-green-500 border-2 border-white dark:border-border-dark rounded-full"></span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-900 dark:text-white text-sm font-medium truncate">Agent Alpha</p>
+<p class="text-slate-500 dark:text-text-secondary text-xs truncate">Analyzing Market Trend...</p>
+</div>
+<span class="material-symbols-outlined text-slate-300 dark:text-gray-500 group-hover:text-primary text-[20px]">chevron_right</span>
+</div>
+<!-- Agent Card 2 -->
+<div class="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-border-dark cursor-pointer border border-transparent transition-all">
+<div class="relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 grayscale opacity-70" data-alt="Portrait of Agent Beta" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBow0n5OvG-F9ATLq4Wpwdk2onC7zeNeWQs41LowIOSItCl-T8w3cr_39wvOo-iq-knpRlgkvrU0m7Vz9TNbOBRYwiw4dkCUc4vsmyktI7nz_bMEwkPGP4O4_O_WT5C2fWLbD_MB7LZ0flyFbN0DGmqI-q3ePx8pKE31kg05QlDHSRfyPMTsbU2QvYMYJBLljBX6iKaQ3JfpolYSkod5gq8bQDycwb8ltibGG65Fi-Kd1tR42tXC0vF6U7P41cTwd3D3t_H0yT_tSjF");'></div>
+<span class="absolute bottom-0 right-0 size-2.5 bg-yellow-500 border-2 border-white dark:border-border-dark rounded-full"></span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-slate-700 dark:text-slate-300 text-sm font-medium truncate">Agent Beta</p>
+<p class="text-slate-400 dark:text-text-secondary text-xs truncate">Idle - Waiting for input</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Historical Oracle Section -->
+<div class="flex flex-col gap-3 pt-2">
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-text-secondary/70">Historical Oracle</h3>
+<div class="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">auto_stories</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-bold">The Archives</p>
+<p class="text-primary text-xs font-medium">Universal Agent</p>
+</div>
+</div>
+<div class="h-px bg-primary/20 w-full"></div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-500 dark:text-text-secondary">Latency</span>
+<span class="text-slate-900 dark:text-white font-mono">12ms</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-slate-500 dark:text-text-secondary">Knowledge Base</span>
+<span class="text-slate-900 dark:text-white font-mono">1920-1935 US</span>
+</div>
+</div>
+<button class="mt-1 w-full py-2 bg-primary hover:bg-primary/90 text-white text-xs font-bold rounded flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[16px]">query_stats</span>
+                            Query Oracle
+                        </button>
+</div>
+</div>
+<!-- Oracle Call Chain Visualization (Mini) -->
+<div class="flex flex-col gap-3 pt-2 flex-1">
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-text-secondary/70">Call Chain Activity</h3>
+<div class="relative pl-4 space-y-6 before:absolute before:inset-y-0 before:left-[5px] before:w-0.5 before:bg-slate-200 dark:before:bg-border-dark">
+<!-- Event 1 -->
+<div class="relative">
+<span class="absolute -left-[16px] mt-1.5 size-2.5 rounded-full bg-primary ring-4 ring-white dark:ring-panel-dark"></span>
+<div class="flex flex-col">
+<span class="text-xs font-mono text-slate-400 dark:text-text-secondary">10:42:15</span>
+<span class="text-sm font-medium text-slate-800 dark:text-white">Alpha requests GDP data</span>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="relative">
+<span class="absolute -left-[16px] mt-1.5 size-2.5 rounded-full bg-purple-500 ring-4 ring-white dark:ring-panel-dark"></span>
+<div class="flex flex-col">
+<span class="text-xs font-mono text-slate-400 dark:text-text-secondary">10:42:18</span>
+<span class="text-sm font-medium text-slate-800 dark:text-white">Oracle Accessing 1929 DB</span>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="relative">
+<span class="absolute -left-[16px] mt-1.5 size-2.5 rounded-full bg-green-500 ring-4 ring-white dark:ring-panel-dark"></span>
+<div class="flex flex-col">
+<span class="text-xs font-mono text-slate-400 dark:text-text-secondary">10:42:21</span>
+<span class="text-sm font-medium text-slate-800 dark:text-white">Context Returned</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Center: Deduction Viewport (Map) -->
+<div class="flex-1 flex flex-col relative bg-slate-900 overflow-hidden">
+<!-- Map Heading Overlay -->
+<div class="absolute top-0 left-0 right-0 z-10 p-6 pointer-events-none">
+<div class="flex justify-between items-start">
+<div class="bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-2xl pointer-events-auto max-w-md">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded bg-primary/80 text-white text-[10px] font-bold uppercase tracking-wider">Turn 14</span>
+<span class="text-white/60 text-xs font-mono">SIM-ID: #8821-XC</span>
+</div>
+<h2 class="text-white text-2xl font-bold font-display leading-tight">1929 Market Crash Simulation</h2>
+<p class="text-white/70 text-sm mt-1">Simulating consumer confidence drop in North-East sector post-Black Tuesday.</p>
+</div>
+<div class="bg-black/40 backdrop-blur-md border border-white/10 p-2 rounded-lg shadow-xl pointer-events-auto flex gap-2">
+<button class="size-9 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded text-white transition-colors" title="Toggle Grid">
+<span class="material-symbols-outlined text-[20px]">grid_4x4</span>
+</button>
+<button class="size-9 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded text-white transition-colors" title="Toggle Heatmap">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+</button>
+<button class="size-9 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded text-white transition-colors" title="Settings">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</div>
+</div>
+<!-- The Map Itself -->
+<div class="absolute inset-0 bg-slate-900 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-800 to-slate-950">
+<!-- Abstract Map Background -->
+<div class="w-full h-full opacity-60 mix-blend-overlay bg-cover bg-center" data-alt="Stylized vintage map of New York Financial District 1929" data-location="New York, USA" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuARtA1_aGt77-oha1cti1SsKTVLOHvWydGEgAzBUhnJy4RYXv8iL6xuRdPNxwciI_jfjeVGxbGqmqXtgKiD3VCp2Kh_xInIdmSh6LYQnFkQ0CwG6FZr8xUC4GLIebHO9NhZkItQURdCTM6zFXiVuLMi3QHW6OIFA11r06WNM3O3m3Xv2-CS9GQmKkPJQs767ZQSy-uRtI8TZ_lJ-qZL4bbtqtla2VcashhSPXZU-tXIDJCGpBnObtwBtwcDEK_yB2xwwQYxHA0Z6457"); filter: sepia(100%) hue-rotate(180deg) saturate(200%) contrast(1.2);'></div>
+<!-- Grid Overlay -->
+<div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+<!-- Tactical Markers -->
+<div class="absolute top-[30%] left-[45%] translate-x-[-50%] translate-y-[-50%]">
+<div class="relative group cursor-pointer">
+<div class="absolute -inset-4 bg-primary/30 rounded-full blur-md animate-pulse"></div>
+<div class="relative size-4 bg-primary border-2 border-white rounded-full z-10"></div>
+<!-- Tooltip -->
+<div class="absolute left-6 bottom-6 w-48 bg-slate-900/90 border border-primary/50 text-white p-3 rounded-lg backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
+<p class="text-xs font-bold text-primary mb-1">DATA POINT A-12</p>
+<p class="text-xs text-white/90">Bank Run: Knickerbocker Trust</p>
+<div class="mt-2 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-red-500 w-[85%]"></div>
+</div>
+<p class="text-[10px] text-right mt-1 text-red-400">Critical Risk</p>
+</div>
+</div>
+</div>
+<div class="absolute top-[55%] left-[60%] translate-x-[-50%] translate-y-[-50%]">
+<div class="relative group cursor-pointer">
+<div class="relative size-3 bg-yellow-500 border-2 border-white rounded-full z-10"></div>
+<!-- Connecting Line to Oracle -->
+<svg class="absolute top-1.5 left-1.5 w-[200px] h-[100px] pointer-events-none overflow-visible opacity-50">
+<path d="M0,0 L-120,-80" fill="none" stroke="#fbbf24" stroke-dasharray="4 2" stroke-width="1"></path>
+<circle cx="-120" cy="-80" fill="#fbbf24" r="2"></circle>
+</svg>
+</div>
+</div>
+<!-- Floating Controls: Map Navigation -->
+<div class="absolute bottom-24 right-6 flex flex-col gap-2">
+<button class="size-10 bg-slate-800/90 hover:bg-slate-700 text-white border border-white/10 rounded-lg shadow-lg flex items-center justify-center backdrop-blur transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="size-10 bg-slate-800/90 hover:bg-slate-700 text-white border border-white/10 rounded-lg shadow-lg flex items-center justify-center backdrop-blur transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<button class="size-10 bg-slate-800/90 hover:bg-slate-700 text-white border border-white/10 rounded-lg shadow-lg flex items-center justify-center backdrop-blur transition-colors mt-2">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+</div>
+<!-- Bottom: Turn-based controls -->
+<div class="absolute bottom-0 left-0 right-0 bg-white dark:bg-panel-dark border-t border-gray-200 dark:border-border-dark p-4 z-20">
+<div class="max-w-4xl mx-auto flex items-center gap-4">
+<!-- Playback Controls -->
+<div class="flex items-center gap-2 shrink-0">
+<button class="size-10 rounded-full bg-slate-100 dark:bg-border-dark hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-600 dark:text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined">skip_previous</span>
+</button>
+<button class="size-12 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center shadow-lg shadow-primary/25 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[28px] ml-0.5">play_arrow</span>
+</button>
+<button class="size-10 rounded-full bg-slate-100 dark:bg-border-dark hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-600 dark:text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined">skip_next</span>
+</button>
+</div>
+<!-- Timeline Slider -->
+<div class="flex-1 flex flex-col justify-center gap-2">
+<div class="flex justify-between items-center text-xs font-medium text-slate-500 dark:text-text-secondary">
+<span>Turn 01: Initial Shock</span>
+<span class="text-primary">Current: Turn 14</span>
+<span>Turn 50: Stabilization</span>
+</div>
+<div class="relative h-2 bg-slate-200 dark:bg-border-dark rounded-full overflow-hidden cursor-pointer group">
+<!-- Progress Bar -->
+<div class="absolute top-0 left-0 h-full bg-primary w-[28%] rounded-full"></div>
+<!-- Hover Indicator -->
+<div class="absolute top-0 h-full w-full opacity-0 group-hover:opacity-100 transition-opacity bg-white/5"></div>
+</div>
+</div>
+<!-- Status Metrics -->
+<div class="hidden lg:flex items-center gap-6 pl-4 border-l border-gray-200 dark:border-border-dark shrink-0">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-text-secondary">Confidence</span>
+<span class="text-sm font-bold text-red-500 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> 12.4%
+                            </span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-text-secondary">Market Vol</span>
+<span class="text-sm font-bold text-slate-900 dark:text-white">High</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 dark:text-text-secondary">Panic Index</span>
+<div class="flex gap-0.5 mt-1">
+<div class="w-1.5 h-3 bg-red-500 rounded-sm"></div>
+<div class="w-1.5 h-3 bg-red-500 rounded-sm"></div>
+<div class="w-1.5 h-3 bg-red-500 rounded-sm"></div>
+<div class="w-1.5 h-3 bg-slate-700 rounded-sm"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

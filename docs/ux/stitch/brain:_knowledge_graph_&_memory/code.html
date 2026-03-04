@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Brain: Knowledge Graph &amp; Memory</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b6cee",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#192233",
+                        "border-dark": "#232f48",
+                        "text-secondary": "#92a4c9",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Space Grotesk", sans-serif;
+        }
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101622; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a4b6b; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-white overflow-hidden h-screen flex flex-col">
+<!-- Top Navbar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-6 py-3 bg-[#111722] z-20">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Brain Dashboard</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-6 hidden md:flex">
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Graph View</a>
+<a class="text-text-secondary text-sm font-medium leading-normal hover:text-white transition-colors" href="#">Memory Archive</a>
+<a class="text-text-secondary text-sm font-medium leading-normal hover:text-white transition-colors" href="#">Settings</a>
+<a class="text-text-secondary text-sm font-medium leading-normal hover:text-white transition-colors" href="#">API Keys</a>
+</nav>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-border-dark" data-alt="User profile avatar gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBHHO2Ne-FHNvWlTf2970Cx9wqE-N4YcdLJ6Qs2S5_GpcfWuGid9YA4VH-Ab_e-uGt1y4IOGpIv6xpwX-y5DwMtM583B6sM_8APaPBk62__EgcQf3qBhQNT2oJmEJ5pUUvX9yg2L1C5yUxtk9H9naCAuPHtnkfQh6FvxV8gBgwJIIlFAALBdWfsqND8aHp80NnbuPYjx4zslpnWnWAdvpJL5E_u9UDgn0xvzmMFNBTZbF_gRaq9ip7G12Nwb3nEDeIOjPYOBa8NzX8z");'></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Left Sidebar: Context & Search -->
+<aside class="w-80 flex flex-col border-r border-border-dark bg-[#111722] flex-shrink-0 overflow-y-auto">
+<!-- Search Section -->
+<div class="px-4 py-5 border-b border-border-dark">
+<label class="flex flex-col w-full">
+<span class="text-xs font-medium text-text-secondary mb-2 uppercase tracking-wider">Semantic Search</span>
+<div class="flex w-full items-stretch rounded-lg h-10 bg-surface-dark border border-border-dark focus-within:border-primary transition-colors">
+<div class="text-text-secondary flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 bg-transparent border-none text-white focus:outline-0 focus:ring-0 placeholder:text-text-secondary px-3 text-sm font-normal leading-normal" placeholder="Query vector store..." value=""/>
+</div>
+</label>
+</div>
+<!-- Tools & Slices -->
+<div class="flex-1 flex flex-col p-4 gap-6">
+<!-- Tools Menu -->
+<div class="flex flex-col gap-3">
+<h1 class="text-text-secondary text-xs font-bold uppercase tracking-wider px-3">Knowledge Slices</h1>
+<div class="flex flex-col gap-1">
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-dark border border-border-dark/50 text-white hover:bg-border-dark transition-all group">
+<span class="material-symbols-outlined text-[20px] text-primary">hub</span>
+<span class="text-sm font-medium">Global Context</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-dark text-text-secondary hover:text-white transition-all">
+<span class="material-symbols-outlined text-[20px]">content_cut</span>
+<span class="text-sm font-medium">Recent Research</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-dark text-text-secondary hover:text-white transition-all">
+<span class="material-symbols-outlined text-[20px]">bookmark</span>
+<span class="text-sm font-medium">Saved Queries</span>
+</button>
+</div>
+</div>
+<!-- Active Filters (Chips) -->
+<div class="flex flex-col gap-3">
+<h1 class="text-text-secondary text-xs font-bold uppercase tracking-wider px-3">Active Filters</h1>
+<div class="flex flex-wrap gap-2 px-1">
+<button class="flex h-7 items-center gap-x-1.5 rounded-full bg-surface-dark border border-border-dark px-3 hover:border-primary/50 transition-colors">
+<span class="text-xs font-medium text-white">Time: 7d</span>
+<span class="material-symbols-outlined text-[16px] text-text-secondary">close</span>
+</button>
+<button class="flex h-7 items-center gap-x-1.5 rounded-full bg-surface-dark border border-border-dark px-3 hover:border-primary/50 transition-colors">
+<span class="text-xs font-medium text-white">Tag: AI</span>
+<span class="material-symbols-outlined text-[16px] text-text-secondary">close</span>
+</button>
+<button class="flex h-7 items-center gap-x-1.5 rounded-full bg-surface-dark border border-border-dark px-3 hover:border-primary/50 transition-colors">
+<span class="text-xs font-medium text-white">Src: PDF</span>
+<span class="material-symbols-outlined text-[16px] text-text-secondary">close</span>
+</button>
+<button class="flex h-7 items-center justify-center rounded-full border border-dashed border-text-secondary/50 px-2 hover:border-text-secondary transition-colors text-text-secondary">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+<!-- Ingest Action -->
+<div class="mt-auto">
+<button class="w-full flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 py-3 rounded-lg transition-all">
+<span class="material-symbols-outlined">upload_file</span>
+<span class="text-sm font-bold">Import Data</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-[#0b0f17] relative">
+<!-- Graph Visualization Layer -->
+<div class="flex-1 relative w-full h-full overflow-hidden group">
+<!-- Graph Background Image -->
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Abstract 3D network graph visualization with blue glowing nodes and connections on black background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBcQz_XEWsHmbZ_Bdi2308sNIo4489Ka5QH2eSvqec0ZYnrcMQImCp2v-S_dbu3jWEh-APcXQHh882VSVWlb1hm-sSNfZASrCIOR9WMIL-f5b80tlZFiDf7E1vT6cipNmTmMnvzE4nu_R0xYJUmeYDembq4to39QPz-kSGTC9mLJKPN7Fy7NkLgLG7RY8avW-enSITRt-MQ8qVPwcxhXB5axB1VNc3GGciK4TZkoLOVygPED-7wwBADkLp2MKlrrUmofYlznzf-_Y9c");'>
+<!-- Overlay Gradient for better text readability -->
+<div class="absolute inset-0 bg-[#0b0f17]/60 backdrop-blur-[1px]"></div>
+</div>
+<!-- Fake Interactive Nodes (Just for visual flair) -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 pointer-events-none">
+<div class="absolute top-[20%] left-[30%] p-2 bg-black/60 border border-primary/50 rounded-lg backdrop-blur-md shadow-[0_0_15px_rgba(43,108,238,0.3)]">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-xs font-mono text-primary-100">Node: Context_Core</span>
+</div>
+</div>
+<div class="absolute bottom-[30%] right-[25%] p-2 bg-black/60 border border-green-500/50 rounded-lg backdrop-blur-md">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-green-500"></div>
+<span class="text-xs font-mono text-green-100">Node: Redis_Cache</span>
+</div>
+</div>
+</div>
+<!-- Floating Controls -->
+<div class="absolute top-6 left-6 z-10 w-96 max-w-full">
+<label class="flex flex-col w-full shadow-lg">
+<div class="flex w-full items-stretch rounded-lg bg-surface-dark/90 backdrop-blur-md border border-border-dark h-12">
+<div class="text-text-secondary flex items-center justify-center pl-4">
+<span class="material-symbols-outlined">explore</span>
+</div>
+<input class="flex w-full flex-1 bg-transparent border-none text-white focus:ring-0 placeholder:text-text-secondary px-3 text-base font-normal" placeholder="Navigate Graph Nodes..." value=""/>
+</div>
+</label>
+</div>
+<div class="absolute bottom-6 right-6 z-10 flex flex-col gap-2">
+<div class="bg-surface-dark/90 backdrop-blur-md rounded-lg border border-border-dark shadow-xl overflow-hidden">
+<button class="flex size-10 items-center justify-center text-white hover:bg-white/10 border-b border-border-dark/50">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="flex size-10 items-center justify-center text-white hover:bg-white/10">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<button class="flex size-10 items-center justify-center bg-surface-dark/90 backdrop-blur-md rounded-lg border border-border-dark shadow-xl text-white hover:bg-white/10">
+<span class="material-symbols-outlined">my_location</span>
+</button>
+</div>
+</div>
+<!-- Memory Health Footer -->
+<div class="h-auto min-h-[180px] bg-[#111722] border-t border-border-dark p-6 z-20">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-white text-base font-medium">Memory Health Status</h3>
+<div class="flex gap-2">
+<span class="flex size-2 rounded-full bg-green-500"></span>
+<span class="text-xs text-text-secondary">System Operational</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Redis Card -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col justify-between group hover:border-red-500/30 transition-colors">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-red-500/10 rounded-lg text-red-400">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">Redis Hot Memory</p>
+<p class="text-xs text-text-secondary">Cache Layer</p>
+</div>
+</div>
+<span class="text-xs font-mono text-green-400 bg-green-400/10 px-2 py-1 rounded">ONLINE</span>
+</div>
+<div class="mt-4">
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Usage</span>
+<span class="text-white">85%</span>
+</div>
+<div class="w-full bg-[#0b0f17] rounded-full h-1.5 overflow-hidden">
+<div class="bg-red-500 h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<!-- Milvus Card -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col justify-between group hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">polyline</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">Milvus Vector Store</p>
+<p class="text-xs text-text-secondary">Long-term Memory</p>
+</div>
+</div>
+<span class="text-xs font-mono text-blue-300 bg-blue-400/10 px-2 py-1 rounded">INDEXING</span>
+</div>
+<div class="mt-4">
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Vectors</span>
+<span class="text-white">1.2M</span>
+</div>
+<div class="w-full bg-[#0b0f17] rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+</div>
+<!-- S3 Card -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-4 flex flex-col justify-between group hover:border-yellow-500/30 transition-colors">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-yellow-500/10 rounded-lg text-yellow-400">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-white">S3 Archive</p>
+<p class="text-xs text-text-secondary">Raw Data Lake</p>
+</div>
+</div>
+<span class="text-xs font-mono text-green-400 bg-green-400/10 px-2 py-1 rounded">SYNCED</span>
+</div>
+<div class="mt-4">
+<div class="flex justify-between text-xs mb-1">
+<span class="text-text-secondary">Storage</span>
+<span class="text-white">4.2 TB</span>
+</div>
+<div class="w-full bg-[#0b0f17] rounded-full h-1.5 overflow-hidden">
+<div class="bg-yellow-500 h-1.5 rounded-full" style="width: 25%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

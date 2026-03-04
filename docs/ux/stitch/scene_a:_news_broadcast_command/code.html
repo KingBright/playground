@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Newsroom AI Command - Scene A</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#1c2333",
+                        "border-dark": "#2e364f",
+                        "text-muted": "#92a4c9"
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark bg-background-dark px-6 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">satellite_alt</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Newsroom AI Command</h2>
+</div>
+<div class="hidden md:flex items-center gap-9">
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span> Dashboard
+                    </a>
+<a class="text-white text-sm font-bold leading-normal flex items-center gap-2 border-b-2 border-primary pb-0.5" href="#">
+<span class="material-symbols-outlined text-[20px] fill-1">podcasts</span> Broadcasts
+                    </a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span> Analytics
+                    </a>
+<a class="text-white/80 hover:text-white text-sm font-medium leading-normal flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span> Settings
+                    </a>
+</div>
+</div>
+<div class="flex items-center justify-end gap-6">
+<label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-surface-dark border border-border-dark group focus-within:border-primary">
+<div class="text-text-muted flex items-center justify-center pl-3">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg bg-transparent text-white focus:outline-0 focus:ring-0 border-none h-full placeholder:text-text-muted px-3 text-sm font-normal leading-normal" placeholder="Search assets..." value=""/>
+</div>
+</label>
+<div class="flex items-center gap-3 pl-4 border-l border-border-dark">
+<button class="relative text-white/80 hover:text-white">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 size-2 bg-red-500 rounded-full"></span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 border border-border-dark cursor-pointer" data-alt="Profile picture of news director" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA8Yx6GRjEY-mHcKyN8DE7DcKeqi3FNEBkIeW0vPG22e36qGLgjtgg1LbD76JQhB8jdrUCL_8AMaqOctVq-RYBVCWwdxpgeqF_zgqkG8iLEQbttN54GIG5GpIKkzklfTJd-XAHgWhU3hYAd0jCtoZuyVi1spe3UMLeJLRvgcOdEPJvyRhzh4otNMvfuQdvpdZnPHlc5P_Ljcgp4ZgCy_s0SdJUcEsVGHhd3ZDCw1VNfblEZYmbdGWyZQt5O8vZsiNCsTcd5Ir9n81_O");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col">
+<!-- Page Heading & Actions -->
+<div class="px-6 py-6 border-b border-border-dark bg-background-dark sticky top-0 z-10">
+<div class="flex flex-wrap justify-between gap-4 items-center max-w-[1600px] mx-auto w-full">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-3">
+<h1 class="text-white text-3xl font-black leading-tight tracking-[-0.033em]">Scene A: News Broadcast Command</h1>
+<span class="px-2 py-0.5 rounded text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/30 uppercase tracking-wide">Ready</span>
+</div>
+<p class="text-text-muted text-sm font-normal leading-normal flex items-center gap-2">
+<span class="size-2 rounded-full bg-red-500 animate-pulse"></span>
+                            Live Control Center • 14:00 UTC Broadcast • 00:15:32 Remaining
+                        </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 px-4 bg-surface-dark hover:bg-[#252e42] text-white border border-border-dark text-sm font-bold transition-colors gap-2">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                            Reset Scene
+                        </button>
+<button class="flex items-center justify-center rounded-lg h-10 px-6 bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-900/20 text-sm font-bold tracking-wide gap-2 transition-all">
+<span class="material-symbols-outlined text-[20px]">videocam</span>
+                            GO LIVE
+                        </button>
+</div>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="p-6 max-w-[1600px] mx-auto w-full flex-1">
+<div class="grid grid-cols-12 gap-6 h-full">
+<!-- Left Column: News Ingestion (3 cols) -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-white text-lg font-bold">News Ingestion</h3>
+<button class="text-primary text-sm font-medium hover:underline">View All</button>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1.5 rounded-full bg-primary text-white text-xs font-medium">All</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white text-xs font-medium border border-border-dark">Reuters</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white text-xs font-medium border border-border-dark">AP</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white text-xs font-medium border border-border-dark">Social</button>
+</div>
+<!-- List Items -->
+<div class="flex flex-col gap-3 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar">
+<!-- Item 1 -->
+<div class="group flex gap-3 p-3 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 cursor-pointer transition-all">
+<div class="bg-center bg-no-repeat bg-cover rounded-md size-16 shrink-0" data-alt="Stock market chart showing upward trend" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAxgQkYeLe5lDO2jHHnx2iUPy6vtKGoKl_DE56x1x0aEqqkaeTBaJK9j7X3jNH8tde6LOQws-VxHFj65N8mFPTMMK510A_ge-4iwtEwOnU2u9__3LMW66RSVeM60rP2BxBjGKBJnSMFHJBva-4-c97s5gTfJnM6WYLe0nMD4cP8atjf8o_mbF--g9BUNtQvfZt4NLSbBivwgoK3cptEp_DyuiLRt96lI1JyBlfyLnOlNJ5PB4tctlpGJSUZ1_St88aJdWH1IkE1W3hE");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-primary uppercase tracking-wider">Business</span>
+<p class="text-white text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">Global Markets Rally on Tech Earnings Report</p>
+<p class="text-text-muted text-xs">Reuters • 2m ago</p>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="group flex gap-3 p-3 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 cursor-pointer transition-all">
+<div class="bg-center bg-no-repeat bg-cover rounded-md size-16 shrink-0" data-alt="Climate summit conference room" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmMq0qxapPNp93BprCVVfmNTDiCWiv0ocL9xULBaWfuAJ3fTLuJtxuunc6ATNjanltWUVgmmo3LQxhwhaKpWc6VcKFvOhEX0cWLJ-d6_v56Od10zBvobS7lyupXcX9aVirmJhSan26IPXW1etwu6Nx8sMxutDtvuEI4BWmV3y4CbORsqjs_RnogjBb1j7voFKkBN-Wh-TAOIPhIYNYP88Tqv0Nh3Uljl4-6o6kwUDRyMMwhXQBhlnr6O9p34ntuAgF1RDOk0-GATws");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-green-400 uppercase tracking-wider">Climate</span>
+<p class="text-white text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">UN Climate Summit Reaches Historic Agreement</p>
+<p class="text-text-muted text-xs">AP Feed • 15m ago</p>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="group flex gap-3 p-3 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 cursor-pointer transition-all">
+<div class="bg-center bg-no-repeat bg-cover rounded-md size-16 shrink-0" data-alt="Futuristic electric vehicle prototype" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjOGF5M-Fe3nWgvjSfHJnhY0by_KOQGLXuRbYhezQ4Ns6vF4gGxlcMGI5_ztXZmJ0aWTKWnr_XfgxN6Z1fR5v8RWFGOjZkaNmxBmy3gy2r5xUeUL-hVahJf7Hi33M3QhSDbEhi12R0qpw8S56hAK2XJ1u_RhluNPvQc6Tdyhsu0VS0W0VW5pRQwW0lPcumZhkEG2NwNrAL6TL0Q17fy5xs5GrBj8OSO4gUUp3LfQvdStekCsgYREMdvg5Ou_Cr56Xj6AW7_d6YyNW3");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Tech</span>
+<p class="text-white text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">New EV Battery Technology Breakthrough Announced</p>
+<p class="text-text-muted text-xs">TechCrunch • 45m ago</p>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="group flex gap-3 p-3 rounded-lg bg-surface-dark border border-border-dark hover:border-primary/50 cursor-pointer transition-all">
+<div class="bg-center bg-no-repeat bg-cover rounded-md size-16 shrink-0" data-alt="Politician speaking at podium" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAxMaBq7Nh0PZtA7Lzck6B7Ig-c6bdqpNlrtJNmUQNF3Des7L7Db3GUDeu9mEZrQ-4g38UOTe5b9bYUmXsbFYaJRoXz45B8quDh2KKTAbukv-JZ6q2V0IcZPu_F4_Q7WBW3Kb1O8C_tXH1UAQx4CpzVr1wP8EPN-qdYTluh0KCNzNBvQrZswG1kzSSQW2yt8jFGrpqOr7I-O6RiSiVZ2naeIzaDT2SpONoyfJknYoHhmCY08ZcH6thpde34-aX_WP2Oc6EpD9O7H3vJ");'></div>
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider">Politics</span>
+<p class="text-white text-sm font-medium leading-snug line-clamp-2 group-hover:text-primary transition-colors">Senate Passes Infrastructure Bill with Bipartisan Support</p>
+<p class="text-text-muted text-xs">Politico • 1h ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Column: Briefing Preview (6 cols) -->
+<div class="col-span-12 lg:col-span-6 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<h3 class="text-white text-lg font-bold">AI Briefing Preview</h3>
+<div class="flex items-center gap-1.5 px-2 py-0.5 bg-surface-dark border border-border-dark rounded text-[10px] text-text-muted">
+<span class="material-symbols-outlined text-sm text-green-500">verified</span>
+                                    Fact Check: Passed
+                                </div>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center size-8 rounded hover:bg-surface-dark text-text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">history</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 text-xs font-bold transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+                                    Edit Script
+                                </button>
+</div>
+</div>
+<!-- Teleprompter / Script Preview Area -->
+<div class="flex-1 bg-surface-dark border border-border-dark rounded-xl p-6 relative overflow-hidden group">
+<!-- Status Overlay -->
+<div class="absolute top-4 right-4 flex flex-col items-end gap-1 pointer-events-none">
+<span class="text-xs font-mono text-text-muted opacity-50">TOKENS: 450/1000</span>
+<span class="text-xs font-mono text-text-muted opacity-50">EST. DURATION: 2m 15s</span>
+</div>
+<div class="h-full overflow-y-auto pr-4 font-body text-lg leading-relaxed text-white/90">
+<p class="mb-4"><span class="text-primary font-bold uppercase text-xs tracking-wide block mb-1">Intro</span>
+                                Good evening. Tonight's top story: Global markets are surging to record highs following a stronger-than-expected earnings report from major tech conglomerates. The NASDAQ closed up 2.5%, signaling renewed investor confidence.</p>
+<p class="mb-4"><span class="text-primary font-bold uppercase text-xs tracking-wide block mb-1">Segment 1</span>
+                                In climate news, delegates at the UN Summit in Geneva have reached a provisional agreement on carbon emission caps. This historic accord aims to reduce global output by 30% over the next decade. Our correspondent, Sarah Jenkins, joins us live from Geneva with the details.</p>
+<p class="mb-4"><span class="text-primary font-bold uppercase text-xs tracking-wide block mb-1">Segment 2</span>
+                                Turning to technology, a breakthrough in solid-state battery technology promises to double the range of electric vehicles while halving charging times. Industry experts are calling this the "tipping point" for mass EV adoption.</p>
+<div class="p-4 rounded bg-background-dark border border-l-4 border-l-yellow-500 border-border-dark my-6">
+<div class="flex items-center gap-2 mb-1 text-yellow-500">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span class="text-xs font-bold uppercase">Fact Check Note</span>
+</div>
+<p class="text-sm text-text-muted">The "30% reduction" figure is provisional pending final ratification by member states tomorrow. Phrasing adjusted to "aims to reduce".</p>
+</div>
+<p class="mb-4"><span class="text-primary font-bold uppercase text-xs tracking-wide block mb-1">Outro</span>
+                                And finally, a local hero. A 12-year-old student from Riverdale High has won the National Robotics Championship with a device designed to clean ocean plastics. Stay tuned for that inspiring story coming up next.</p>
+</div>
+<!-- Prompt Input -->
+<div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-surface-dark via-surface-dark to-transparent pt-12">
+<div class="relative">
+<input class="w-full bg-background-dark border border-border-dark rounded-lg py-3 pl-4 pr-12 text-sm text-white focus:border-primary focus:ring-0 shadow-lg" placeholder="Ask AI to adjust tone, shorten script, or add details..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-1 hover:bg-primary/10 rounded">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Studio Config (3 cols) -->
+<div class="col-span-12 lg:col-span-3 flex flex-col gap-6">
+<!-- Host Selection -->
+<div class="flex flex-col gap-3">
+<h3 class="text-white text-sm font-bold uppercase tracking-wide text-text-muted">Host Agent</h3>
+<div class="grid grid-cols-3 gap-2">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="host" type="radio"/>
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-transparent peer-checked:border-primary peer-checked:ring-2 peer-checked:ring-primary/20 relative">
+<img alt="Female news anchor avatar" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsdjZZgtfoAaKs1CslNO_G9jle1hyz6zW9wRDs-5evAlu0SPRNMsK-XzIU39QIGBOORYQPUow73cl-xlq0Bw7iP5SXR95IJuqFz6o3jfOQxCp64s79YERMsoWbI-hAWBX3CVCQIjSf8WJvyS-XVLT0Zq-J4B84lU0MX6eh5x0sdXsJPVuPBUo46ZiVeCyB1IHDuQL_F9IN-Ijs6OLuO0Hxiv-S2i-0hL7kMLe-jvWaHmkWwJa7jj3ttArxjrMkEh3GTWSvINVLEyVy"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<span class="absolute bottom-1 left-1 text-[10px] text-white font-medium">Elena</span>
+</div>
+<div class="absolute top-1 right-1 bg-primary text-white text-[8px] px-1 rounded hidden peer-checked:block">ACTIVE</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="host" type="radio"/>
+<div class="aspect-square rounded-lg overflow-hidden border-2 border-transparent peer-checked:border-primary peer-checked:ring-2 peer-checked:ring-primary/20 relative">
+<img alt="Male news anchor avatar" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOAWUftKrEsAM7lJN4TtvJd7j5uloALqeM6joJ-JwrRyhgLUlkJ7XMWVuyWftQMKXr9360hebQksbfr-PKSVL5GWhnrMFPdJ4Yk6bPoHfg3vIKI-C9m-I3zAN79emHYvfZnQXYYxD_j4WT2AMjSxWP61YtUyd-67vJIjQ4qc3ixopyECvnV4cqN2TjlBGl22OV15RUwPPeU4_LO6NgX-w5TOp3Ns7YoEVJcvls_FAdZnGkjReL9_SUmiHzC95uO1w6F56Iv8FhFAyJ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<span class="absolute bottom-1 left-1 text-[10px] text-white font-medium">Marcus</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<div class="aspect-square rounded-lg border border-dashed border-border-dark flex items-center justify-center hover:border-primary/50 hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined text-text-muted">add</span>
+</div>
+</label>
+</div>
+<!-- Voice Settings -->
+<div class="flex items-center justify-between px-3 py-2 bg-surface-dark border border-border-dark rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-muted text-sm">graphic_eq</span>
+<span class="text-xs text-white">Neural Voice: <strong>Calm Professional</strong></span>
+</div>
+<span class="material-symbols-outlined text-text-muted text-sm cursor-pointer hover:text-white">tune</span>
+</div>
+</div>
+<!-- Virtual Set -->
+<div class="flex flex-col gap-3">
+<h3 class="text-white text-sm font-bold uppercase tracking-wide text-text-muted">Virtual Set</h3>
+<div class="w-full aspect-video rounded-lg overflow-hidden border border-border-dark relative group">
+<img alt="Modern corporate office virtual background" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPtrlXGPAQZZcrj3E0_Sh-diJsO9wa0JcF38OHlXw8NEvOSxS40H4Ed7hYtfSMbzCTmx_F5C68Gp_yveDUoyVRm6rqu3Q75lHxTBdKZK-BZF2rXyCval_69msa10H1Bvvtci5PFvZxFqyEoIarsH9uDPaW8keM_TEVLHLm_ZDwUpRjVcgbyYx22-bXG2KgJb3r6VpQ81AjxSP31j1joQPBM4wzEIQLQfHH4kWgZY7849O5t9sS7RDXVq82p2IN01i0rzeMKGm-EEY3"/>
+<div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-black/60 text-white px-3 py-1 rounded-full text-xs border border-white/20 backdrop-blur-md">Change Background</button>
+</div>
+<div class="absolute top-2 left-2 bg-black/60 px-2 py-0.5 rounded text-[10px] text-white backdrop-blur-sm">Scene A Default</div>
+</div>
+<!-- Camera Angle -->
+<div class="grid grid-cols-3 gap-2 mt-1">
+<button class="bg-primary text-white text-[10px] font-bold py-1.5 rounded border border-primary">WIDE</button>
+<button class="bg-surface-dark text-text-muted hover:text-white text-[10px] font-bold py-1.5 rounded border border-border-dark">MED</button>
+<button class="bg-surface-dark text-text-muted hover:text-white text-[10px] font-bold py-1.5 rounded border border-border-dark">CLOSE</button>
+</div>
+</div>
+<!-- Graphic Overlays -->
+<div class="flex flex-col gap-3">
+<h3 class="text-white text-sm font-bold uppercase tracking-wide text-text-muted">Overlays</h3>
+<div class="space-y-2">
+<div class="flex items-center justify-between p-2 rounded bg-surface-dark border border-border-dark">
+<span class="text-xs text-white">Lower Thirds</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-dark border border-border-dark">
+<span class="text-xs text-white">Ticker Tape</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom: Broadcast Schedule Timeline -->
+<div class="mt-8 pt-6 border-t border-border-dark">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-white text-lg font-bold">Broadcast Schedule</h3>
+<div class="flex items-center gap-4 text-xs font-mono text-text-muted">
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-blue-500"></span> Business</span>
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-green-500"></span> Climate</span>
+<span class="flex items-center gap-1"><span class="size-2 rounded-full bg-purple-500"></span> Politics</span>
+</div>
+</div>
+<div class="relative w-full h-24 bg-surface-dark rounded-lg border border-border-dark overflow-hidden flex items-center px-4">
+<!-- Time Markers -->
+<div class="absolute top-0 left-0 w-full h-6 border-b border-border-dark/50 flex text-[10px] text-text-muted font-mono pt-1">
+<div class="flex-1 text-left pl-1">14:00</div>
+<div class="flex-1 text-left border-l border-border-dark/30 pl-1">14:05</div>
+<div class="flex-1 text-left border-l border-border-dark/30 pl-1">14:10</div>
+<div class="flex-1 text-left border-l border-border-dark/30 pl-1">14:15</div>
+<div class="flex-1 text-left border-l border-border-dark/30 pl-1">14:20</div>
+<div class="flex-1 text-left border-l border-border-dark/30 pl-1">14:25</div>
+</div>
+<!-- Current Time Indicator -->
+<div class="absolute top-0 bottom-0 left-[15%] w-0.5 bg-red-500 z-10 shadow-[0_0_8px_rgba(239,68,68,0.8)]">
+<div class="absolute -top-1 -left-1.5 size-3 bg-red-500 rounded-full"></div>
+</div>
+<!-- Segments -->
+<div class="flex w-full gap-1 mt-6 h-12">
+<div class="w-[15%] bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center hover:bg-blue-500/30 cursor-pointer transition-colors relative group">
+<span class="text-xs font-bold text-blue-100">Intro</span>
+<div class="absolute bottom-full mb-2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">00:00 - 03:00</div>
+</div>
+<div class="w-[20%] bg-blue-500/20 border border-blue-500/50 rounded flex items-center justify-center hover:bg-blue-500/30 cursor-pointer transition-colors relative group">
+<span class="text-xs font-bold text-blue-100">Market Review</span>
+<div class="absolute bottom-full mb-2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">03:00 - 07:00</div>
+</div>
+<div class="w-[25%] bg-green-500/20 border border-green-500/50 rounded flex items-center justify-center hover:bg-green-500/30 cursor-pointer transition-colors relative group">
+<span class="text-xs font-bold text-green-100">UN Summit</span>
+<div class="absolute bottom-full mb-2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">07:00 - 12:00</div>
+</div>
+<div class="w-[15%] bg-yellow-500/20 border border-yellow-500/50 rounded flex items-center justify-center hover:bg-yellow-500/30 cursor-pointer transition-colors relative group">
+<span class="text-xs font-bold text-yellow-100">Interview</span>
+</div>
+<div class="w-[15%] bg-purple-500/20 border border-purple-500/50 rounded flex items-center justify-center hover:bg-purple-500/30 cursor-pointer transition-colors relative group">
+<span class="text-xs font-bold text-purple-100">Politics</span>
+</div>
+<div class="w-[10%] bg-gray-700/50 border border-gray-600 rounded flex items-center justify-center">
+<span class="text-xs font-bold text-gray-400">Outro</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

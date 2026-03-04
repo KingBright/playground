@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Brain: Data Pipeline &amp; Ingestion</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better integration with dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111722; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #324467; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b628b; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white font-display overflow-hidden h-screen flex">
+<!-- Left Panel: Connector Management (SideNavBar) -->
+<aside class="w-[280px] bg-[#111722] border-r border-[#232f48] flex flex-col h-full shrink-0">
+<div class="p-6">
+<div class="flex gap-3 items-center mb-8">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 shrink-0" data-alt="Abstract brain neural network logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-XXPplZxMMUbjM5aK_4ocYiwUnDW1yiuJMQ8PXlQXCPOFwVXgHZaw9xAvyZLrjDrw0D2adE_m-8P_2bl0Riw4Z4XDxYAUp_bFnxnY8rSQo93tc7Rcj8_N8T5yl982Hm7by0OG2VQqw8RbRxXYY1SeEGSfoVrm8BdtKmZV3zuOdV1lIwkwR4cWjz9OuGTnJT4WPvWAHXojFqzmS2hIspanyhMrDslnlIER4_4CLJ_69eNyhkgOvulHMoW9V3lHqnawBsIoHA8HDOh4");'>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-lg font-bold leading-tight">Brain</h1>
+<p class="text-[#92a4c9] text-xs font-normal">Knowledge Supply Chain</p>
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary hover:bg-primary/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] mb-6">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="truncate">New Connector</span>
+</button>
+<div class="flex flex-col gap-1">
+<p class="text-[#92a4c9] text-xs font-bold uppercase tracking-wider mb-2 px-3">Connectors</p>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#232f48] text-white hover:bg-[#2a3855] transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#92a4c9] group-hover:text-white" style="font-size: 20px;">electrical_services</span>
+<p class="text-sm font-medium leading-normal flex-1">API Connectors</p>
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded">3</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#92a4c9] hover:bg-[#1a2336] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#92a4c9] group-hover:text-white" style="font-size: 20px;">pest_control</span>
+<p class="text-sm font-medium leading-normal flex-1">Crawler Config</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#92a4c9] hover:bg-[#1a2336] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#92a4c9] group-hover:text-white" style="font-size: 20px;">cloud_upload</span>
+<p class="text-sm font-medium leading-normal flex-1">File Uploads</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#92a4c9] hover:bg-[#1a2336] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#92a4c9] group-hover:text-white" style="font-size: 20px;">database</span>
+<p class="text-sm font-medium leading-normal flex-1">Databases</p>
+</a>
+</div>
+<div class="mt-8 flex flex-col gap-1">
+<p class="text-[#92a4c9] text-xs font-bold uppercase tracking-wider mb-2 px-3">Settings</p>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#92a4c9] hover:bg-[#1a2336] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#92a4c9] group-hover:text-white" style="font-size: 20px;">settings</span>
+<p class="text-sm font-medium leading-normal">Configuration</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-[#92a4c9] hover:bg-[#1a2336] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#92a4c9] group-hover:text-white" style="font-size: 20px;">shield</span>
+<p class="text-sm font-medium leading-normal">Security &amp; Keys</p>
+</a>
+</div>
+</div>
+<div class="mt-auto p-4 border-t border-[#232f48]">
+<div class="flex items-center gap-3 px-2">
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                    JD
+                </div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">Jane Doe</p>
+<p class="text-[#92a4c9] text-xs">Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-dark relative">
+<!-- Top Stats Bar -->
+<header class="h-auto shrink-0 border-b border-[#232f48] bg-[#111722]/50 backdrop-blur-sm z-10">
+<div class="px-6 py-5">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-white tracking-tight text-[28px] font-bold leading-tight">Pipeline Orchestrator</h2>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 h-9 px-4 rounded-lg bg-[#232f48] border border-[#324467] text-white text-sm font-medium hover:bg-[#2a3855] transition">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                            Logs
+                        </button>
+<button class="flex items-center gap-2 h-9 px-4 rounded-lg bg-primary text-white text-sm font-medium hover:bg-primary/90 transition shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                            Run Pipeline
+                        </button>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-4 gap-4">
+<div class="flex flex-col gap-1 rounded-lg p-4 bg-[#1a2336] border border-[#232f48]">
+<div class="flex items-center justify-between">
+<p class="text-[#92a4c9] text-xs font-medium uppercase">Throughput</p>
+<span class="material-symbols-outlined text-[#0bda5e] text-[16px]">trending_up</span>
+</div>
+<div class="flex items-end gap-2">
+<p class="text-white text-xl font-bold">1.2 GB/s</p>
+<p class="text-[#0bda5e] text-xs font-medium mb-1">+5%</p>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-lg p-4 bg-[#1a2336] border border-[#232f48]">
+<div class="flex items-center justify-between">
+<p class="text-[#92a4c9] text-xs font-medium uppercase">Active Nodes</p>
+<span class="material-symbols-outlined text-primary text-[16px]">hub</span>
+</div>
+<div class="flex items-end gap-2">
+<p class="text-white text-xl font-bold">12</p>
+<p class="text-[#0bda5e] text-xs font-medium mb-1">+2%</p>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-lg p-4 bg-[#1a2336] border border-[#232f48]">
+<div class="flex items-center justify-between">
+<p class="text-[#92a4c9] text-xs font-medium uppercase">Success Rate</p>
+<span class="material-symbols-outlined text-[#0bda5e] text-[16px]">check_circle</span>
+</div>
+<div class="flex items-end gap-2">
+<p class="text-white text-xl font-bold">99.9%</p>
+<p class="text-[#92a4c9] text-xs font-medium mb-1">Stable</p>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-lg p-4 bg-[#1a2336] border border-[#232f48]">
+<div class="flex items-center justify-between">
+<p class="text-[#92a4c9] text-xs font-medium uppercase">Error Rate</p>
+<span class="material-symbols-outlined text-[#fa6238] text-[16px]">warning</span>
+</div>
+<div class="flex items-end gap-2">
+<p class="text-white text-xl font-bold">0.1%</p>
+<p class="text-[#fa6238] text-xs font-medium mb-1">-10%</p>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Pipeline Visualizer Area -->
+<div class="flex-1 overflow-auto bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] relative">
+<!-- Background Grid (Visual Only) -->
+<div class="absolute inset-0 z-0 opacity-10" style="background-image: radial-gradient(#324467 1px, transparent 1px); background-size: 24px 24px;"></div>
+<div class="relative z-10 p-8 min-h-full flex items-center justify-center">
+<!-- Pipeline Flow -->
+<div class="flex items-start gap-0 max-w-5xl w-full">
+<!-- Node 1: Ingestion -->
+<div class="flex flex-col items-center group relative w-1/4">
+<div class="w-full flex items-center justify-center relative">
+<div class="h-[2px] w-1/2 bg-transparent"></div>
+<div class="h-[2px] w-1/2 bg-[#324467]"></div>
+<!-- Card -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#1a2336] border border-primary ring-4 ring-primary/20 rounded-xl p-4 w-48 shadow-xl">
+<div class="flex items-center gap-3 mb-2">
+<div class="p-2 bg-primary/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">database</span>
+</div>
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Source</span>
+</div>
+<h3 class="text-white font-semibold text-sm mb-1">Raw Data Ingestion</h3>
+<p class="text-[#92a4c9] text-xs">Twitter API Stream</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-[#0bda5e] animate-pulse"></span>
+<span class="text-[10px] text-[#0bda5e] font-medium">Active</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 2: Cleaner -->
+<div class="flex flex-col items-center group relative w-1/4">
+<div class="w-full flex items-center justify-center relative">
+<div class="h-[2px] w-1/2 bg-[#324467]"></div>
+<div class="h-[2px] w-1/2 bg-[#324467]"></div>
+<!-- Connecting line animation -->
+<div class="absolute top-1/2 left-0 h-[2px] w-1/2 bg-gradient-to-r from-transparent via-primary to-transparent -translate-y-1/2 opacity-60"></div>
+<!-- Card -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#111722] border border-[#324467] hover:border-[#92a4c9] transition-colors rounded-xl p-4 w-48 shadow-lg">
+<div class="flex items-center gap-3 mb-2">
+<div class="p-2 bg-[#232f48] rounded-lg text-white">
+<span class="material-symbols-outlined">cleaning_services</span>
+</div>
+<span class="text-xs font-bold text-[#92a4c9] uppercase tracking-wider">Process</span>
+</div>
+<h3 class="text-white font-semibold text-sm mb-1">Cleaner Agent</h3>
+<p class="text-[#92a4c9] text-xs">Sanitizing Text</p>
+<div class="mt-3 w-full bg-[#232f48] h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary w-[70%] h-full rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 3: Extractor -->
+<div class="flex flex-col items-center group relative w-1/4">
+<div class="w-full flex items-center justify-center relative">
+<div class="h-[2px] w-1/2 bg-[#324467]"></div>
+<div class="h-[2px] w-1/2 bg-[#324467]"></div>
+<!-- Card -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#111722] border border-[#324467] hover:border-[#92a4c9] transition-colors rounded-xl p-4 w-48 shadow-lg">
+<div class="flex items-center gap-3 mb-2">
+<div class="p-2 bg-[#232f48] rounded-lg text-white">
+<span class="material-symbols-outlined">search</span>
+</div>
+<span class="text-xs font-bold text-[#92a4c9] uppercase tracking-wider">Analysis</span>
+</div>
+<h3 class="text-white font-semibold text-sm mb-1">Extractor Agent</h3>
+<p class="text-[#92a4c9] text-xs">Entity Recognition</p>
+<div class="mt-3 w-full bg-[#232f48] h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary w-[45%] h-full rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 4: Summarizer -->
+<div class="flex flex-col items-center group relative w-1/4">
+<div class="w-full flex items-center justify-center relative">
+<div class="h-[2px] w-1/2 bg-[#324467]"></div>
+<div class="h-[2px] w-1/2 bg-transparent"></div>
+<!-- Card -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#111722] border border-[#324467] hover:border-[#92a4c9] transition-colors rounded-xl p-4 w-48 shadow-lg">
+<div class="flex items-center gap-3 mb-2">
+<div class="p-2 bg-[#232f48] rounded-lg text-white">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="text-xs font-bold text-[#92a4c9] uppercase tracking-wider">Output</span>
+</div>
+<h3 class="text-white font-semibold text-sm mb-1">Summarizer Agent</h3>
+<p class="text-[#92a4c9] text-xs">Gist Generation</p>
+<div class="mt-3 flex items-center gap-2">
+<span class="h-2 w-2 rounded-full bg-[#fa6238]"></span>
+<span class="text-[10px] text-[#fa6238] font-medium">Waiting</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Right Panel: Processing Queue & Live Preview -->
+<aside class="w-[320px] bg-[#111722] border-l border-[#232f48] flex flex-col h-full shrink-0">
+<!-- Queue Section -->
+<div class="flex flex-col h-1/2 border-b border-[#232f48]">
+<div class="px-5 py-4 border-b border-[#232f48] flex justify-between items-center">
+<h3 class="text-white text-base font-bold leading-tight">Processing Queue</h3>
+<span class="bg-[#232f48] text-white text-xs font-bold px-2 py-1 rounded">12 Jobs</span>
+</div>
+<div class="flex-1 overflow-y-auto p-2">
+<!-- Job Item 1 (Active) -->
+<div class="p-3 mb-2 rounded-lg bg-[#1a2336] border border-[#324467] hover:border-primary/50 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start mb-2">
+<span class="text-white text-sm font-medium">Job #8821</span>
+<span class="text-[#0bda5e] text-[10px] font-bold bg-[#0bda5e]/10 px-2 py-0.5 rounded-full">PROCESSING</span>
+</div>
+<p class="text-[#92a4c9] text-xs mb-2">Twitter Firehose - Batch 4</p>
+<div class="w-full bg-[#111722] h-1 rounded-full overflow-hidden">
+<div class="bg-[#0bda5e] w-[65%] h-full rounded-full"></div>
+</div>
+</div>
+<!-- Job Item 2 (Pending) -->
+<div class="p-3 mb-2 rounded-lg bg-[#111722] border border-[#232f48] hover:border-[#324467] transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[#92a4c9] text-sm font-medium">Job #8822</span>
+<span class="text-[#92a4c9] text-[10px] font-bold bg-[#232f48] px-2 py-0.5 rounded-full">PENDING</span>
+</div>
+<p class="text-[#92a4c9] text-xs opacity-70">TechCrunch Feed - Daily</p>
+</div>
+<!-- Job Item 3 (Error) -->
+<div class="p-3 mb-2 rounded-lg bg-[#111722] border border-[#fa6238]/30 hover:border-[#fa6238]/60 transition-colors cursor-pointer">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[#fa6238] text-sm font-medium">Job #8819</span>
+<span class="text-[#fa6238] text-[10px] font-bold bg-[#fa6238]/10 px-2 py-0.5 rounded-full">ERROR</span>
+</div>
+<p class="text-[#92a4c9] text-xs opacity-70">PDF Ingestion - Manual</p>
+<div class="flex items-center gap-1 mt-2 text-[#fa6238] text-[10px]">
+<span class="material-symbols-outlined text-[12px]">error</span>
+                        Timeout Error
+                    </div>
+</div>
+</div>
+</div>
+<!-- Live Preview Section -->
+<div class="flex flex-col h-1/2 bg-[#0d121c]">
+<div class="px-5 py-4 border-b border-[#232f48] bg-[#111722] flex justify-between items-center">
+<h3 class="text-white text-base font-bold leading-tight">Live Transformation</h3>
+<span class="material-symbols-outlined text-[#92a4c9] text-[18px]">terminal</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 font-mono text-xs">
+<div class="flex flex-col gap-4">
+<!-- Step 1 -->
+<div class="flex gap-2 opacity-50">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-[#92a4c9]"></div>
+<div class="w-[1px] h-full bg-[#232f48] my-1"></div>
+</div>
+<div class="pb-2">
+<p class="text-[#92a4c9] font-bold mb-1">INPUT: RAW_TEXT</p>
+<p class="text-[#5b6b8a] line-clamp-2">"Just saw the new #AI model release! It's absolutely mind-blowing how fast the inference is on edge devices. 🚀 #tech"</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex gap-2">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<div class="w-[1px] h-full bg-[#232f48] my-1"></div>
+</div>
+<div class="pb-2">
+<p class="text-primary font-bold mb-1">PROCESS: CLEANER</p>
+<div class="bg-[#1a2336] p-2 rounded border border-[#232f48] text-[#92a4c9]">
+<span class="text-[#cba6f7]">removed:</span> ["#AI", "#tech", "🚀"]<br/>
+<span class="text-[#cba6f7]">normalized:</span> true
+                            </div>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex gap-2">
+<div class="flex flex-col items-center">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+</div>
+<div class="pb-2">
+<p class="text-white font-bold mb-1">CURRENT: EXTRACTOR</p>
+<div class="bg-[#1a2336] p-2 rounded border border-primary/30 text-white">
+                                {<br/>
+                                  "topic": "AI model release",<br/>
+                                  "sentiment": 0.9,<br/>
+                                  "entities": ["edge devices"]<br/>
+                                }
+                            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</body></html>

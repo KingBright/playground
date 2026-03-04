@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo check:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo clean:*)",
+      "Bash(cargo doc:*)",
+      "Bash(cargo test:*)",
+      "Bash(ls -la:*)",
+      "Bash(ls:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(npm run build:*)",
+      "Bash(chmod +x:*)",
+      "Bash(./build.sh:*)",
+      "Bash(timeout 5 cargo run:*)",
+      "Bash(find:*)",
+      "Bash(./run-tests.sh:*)",
+      "Bash(bash run-tests.sh:*)",
+      "Bash(bash /Users/jinliang/Workspace/playground/run-tests.sh:*)",
+      "Bash(npm test:*)",
+      "Bash(for crate in:*)",
+      "Bash(do:*)",
+      "Bash(done)",
+      "Bash(./manage.sh:*)",
+      "Bash(./deploy.sh:*)",
+      "Bash(./data-migrate.sh help:*)"
+    ]
+  }
+}

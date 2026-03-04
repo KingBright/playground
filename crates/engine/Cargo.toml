@@ -1,0 +1,28 @@
+[package]
+name = "engine"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../common" }
+brain = { path = "../brain" }
+
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+async-trait.workspace = true
+tracing.workspace = true
+uuid.workspace = true
+chrono.workspace = true
+
+# Scripting
+rhai = { version = "1.18", features = ["serde", "metadata"] }
+
+# API
+axum.workspace = true
+tower-http = { workspace = true, features = ["cors"] }
+
+# Utilities
+tokio-util = "0.7"

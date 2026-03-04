@@ -1,0 +1,81 @@
+[workspace]
+members = [
+    "crates/common",
+    "crates/brain",
+    "crates/engine",
+    "crates/synergy",
+    "crates/api",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Agent Playground Team"]
+license = "MIT"
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1.40", features = ["full"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Database & Storage
+redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "chrono"] }
+
+# Vector Database (choose one)
+# qdrant-client = "1.11"
+# milvus = { version = "0.2", features = ["tracing"] }
+
+# Graph Database
+# neo4j = "0.9"
+
+# Web framework
+axum = { version = "0.7", features = ["macros", "ws"] }
+tower = "0.5"
+tower-http = { version = "0.5", features = ["cors", "trace", "fs"] }
+
+# Scripting & Sandboxing
+rhai = { version = "1.19", features = ["serde", "metadata"] }
+
+# Tracing & Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Utilities
+uuid = { version = "1.10", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+async-trait = "0.1"
+
+# Configuration
+toml = "0.8"
+serde_yaml = "0.9"
+
+# HTTP Client
+reqwest = { version = "0.12", features = ["json"] }
+
+# RSS Parsing
+feed-rs = "2.1"
+
+# Graph Algorithms
+petgraph = "0.6"
+
+# Cron Scheduling
+tokio-cron-scheduler = "0.10"
+
+# Text Processing
+regex = "1.10"
+mime_guess = "2.0"
+
+# Static file embedding
+rust-embed = { version = "8.5", features = ["axum", "mime-guess"] }
+
+# LLM Client (placeholder)
+# async-openai = "0.24"

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mission Control: Agent Registry</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#192233",
+                        "border-dark": "#232f48",
+                        "text-secondary": "#92a4c9"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-border-dark bg-white dark:bg-[#111722] px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-slate-900 dark:text-white">
+<div class="size-8 text-primary flex items-center justify-center">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor"></path></svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Mission Control</h2>
+</div>
+<!-- Global Search (Header) -->
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-border-dark">
+<div class="text-slate-500 dark:text-text-secondary flex border-none items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg bg-transparent text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none h-full placeholder:text-slate-500 dark:placeholder:text-text-secondary px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Search..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-slate-900 dark:text-white text-sm font-medium leading-normal" href="#">Registry</a>
+<a class="text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Deployments</a>
+<a class="text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Settings</a>
+</nav>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-gray-200 dark:border-border-dark" data-alt="User profile avatar showing a generic astronaut helmet" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCE_Md2u-tkS7Q8b72nCAqXwbh_wuPJhb3GU0Teg6DkkifZ0L54NVXf6dPC2k2wFWpjzE0gJSX-LS_jVqZHzPTxZdTC-67-EsSTxVub8NyE8tcXpS73mhQAPZf73BSPG5sI8Y1djLHP0s1JN4wAlTUKzR91LDID20-6vIHQdvCbr0IeHKp96BMMR_lp5q53Pv9R2qT2zlUaX3panCTqic6KUVv8YouaY_cKvBDrkvWqS2KzYomcldxUkP8r1W-6w3kEj5WWnt9Unc-j");'></div>
+</div>
+</header>
+<!-- Main Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Sidebar -->
+<aside class="hidden md:flex w-64 flex-col border-r border-gray-200 dark:border-border-dark bg-white dark:bg-[#111722] overflow-y-auto shrink-0">
+<div class="flex flex-col justify-between p-4 h-full">
+<div class="flex flex-col gap-6">
+<div>
+<h1 class="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-wider mb-4 px-3">Filters</h1>
+<div class="flex flex-col gap-1">
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-border-dark text-primary dark:text-white group transition-colors">
+<span class="material-symbols-outlined">grid_view</span>
+<p class="text-sm font-medium leading-normal">All Categories</p>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-surface-dark group transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white">memory</span>
+<p class="text-slate-600 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium leading-normal">Utility</p>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-surface-dark group transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white">menu_book</span>
+<p class="text-slate-600 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium leading-normal">Knowledge</p>
+</button>
+<button class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-surface-dark group transition-colors">
+<span class="material-symbols-outlined text-slate-500 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white">verified_user</span>
+<p class="text-slate-600 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium leading-normal">Verification</p>
+</button>
+</div>
+</div>
+<div>
+<h1 class="text-slate-900 dark:text-white text-xs font-bold uppercase tracking-wider mb-4 px-3">Status</h1>
+<div class="flex flex-col gap-1">
+<label class="flex items-center gap-3 px-3 py-2 cursor-pointer">
+<input checked="" class="form-checkbox rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+<span class="text-slate-600 dark:text-text-secondary text-sm">Active</span>
+</label>
+<label class="flex items-center gap-3 px-3 py-2 cursor-pointer">
+<input class="form-checkbox rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary bg-transparent" type="checkbox"/>
+<span class="text-slate-600 dark:text-text-secondary text-sm">Deprecated</span>
+</label>
+</div>
+</div>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 border border-gray-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-surface-dark text-slate-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors mt-6">
+<span class="truncate">Reset Filters</span>
+</button>
+</div>
+</aside>
+<!-- Content Area -->
+<main class="flex-1 overflow-y-auto bg-gray-50 dark:bg-background-dark p-4 md:p-8">
+<div class="max-w-6xl mx-auto flex flex-col gap-8">
+<!-- Page Heading -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-2">
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Agent Registry</h1>
+<p class="text-slate-500 dark:text-text-secondary text-base font-normal leading-normal max-w-xl">Global marketplace for Universal Agents. Browse, verify, and deploy AI units for your missions.</p>
+</div>
+<button class="flex shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg h-10 px-6 bg-primary hover:bg-blue-700 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-blue-900/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="truncate">Publish New Agent</span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="w-full">
+<label class="flex flex-col h-14 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark focus-within:border-primary dark:focus-within:border-primary transition-colors">
+<div class="text-slate-400 dark:text-text-secondary flex border-none items-center justify-center pl-4 rounded-l-xl border-r-0">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl bg-transparent text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none h-full placeholder:text-slate-400 dark:placeholder:text-text-secondary px-4 pl-2 text-base font-normal leading-normal" placeholder="Search agents by name, capability, or ID..." value=""/>
+</div>
+</label>
+</div>
+<!-- Agents Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+<!-- Card 1 -->
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden @xl:flex-row @xl:items-start bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-colors shadow-sm h-full">
+<div class="w-full @xl:w-48 @xl:shrink-0 bg-center bg-no-repeat bg-cover h-48 @xl:h-full relative" data-alt="Abstract blue digital network visualization representing search capabilities" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCW5_wMQr4D7ViY7Qs5qZwcBu8LO_Dx-mMmfQoiCatb-7Naa1sMwjTcza9YnCLkZUjHenKnClwyGFrIxYCGOj2-xrh9K4h0B5JqS4ZB7jfwyve9hPRG5QwO2CiYC1jeSlCLTNC5_ey_klMl60gsl5F7VmhEQgM5R8bdLHAyWrNmVhoHh7pNEOKLjRd6HLv-suOlvOFqOIRlPpKHq6sfMo0TSbYIo0xNy7CBxA2GUaX8olM9V5JxR3qX9KtJqBuZKpkuC1JPV6BkE0xu");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent @xl:hidden"></div>
+<div class="absolute bottom-3 left-3 @xl:hidden">
+<span class="px-2 py-1 rounded bg-black/50 backdrop-blur-md text-xs font-medium text-white border border-white/10">UTILITY</span>
+</div>
+</div>
+<div class="flex w-full min-w-0 grow flex-col items-stretch justify-between gap-4 p-5 h-full">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="hidden @xl:block text-primary text-xs font-bold tracking-wider uppercase mb-1">UTILITY</p>
+<div class="flex items-center gap-1 text-green-500 bg-green-500/10 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-green-500"></span> Online
+                                         </div>
+</div>
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] mb-2">Searcher Unit Alpha</h3>
+<div class="rounded bg-slate-100 dark:bg-background-dark p-3 mb-3 border border-gray-200 dark:border-border-dark">
+<p class="text-slate-500 dark:text-text-secondary text-xs font-mono leading-relaxed line-clamp-2">
+                                            &gt; SYSTEM_PROMPT: You are an advanced retrieval expert. Search multiple indexes concurrently. Prioritize recent sources...
+                                        </p>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        Retrieves real-time data from open web sources with high precision filtering.
+                                    </p>
+</div>
+<div class="flex flex-col gap-3 mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">sell</span> v2.1.0</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">build</span> Browser, Scraper</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bar_chart</span> 98.5% Success</span>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 hover:bg-primary/20 text-primary dark:text-blue-400 text-sm font-bold leading-normal transition-colors">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden @xl:flex-row @xl:items-start bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-colors shadow-sm h-full">
+<div class="w-full @xl:w-48 @xl:shrink-0 bg-center bg-no-repeat bg-cover h-48 @xl:h-full relative" data-alt="Abstract geometric shapes representing structured knowledge" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpR3dkp3BezFFHXz-xYSMjwidbrtTWnbe1nq34EefVoOm9lP0b6faAPG3IeppExeiJwmtFZILsYn-LL_sWp44bNS7nQ503Lrzg0jZ6wewuh6CFxil2vabyXRZLeS-UdkKQ8pnHkfDF-_3arzQcPkgqz2khekawPTBrKmLhYnhG7TuyH0qs2Wv4anpnwPDgd9yjFx-KI0jT7H2zxLNxsJDubhKMa4bmEOFy3uK3EJ02chzd-vMlajQqNX3QMJmikAg49Wrj-jiVFcHO");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent @xl:hidden"></div>
+<div class="absolute bottom-3 left-3 @xl:hidden">
+<span class="px-2 py-1 rounded bg-black/50 backdrop-blur-md text-xs font-medium text-white border border-white/10">KNOWLEDGE</span>
+</div>
+</div>
+<div class="flex w-full min-w-0 grow flex-col items-stretch justify-between gap-4 p-5 h-full">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="hidden @xl:block text-purple-500 text-xs font-bold tracking-wider uppercase mb-1">KNOWLEDGE</p>
+<div class="flex items-center gap-1 text-slate-500 bg-slate-500/10 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-slate-500"></span> Idle
+                                         </div>
+</div>
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] mb-2">Librarian Archive</h3>
+<div class="rounded bg-slate-100 dark:bg-background-dark p-3 mb-3 border border-gray-200 dark:border-border-dark">
+<p class="text-slate-500 dark:text-text-secondary text-xs font-mono leading-relaxed line-clamp-2">
+                                            &gt; SYSTEM_PROMPT: Act as a master archivist. Organize unstructured text into hierarchical JSON...
+                                        </p>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        Synthesizes large datasets into structured knowledge graphs. Perfect for research.
+                                    </p>
+</div>
+<div class="flex flex-col gap-3 mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">sell</span> v1.4.2</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">build</span> NLP, VectorDB</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bar_chart</span> 4.2M Tokens</span>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 hover:bg-primary/20 text-primary dark:text-blue-400 text-sm font-bold leading-normal transition-colors">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden @xl:flex-row @xl:items-start bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-colors shadow-sm h-full">
+<div class="w-full @xl:w-48 @xl:shrink-0 bg-center bg-no-repeat bg-cover h-48 @xl:h-full relative" data-alt="Green digital lock representing security and verification" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD6jtw2wHVtdZkx0elSsUBZTouyd66pBzC1MX2jTp6-CDHj9SP0KvcXhErOqMYBkJS0EUfvrU3XqAWO-yreubwYP0CH1AzfyDDijZomcQU-Fa6uU2TncbP7ZyHdZV5fbJpw0pusaEAjnIUU9G0pMmxtmbWoK3lfG0TMZUkka6IoUWqyvv_57CUCEA72hJsF6mHGp9GMLWUS4bxj25IE6zuaUuaeUeyMoSy1JWkZc4_rvt6CppYJ3f2wT3xmK9viSMBnC5gJCgnRpskP");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent @xl:hidden"></div>
+<div class="absolute bottom-3 left-3 @xl:hidden">
+<span class="px-2 py-1 rounded bg-black/50 backdrop-blur-md text-xs font-medium text-white border border-white/10">VERIFICATION</span>
+</div>
+</div>
+<div class="flex w-full min-w-0 grow flex-col items-stretch justify-between gap-4 p-5 h-full">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="hidden @xl:block text-teal-400 text-xs font-bold tracking-wider uppercase mb-1">VERIFICATION</p>
+<div class="flex items-center gap-1 text-green-500 bg-green-500/10 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-green-500"></span> Online
+                                         </div>
+</div>
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] mb-2">FactChecker Prime</h3>
+<div class="rounded bg-slate-100 dark:bg-background-dark p-3 mb-3 border border-gray-200 dark:border-border-dark">
+<p class="text-slate-500 dark:text-text-secondary text-xs font-mono leading-relaxed line-clamp-2">
+                                            &gt; SYSTEM_PROMPT: Verify all claims against trusted academic databases. Flag hallucinations...
+                                        </p>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        Cross-references generated content with verified sources to ensure accuracy.
+                                    </p>
+</div>
+<div class="flex flex-col gap-3 mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">sell</span> v3.0.1</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">build</span> API, Scholar</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bar_chart</span> 99.9% Accuracy</span>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 hover:bg-primary/20 text-primary dark:text-blue-400 text-sm font-bold leading-normal transition-colors">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="@container">
+<div class="flex flex-col items-stretch justify-start rounded-xl overflow-hidden @xl:flex-row @xl:items-start bg-white dark:bg-surface-dark border border-gray-200 dark:border-border-dark hover:border-primary/50 transition-colors shadow-sm h-full">
+<div class="w-full @xl:w-48 @xl:shrink-0 bg-center bg-no-repeat bg-cover h-48 @xl:h-full relative" data-alt="Matrix code rain style background representing coding capabilities" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAZAip-FkqR97bRaQmFVK6ry-0gcyFgO52OdCJ3Y2-3svgdslVfn7DJICJu16sAI_o64-8LswjnXOra2_FrFFw4ibFuSy7yx_T5PK7iohOh6VMA2HuMWF6EeNMcS1jGLJs4dxrufmziOaCwegG9p9u9HNmJIOtIMNp1JbWQpQGSr9qHWFEr5jOWbBxDcto2sbCy_a4u42qq-mUNzoP9Vt3FqtQb4ibFGkBsI_YlNoy23rCBozpIslEYQsgEqLpGk5jJoqranx4B8Bqe");'>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent @xl:hidden"></div>
+<div class="absolute bottom-3 left-3 @xl:hidden">
+<span class="px-2 py-1 rounded bg-black/50 backdrop-blur-md text-xs font-medium text-white border border-white/10">UTILITY</span>
+</div>
+</div>
+<div class="flex w-full min-w-0 grow flex-col items-stretch justify-between gap-4 p-5 h-full">
+<div>
+<div class="flex justify-between items-start mb-1">
+<p class="hidden @xl:block text-primary text-xs font-bold tracking-wider uppercase mb-1">UTILITY</p>
+<div class="flex items-center gap-1 text-slate-500 bg-slate-500/10 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-slate-500"></span> Maintenance
+                                         </div>
+</div>
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] mb-2">CodeRunner X</h3>
+<div class="rounded bg-slate-100 dark:bg-background-dark p-3 mb-3 border border-gray-200 dark:border-border-dark">
+<p class="text-slate-500 dark:text-text-secondary text-xs font-mono leading-relaxed line-clamp-2">
+                                            &gt; SYSTEM_PROMPT: You are a Python expert. Execute code in the sandbox. Handle exceptions gracefully...
+                                        </p>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">
+                                        Safely executes Python scripts in a sandboxed environment for data processing.
+                                    </p>
+</div>
+<div class="flex flex-col gap-3 mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-500 dark:text-text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">sell</span> v5.0.0</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">build</span> Python 3.11</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">bar_chart</span> 15k Executions</span>
+</div>
+<button class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 hover:bg-primary/20 text-primary dark:text-blue-400 text-sm font-bold leading-normal transition-colors">
+<span class="truncate">View Details</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

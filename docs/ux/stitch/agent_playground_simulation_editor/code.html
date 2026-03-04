@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agent Playground Simulation Editor</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "panel-dark": "#1a2332",
+                        "border-dark": "#232f48",
+                        "text-secondary": "#92a4c9"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["Space Mono", "monospace"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for IDE feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101622; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #324467; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b6496; 
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-6 py-3 bg-background-dark">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-2xl">neurology</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight">External Brain Platform</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-white text-sm font-bold border-b-2 border-primary pb-0.5" href="#">Playground</a>
+<a class="text-text-secondary hover:text-white text-sm font-medium transition-colors" href="#">Knowledge Base</a>
+<a class="text-text-secondary hover:text-white text-sm font-medium transition-colors" href="#">Agents</a>
+<a class="text-text-secondary hover:text-white text-sm font-medium transition-colors" href="#">Settings</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-blue-600 transition-colors text-white text-sm font-bold shadow-lg shadow-blue-900/20">
+<span class="truncate">Deploy</span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-border-dark cursor-pointer" data-alt="User profile avatar gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDCsAtcts0aE3bURpdi895my7XMANkZgp3acKCGAW906aKqh2jCafp091JklC-IcPzNYCCWgDOxAR_7RipVjR9I4NUjDxS1uFocvWUqClMDBTHkNjfBaQOsfWMzFnpwFO4s5IrA6z_Wv35mcvvberFu2tfTRfOGzY54qBqOXZslAPeJe_eoTKFPJTWeLQkGY5n73qzwB_7fjaCBz_t4QTsoZ9JKIo9QtzEUePBP5gYnH-ZSEQSb_aowjEH04Y6TcYIF6hQlmQvy6vDE");'></div>
+</div>
+</div>
+</header>
+<!-- Page Heading & Toolbar Area -->
+<div class="flex-none bg-background-dark border-b border-border-dark">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between px-6 py-4 gap-4">
+<!-- Heading -->
+<div class="flex items-start gap-4">
+<div class="p-2 bg-panel-dark rounded-lg border border-border-dark text-text-secondary">
+<span class="material-symbols-outlined">science</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-3">
+<h1 class="text-white text-xl font-bold leading-tight">Simulation Editor: Scenario B-42</h1>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-900/30 text-green-400 border border-green-900/50 uppercase tracking-wider">Active</span>
+</div>
+<p class="text-text-secondary text-sm font-normal mt-1">Multi-agent interaction workspace • Last saved 12m ago</p>
+</div>
+</div>
+<!-- Toolbar Actions -->
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-panel-dark rounded-lg border border-border-dark p-1">
+<button class="p-2 text-text-secondary hover:text-white hover:bg-white/5 rounded transition-colors" title="Rewind">
+<span class="material-symbols-outlined text-[20px]">skip_previous</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-white hover:bg-white/5 rounded transition-colors" title="Stop">
+<span class="material-symbols-outlined text-[20px]">stop</span>
+</button>
+<button class="p-2 text-white hover:bg-white/5 rounded transition-colors" title="Play">
+<span class="material-symbols-outlined filled-icon text-[24px] text-green-500">play_circle</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-white hover:bg-white/5 rounded transition-colors" title="Pause">
+<span class="material-symbols-outlined text-[20px]">pause</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-white hover:bg-white/5 rounded transition-colors" title="Step Forward">
+<span class="material-symbols-outlined text-[20px]">skip_next</span>
+</button>
+<div class="w-px h-5 bg-border-dark mx-1"></div>
+<button class="p-2 text-text-secondary hover:text-red-400 hover:bg-white/5 rounded transition-colors" title="Debug Mode">
+<span class="material-symbols-outlined text-[20px]">bug_report</span>
+</button>
+</div>
+<button class="flex items-center justify-center rounded-lg h-10 px-4 bg-panel-dark border border-border-dark text-white text-sm font-medium hover:bg-border-dark transition-colors gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Save Config</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Workspace -->
+<main class="flex-1 flex overflow-hidden">
+<!-- Left Panel: Configuration -->
+<aside class="w-80 flex-none flex flex-col border-r border-border-dark bg-background-dark overflow-y-auto">
+<div class="p-4 border-b border-border-dark flex items-center justify-between sticky top-0 bg-background-dark z-10">
+<h3 class="text-white text-sm font-bold uppercase tracking-wider">Environment Config</h3>
+<span class="material-symbols-outlined text-text-secondary text-sm cursor-pointer hover:text-white">settings</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<!-- Environment Variables -->
+<details class="flex flex-col rounded-lg border border-border-dark bg-panel-dark px-3 py-2 group" open="">
+<summary class="flex cursor-pointer items-center justify-between gap-2 py-2 outline-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-secondary text-lg">tune</span>
+<p class="text-white text-sm font-medium">Variables</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="pt-2 pb-1">
+<div class="font-mono text-xs text-blue-300 bg-background-dark p-2 rounded border border-border-dark overflow-x-auto">
+<span class="text-purple-400">"max_steps"</span>: <span class="text-orange-400">500</span>,<br/>
+<span class="text-purple-400">"internet"</span>: <span class="text-orange-400">true</span>,<br/>
+<span class="text-purple-400">"log_level"</span>: <span class="text-green-400">"verbose"</span>
+</div>
+<button class="mt-2 text-xs text-primary hover:text-blue-400 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">edit</span> Edit JSON
+                        </button>
+</div>
+</details>
+<!-- State Schema -->
+<details class="flex flex-col rounded-lg border border-border-dark bg-panel-dark px-3 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-2 py-2 outline-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-secondary text-lg">schema</span>
+<p class="text-white text-sm font-medium">State Schema</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<p class="text-text-secondary text-xs pt-2">Defines the data structure for agent memory and shared context.</p>
+</details>
+<!-- Termination Rules -->
+<details class="flex flex-col rounded-lg border border-border-dark bg-panel-dark px-3 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-2 py-2 outline-none">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-text-secondary text-lg">rule</span>
+<p class="text-white text-sm font-medium">Termination Rules</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary group-open:rotate-180 transition-transform">expand_more</span>
+</summary>
+<div class="pt-2 flex flex-col gap-2">
+<label class="flex items-center gap-2 text-text-secondary text-sm cursor-pointer hover:text-white">
+<input checked="" class="rounded border-border-dark bg-background-dark text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+                            Stop on error
+                        </label>
+<label class="flex items-center gap-2 text-text-secondary text-sm cursor-pointer hover:text-white">
+<input checked="" class="rounded border-border-dark bg-background-dark text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
+                            Stop on max steps
+                        </label>
+</div>
+</details>
+<!-- Tools Available -->
+<div class="mt-4">
+<h4 class="text-text-secondary text-xs font-bold uppercase mb-3 px-1">Global Tools</h4>
+<div class="flex flex-wrap gap-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-blue-900/20 border border-blue-900/50 text-blue-300 text-xs font-mono">web_search</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-blue-900/20 border border-blue-900/50 text-blue-300 text-xs font-mono">calculator</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-blue-900/20 border border-blue-900/50 text-blue-300 text-xs font-mono">file_io</span>
+<button class="inline-flex items-center px-2 py-1 rounded border border-dashed border-border-dark text-text-secondary text-xs hover:text-white hover:border-white/20 transition-colors">
+<span class="material-symbols-outlined text-[14px]">add</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- Center Panel: Workflow Visualizer -->
+<section class="flex-1 flex flex-col bg-[#0b0f17] relative">
+<div class="absolute inset-0 bg-[radial-gradient(#1a2332_1px,transparent_1px)] [background-size:16px_16px] opacity-20 pointer-events-none"></div>
+<div class="p-4 flex-none flex items-center justify-between border-b border-border-dark/50 bg-background-dark/80 backdrop-blur-sm z-10">
+<h3 class="text-white text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">hub</span>
+                    Workflow Execution Trace
+                </h3>
+<div class="flex items-center gap-2">
+<span class="text-xs text-text-secondary">Step 4/500</span>
+<div class="w-24 h-1.5 bg-panel-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[10%]"></div>
+</div>
+</div>
+</div>
+<!-- Timeline Content -->
+<div class="flex-1 overflow-y-auto p-8 flex justify-center">
+<div class="w-full max-w-[600px]">
+<!-- Node 1: Initialization -->
+<div class="grid grid-cols-[40px_1fr] gap-x-4 opacity-50">
+<div class="flex flex-col items-center gap-1 pt-1">
+<div class="size-8 rounded-full bg-panel-dark border border-border-dark flex items-center justify-center text-green-500">
+<span class="material-symbols-outlined text-[18px]">power_settings_new</span>
+</div>
+<div class="w-[2px] bg-border-dark h-full min-h-[40px]"></div>
+</div>
+<div class="flex flex-col pb-8">
+<div class="bg-panel-dark border border-border-dark rounded p-3">
+<p class="text-white text-sm font-medium">Initialization Node</p>
+<p class="text-text-secondary text-xs font-mono mt-1">System Ready. Loaded 2 agents.</p>
+</div>
+</div>
+</div>
+<!-- Node 2: Perception -->
+<div class="grid grid-cols-[40px_1fr] gap-x-4 opacity-75">
+<div class="flex flex-col items-center gap-1">
+<div class="w-[2px] bg-border-dark h-4"></div>
+<div class="size-8 rounded-full bg-panel-dark border border-border-dark flex items-center justify-center text-blue-400">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+</div>
+<div class="w-[2px] bg-border-dark h-full min-h-[40px]"></div>
+</div>
+<div class="flex flex-col pb-8">
+<div class="bg-panel-dark border border-border-dark rounded p-3">
+<p class="text-white text-sm font-medium">Perception Loop</p>
+<p class="text-text-secondary text-xs font-mono mt-1">Inputs: "Analyze Q3 report"</p>
+</div>
+</div>
+</div>
+<!-- Node 3: Thinking (Active) -->
+<div class="grid grid-cols-[40px_1fr] gap-x-4">
+<div class="flex flex-col items-center gap-1">
+<div class="w-[2px] bg-border-dark h-4"></div>
+<div class="size-10 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center text-primary shadow-[0_0_15px_rgba(17,82,212,0.5)] animate-pulse">
+<span class="material-symbols-outlined filled-icon text-[20px]">psychology</span>
+</div>
+<div class="w-[2px] bg-gradient-to-b from-primary to-border-dark h-full min-h-[60px]"></div>
+</div>
+<div class="flex flex-col pb-8">
+<div class="bg-panel-dark border border-primary/50 shadow-[0_0_20px_rgba(17,82,212,0.1)] rounded-lg p-4">
+<div class="flex justify-between items-start mb-2">
+<p class="text-white text-base font-bold">Cognitive Processing</p>
+<span class="px-2 py-0.5 rounded text-[10px] bg-primary text-white font-bold">RUNNING</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-2 p-2 rounded bg-background-dark border border-border-dark">
+<div class="size-6 rounded-full bg-purple-900/50 flex items-center justify-center text-purple-300 text-xs font-bold border border-purple-700">L</div>
+<span class="text-xs text-gray-300">Librarian Agent is querying context...</span>
+</div>
+<div class="flex items-center gap-2 p-2 rounded bg-background-dark border border-border-dark">
+<div class="size-6 rounded-full bg-orange-900/50 flex items-center justify-center text-orange-300 text-xs font-bold border border-orange-700">S</div>
+<span class="text-xs text-gray-300">Searcher Agent waiting for query...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Node 4: Action (Pending) -->
+<div class="grid grid-cols-[40px_1fr] gap-x-4 opacity-40">
+<div class="flex flex-col items-center gap-1">
+<div class="w-[2px] bg-border-dark h-4"></div>
+<div class="size-8 rounded-full bg-panel-dark border border-border-dark flex items-center justify-center text-text-secondary">
+<span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+</div>
+<div class="w-[2px] bg-border-dark h-full min-h-[40px]"></div>
+</div>
+<div class="flex flex-col pb-8">
+<div class="bg-panel-dark border border-border-dark rounded p-3 border-dashed">
+<p class="text-white text-sm font-medium">Action Execution</p>
+<p class="text-text-secondary text-xs font-mono mt-1">Pending approval...</p>
+</div>
+</div>
+</div>
+<!-- Node 5: Validation -->
+<div class="grid grid-cols-[40px_1fr] gap-x-4 opacity-40">
+<div class="flex flex-col items-center gap-1">
+<div class="w-[2px] bg-border-dark h-4"></div>
+<div class="size-8 rounded-full bg-panel-dark border border-border-dark flex items-center justify-center text-text-secondary">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="bg-panel-dark border border-border-dark rounded p-3 border-dashed">
+<p class="text-white text-sm font-medium">Validation Gate</p>
+<p class="text-text-secondary text-xs font-mono mt-1">Waiting</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Panel: Agent Mounting & State -->
+<aside class="w-96 flex-none flex flex-col border-l border-border-dark bg-background-dark">
+<!-- Agent Mounting Section -->
+<div class="h-1/2 flex flex-col border-b border-border-dark">
+<div class="p-4 border-b border-border-dark flex items-center justify-between bg-panel-dark">
+<h3 class="text-white text-sm font-bold uppercase tracking-wider">Agent Mounting</h3>
+<button class="text-xs text-primary hover:text-white font-medium">+ New Agent</button>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-3">
+<p class="text-xs text-text-secondary mb-2">Drag available agents into the active session.</p>
+<!-- Agent Card 1 -->
+<div class="group flex items-start gap-3 p-3 rounded-lg border border-border-dark bg-panel-dark hover:border-primary/50 cursor-grab active:cursor-grabbing transition-colors">
+<div class="size-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+<span class="material-symbols-outlined">library_books</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h4 class="text-white text-sm font-semibold truncate">Librarian Agent</h4>
+<span class="text-[10px] bg-green-900/40 text-green-400 px-1.5 rounded border border-green-900/50">v2.1</span>
+</div>
+<p class="text-text-secondary text-xs truncate">Specialized in context retrieval.</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-sm opacity-0 group-hover:opacity-100">drag_indicator</span>
+</div>
+<!-- Agent Card 2 -->
+<div class="group flex items-start gap-3 p-3 rounded-lg border border-border-dark bg-panel-dark hover:border-primary/50 cursor-grab active:cursor-grabbing transition-colors">
+<div class="size-10 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
+<span class="material-symbols-outlined">travel_explore</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h4 class="text-white text-sm font-semibold truncate">Searcher Agent</h4>
+<span class="text-[10px] bg-green-900/40 text-green-400 px-1.5 rounded border border-green-900/50">v1.0</span>
+</div>
+<p class="text-text-secondary text-xs truncate">Live web search capabilities.</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-sm opacity-0 group-hover:opacity-100">drag_indicator</span>
+</div>
+<!-- Agent Card 3 -->
+<div class="group flex items-start gap-3 p-3 rounded-lg border border-border-dark bg-panel-dark hover:border-primary/50 cursor-grab active:cursor-grabbing transition-colors opacity-60">
+<div class="size-10 rounded-lg bg-gray-500/10 border border-gray-500/20 flex items-center justify-center text-gray-400">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-1">
+<h4 class="text-white text-sm font-semibold truncate">Generic LLM Worker</h4>
+</div>
+<p class="text-text-secondary text-xs truncate">Standard GPT-4 model.</p>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-sm opacity-0 group-hover:opacity-100">drag_indicator</span>
+</div>
+</div>
+</div>
+<!-- State Monitor / Logs -->
+<div class="h-1/2 flex flex-col bg-[#0d1117]">
+<div class="flex items-center border-b border-border-dark">
+<button class="px-4 py-2 text-xs font-bold text-white border-b-2 border-primary bg-panel-dark">State Monitor</button>
+<button class="px-4 py-2 text-xs font-medium text-text-secondary hover:text-white hover:bg-white/5 transition-colors">Logs</button>
+<button class="px-4 py-2 text-xs font-medium text-text-secondary hover:text-white hover:bg-white/5 transition-colors">Memory</button>
+</div>
+<div class="flex-1 overflow-auto p-4 font-mono text-xs leading-relaxed">
+<div class="text-gray-400 mb-2">// Current Global State Object</div>
+<div class="pl-2 border-l border-border-dark ml-1">
+<span class="text-purple-400">"session_id"</span>: <span class="text-green-400">"sim_b42_x99"</span>,
+                        <br/>
+<span class="text-purple-400">"status"</span>: <span class="text-yellow-400">"thinking"</span>,
+                        <br/>
+<span class="text-purple-400">"active_agents"</span>: [
+                        <div class="pl-4">
+<span class="text-green-400">"librarian_01"</span>,
+                            <br/>
+<span class="text-green-400">"searcher_alpha"</span>
+</div>
+                        ],
+                        <br/>
+<span class="text-purple-400">"shared_memory"</span>: {
+                        <div class="pl-4">
+<span class="text-blue-300">"query"</span>: <span class="text-orange-300">"Impact of AI on UI Design"</span>,
+                            <br/>
+<span class="text-blue-300">"retrieved_docs"</span>: <span class="text-orange-400">14</span>,
+                            <br/>
+<span class="text-blue-300">"confidence_score"</span>: <span class="text-orange-400">0.89</span>
+</div>
+                        },
+                         <br/>
+<span class="text-purple-400">"last_update"</span>: <span class="text-green-400">"2023-10-27T14:32:01Z"</span>
+</div>
+<div class="mt-4 pt-4 border-t border-border-dark">
+<div class="flex items-center gap-2 mb-2">
+<div class="size-2 rounded-full bg-green-500 animate-pulse"></div>
+<span class="text-gray-400 uppercase text-[10px] font-bold">Stream Incoming</span>
+</div>
+<p class="text-gray-500">&gt; Searcher Agent initiating handshake...</p>
+<p class="text-gray-500">&gt; Context window at 45% capacity.</p>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</body></html>

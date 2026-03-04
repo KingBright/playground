@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agent Playground Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111722", // Matches the example hex
+                        "panel-dark": "#0d121c", 
+                        "border-dark": "#232f48",
+                        "text-secondary": "#92a4c9"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for IDE feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111722; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #232f48; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #324467; 
+        }
+        
+        .grid-bg {
+            background-color: #111722;
+            background-image: linear-gradient(#1c2536 1px, transparent 1px),
+            linear-gradient(90deg, #1c2536 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-6 py-3 bg-background-dark shrink-0 z-20">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-3xl">hub</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Agent Playground Studio</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-text-secondary hover:text-white text-sm font-medium leading-normal transition-colors" href="#">File</a>
+<a class="text-text-secondary hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Edit</a>
+<a class="text-text-secondary hover:text-white text-sm font-medium leading-normal transition-colors" href="#">View</a>
+<a class="text-white text-sm font-medium leading-normal" href="#">Run</a>
+<a class="text-text-secondary hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Help</a>
+</div>
+<div class="flex gap-2">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-blue-600 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined text-[18px] mr-2">play_arrow</span>
+<span class="truncate">Run Simulation</span>
+</button>
+<button class="flex size-9 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-border-dark hover:bg-[#324467] transition-colors text-white">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<button class="flex size-9 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-border-dark hover:bg-[#324467] transition-colors text-white">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 border border-border-dark" data-alt="User profile avatar gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDeaL7th7E_EznqRuy-BWChBwR1P_MOGoJRghfwpPqjw2gWChTiF0vvvKAVGQwmEZ10RaoOX7S7SX2FmGmAHGwSvKmAPDjx53_9QsEnSvkyfLBE8au3nQOexCpAUTDJF311jRdxF3JWBwxC5ZAbI8A7e1DNKyXBxaDMx2iHAEROh9bVHOQTXyV16tRiYCxWdQF3kAV8Omv4R3JGmCBmsgcBSDtA9GpTsktaDXUAIoDc8tWsymUuNb2AdqqM4NDRSEoki6-Utz2uQrz1");'></div>
+</div>
+</header>
+<!-- Main Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- LEFT PANEL: Local Agents -->
+<aside class="w-80 flex flex-col border-r border-border-dark bg-[#0e131d]">
+<div class="p-4 border-b border-border-dark flex justify-between items-center">
+<h3 class="text-sm font-bold uppercase tracking-wider text-text-secondary">Local Agents</h3>
+<button class="text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">add_circle</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto p-3 space-y-3">
+<!-- Agent Card 1 -->
+<div class="bg-border-dark/30 rounded-lg p-3 border border-border-dark hover:border-primary/50 cursor-pointer group transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-green-400">smart_toy</span>
+<span class="font-semibold text-sm">ChessMaster_v4</span>
+</div>
+<span class="material-symbols-outlined text-text-secondary opacity-0 group-hover:opacity-100 text-sm">more_vert</span>
+</div>
+<p class="text-xs text-text-secondary mb-3">Minimax algorithm with alpha-beta pruning.</p>
+<div class="flex gap-2">
+<span class="text-[10px] bg-border-dark px-1.5 py-0.5 rounded text-text-secondary">Logic</span>
+<span class="text-[10px] bg-border-dark px-1.5 py-0.5 rounded text-text-secondary">Strategy</span>
+</div>
+</div>
+<!-- Agent Card 2 (Active) -->
+<div class="bg-primary/10 rounded-lg p-3 border border-primary cursor-pointer group transition-all relative">
+<div class="absolute right-0 top-0 size-2 bg-primary rounded-bl-lg"></div>
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-400">query_stats</span>
+<span class="font-semibold text-sm text-white">MarketTrader_Alpha</span>
+</div>
+<span class="material-symbols-outlined text-text-secondary text-sm">more_vert</span>
+</div>
+<div class="mb-3 space-y-2">
+<div class="flex flex-col gap-1">
+<label class="text-[10px] uppercase text-text-secondary font-bold">System Prompt</label>
+<input class="w-full bg-background-dark border border-border-dark rounded px-2 py-1 text-xs text-gray-300 focus:border-primary focus:outline-none" type="text" value="Act as a rational day trader..."/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="text-[10px] uppercase text-text-secondary font-bold">Risk Tolerance</label>
+<div class="h-1 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full w-2/3 bg-blue-500"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Agent Card 3 -->
+<div class="bg-border-dark/30 rounded-lg p-3 border border-border-dark hover:border-primary/50 cursor-pointer group transition-all">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-orange-400">emoji_objects</span>
+<span class="font-semibold text-sm">IdeaGenerator</span>
+</div>
+</div>
+<p class="text-xs text-text-secondary">Generates creative writing prompts based on seeds.</p>
+</div>
+</div>
+</aside>
+<!-- CENTER PANEL: Designer & Viewport -->
+<main class="flex-1 flex flex-col min-w-0 bg-background-dark relative">
+<!-- Breadcrumbs & Actions -->
+<div class="flex items-center justify-between px-6 py-3 border-b border-border-dark bg-[#141a25]">
+<div class="flex items-center gap-2 text-sm">
+<a class="text-text-secondary hover:text-white" href="#">Projects</a>
+<span class="text-text-secondary">/</span>
+<a class="text-text-secondary hover:text-white" href="#">Sim_001</a>
+<span class="text-text-secondary">/</span>
+<span class="text-white font-medium">Environment Designer</span>
+</div>
+<button class="flex items-center justify-center gap-2 rounded-lg h-7 px-3 bg-border-dark hover:bg-[#324467] text-white text-xs font-medium transition-colors">
+<span class="material-symbols-outlined text-[16px]">save</span>
+<span>Save Config</span>
+</button>
+</div>
+<!-- Split View: Top (Visual), Bottom (Code) -->
+<div class="flex-1 flex flex-col overflow-hidden">
+<!-- Visual Viewport -->
+<div class="h-[55%] relative grid-bg flex items-center justify-center group overflow-hidden">
+<div class="absolute top-4 right-4 flex gap-2">
+<button class="size-8 bg-background-dark border border-border-dark rounded flex items-center justify-center hover:text-white text-text-secondary shadow-lg">
+<span class="material-symbols-outlined text-lg">zoom_in</span>
+</button>
+<button class="size-8 bg-background-dark border border-border-dark rounded flex items-center justify-center hover:text-white text-text-secondary shadow-lg">
+<span class="material-symbols-outlined text-lg">3d_rotation</span>
+</button>
+</div>
+<!-- Abstract Visualization of Agents -->
+<div class="relative w-[400px] h-[300px] border-2 border-dashed border-border-dark rounded-xl flex items-center justify-center bg-background-dark/50 backdrop-blur-sm">
+<span class="absolute -top-3 left-4 bg-background-dark px-2 text-xs text-text-secondary font-mono">Boundaries: 1024x768</span>
+<!-- Agent Node 1 -->
+<div class="absolute top-10 left-10 flex flex-col items-center gap-1 animate-pulse">
+<div class="size-10 bg-blue-500/20 rounded-full border border-blue-500 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+<span class="material-symbols-outlined text-blue-400">query_stats</span>
+</div>
+<span class="text-[10px] bg-background-dark px-1 rounded text-white">Trader</span>
+</div>
+<!-- Agent Node 2 -->
+<div class="absolute bottom-20 right-20 flex flex-col items-center gap-1">
+<div class="size-10 bg-green-500/20 rounded-full border border-green-500 flex items-center justify-center">
+<span class="material-symbols-outlined text-green-400">smart_toy</span>
+</div>
+<span class="text-[10px] bg-background-dark px-1 rounded text-white">Bot_v4</span>
+</div>
+<!-- Connection Line -->
+<svg class="absolute inset-0 size-full pointer-events-none">
+<line stroke="#232f48" stroke-dasharray="5,5" stroke-width="2" x1="15%" x2="75%" y1="20%" y2="70%"></line>
+</svg>
+<!-- Empty State Text if needed -->
+<div class="text-text-secondary text-sm font-medium mt-32 text-center pointer-events-none select-none">
+                            Render Preview
+                        </div>
+</div>
+</div>
+<!-- Code Editor Panel -->
+<div class="flex-1 bg-[#0d121c] border-t border-border-dark flex flex-col min-h-0">
+<div class="flex items-center justify-between px-4 py-2 bg-[#141a25] border-b border-border-dark">
+<div class="flex gap-4">
+<button class="text-xs font-medium text-white border-b-2 border-primary pb-2 -mb-2.5">env_config.json</button>
+<button class="text-xs font-medium text-text-secondary hover:text-white pb-2 -mb-2.5 transition-colors">agents_manifest.yaml</button>
+</div>
+<span class="text-[10px] text-green-500 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+                            Valid Schema
+                        </span>
+</div>
+<div class="flex-1 relative">
+<textarea class="absolute inset-0 w-full h-full bg-[#0d121c] text-sm font-mono text-gray-300 p-4 resize-none focus:outline-none leading-relaxed" spellcheck="false">{
+  "environment": {
+    "type": "market_simulation",
+    "tick_rate": 1000,
+    "max_steps": 50000
+  },
+  "initial_state": {
+    "market_index": 14500.50,
+    "volatility": 0.15,
+    "open_orders": []
+  },
+  "rules": {
+    "allow_short_selling": true,
+    "transaction_fee": 0.001
+  }
+}</textarea>
+</div>
+</div>
+</div>
+</main>
+<!-- RIGHT PANEL: Universal Agent Shelf -->
+<aside class="w-72 flex flex-col border-l border-border-dark bg-[#0b0f17]">
+<div class="p-4 border-b border-border-dark">
+<h3 class="text-sm font-bold uppercase tracking-wider text-text-secondary mb-1">Universal Shelf</h3>
+<p class="text-[10px] text-text-secondary">Drag global agents to stage</p>
+</div>
+<div class="flex-1 overflow-y-auto p-4">
+<div class="grid grid-cols-2 gap-3">
+<!-- Shelf Item 1 -->
+<div class="flex flex-col items-center justify-center gap-2 p-3 bg-border-dark/20 rounded-lg border border-border-dark hover:bg-border-dark hover:border-text-secondary/50 cursor-grab active:cursor-grabbing transition-all text-center group">
+<div class="size-10 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">search</span>
+</div>
+<span class="text-xs font-medium text-gray-300">Web Searcher</span>
+</div>
+<!-- Shelf Item 2 -->
+<div class="flex flex-col items-center justify-center gap-2 p-3 bg-border-dark/20 rounded-lg border border-border-dark hover:bg-border-dark hover:border-text-secondary/50 cursor-grab active:cursor-grabbing transition-all text-center group">
+<div class="size-10 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">fact_check</span>
+</div>
+<span class="text-xs font-medium text-gray-300">Fact Checker</span>
+</div>
+<!-- Shelf Item 3 -->
+<div class="flex flex-col items-center justify-center gap-2 p-3 bg-border-dark/20 rounded-lg border border-border-dark hover:bg-border-dark hover:border-text-secondary/50 cursor-grab active:cursor-grabbing transition-all text-center group">
+<div class="size-10 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">calculate</span>
+</div>
+<span class="text-xs font-medium text-gray-300">Math Solver</span>
+</div>
+<!-- Shelf Item 4 -->
+<div class="flex flex-col items-center justify-center gap-2 p-3 bg-border-dark/20 rounded-lg border border-border-dark hover:bg-border-dark hover:border-text-secondary/50 cursor-grab active:cursor-grabbing transition-all text-center group">
+<div class="size-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">database</span>
+</div>
+<span class="text-xs font-medium text-gray-300">SQL Connector</span>
+</div>
+<!-- Shelf Item 5 -->
+<div class="flex flex-col items-center justify-center gap-2 p-3 bg-border-dark/20 rounded-lg border border-border-dark hover:bg-border-dark hover:border-text-secondary/50 cursor-grab active:cursor-grabbing transition-all text-center group">
+<div class="size-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<span class="text-xs font-medium text-gray-300">Python Exec</span>
+</div>
+<!-- Shelf Item 6 -->
+<div class="flex flex-col items-center justify-center gap-2 p-3 bg-border-dark/20 rounded-lg border border-border-dark hover:bg-border-dark hover:border-text-secondary/50 cursor-grab active:cursor-grabbing transition-all text-center group">
+<div class="size-10 rounded-full bg-gray-500/20 text-gray-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<span class="text-xs font-medium text-gray-300">Scheduler</span>
+</div>
+</div>
+<div class="mt-6">
+<h4 class="text-xs font-bold text-text-secondary mb-3 pl-1">PRE-CONFIGURED TEMPLATES</h4>
+<div class="space-y-2">
+<button class="w-full text-left p-2 rounded hover:bg-border-dark text-xs text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">view_agenda</span>
+                            Research Team (3 Agents)
+                        </button>
+<button class="w-full text-left p-2 rounded hover:bg-border-dark text-xs text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm">view_agenda</span>
+                            Customer Support Loop
+                        </button>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</body></html>

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mission Control: Task Scheduler</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#1a2230",
+                        "surface-light": "#ffffff",
+                        "border-dark": "#232f48",
+                        "border-light": "#e5e7eb",
+                        "text-secondary-dark": "#92a4c9",
+                        "text-secondary-light": "#6b7280",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>/* Custom scrollbar for technical look */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px
+    }
+::-webkit-scrollbar-track {
+    background: transparent
+    }
+::-webkit-scrollbar-thumb {
+    background: #324467;
+    border-radius: 4px
+    }
+.radio-dot-bg:checked {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDlhTZRi899fZKECf1Mz4ZBx9DLFTnDSAFmRhLwNPRXQvbS_zOiwvbAdaTsIGRdn3YuRJ65GmedRgLvx1R0vTHn5M56YrPBQXtP7ipsPW4MTjWcYJ3ftMIYk8og5bqbolqsAXyZtVkryOO-PDw6Kfb4JJqcPzwZgxSZzqp2gNCRQvK5L6cKwPa_Xn76aLFMkUHmOE6pzAtMvGnTmdpUhZDloO21qQEeE1UJWXbHFC6MAmB2cH7DSsbCMTvfshkmPB8ckrGZVvHz3iu7)
+    }</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-surface-light dark:bg-[#111722] px-6 py-3 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-slate-900 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined text-[24px]">rocket_launch</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Mission Control</h2>
+</div>
+<nav class="hidden md:flex items-center gap-1">
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-white px-3 py-2 text-sm font-medium rounded-lg transition-colors" href="#">Dashboard</a>
+<a class="text-white bg-primary/10 dark:bg-border-dark px-3 py-2 text-sm font-medium rounded-lg" href="#">Task Scheduler</a>
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-white px-3 py-2 text-sm font-medium rounded-lg transition-colors" href="#">System Health</a>
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary dark:hover:text-white px-3 py-2 text-sm font-medium rounded-lg transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<label class="hidden lg:flex flex-col min-w-40 h-9 max-w-64 relative group">
+<div class="flex w-full items-center rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-surface-dark overflow-hidden focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all">
+<div class="flex items-center justify-center pl-3 text-text-secondary-light dark:text-text-secondary-dark">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none text-sm px-2 py-1.5 text-slate-900 dark:text-white focus:ring-0 placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark" placeholder="Search tasks..."/>
+</div>
+</label>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-border-light dark:ring-border-dark" data-alt="User avatar profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmkcq_z5Lcpsog7j8rpu7XEoN5KVAGLRqIHAYq3cyw53N7TaoORurPkHwfA14r7kIYg3PmENI1SRhHkxmiCGCJD1T0zJcStnHDl_i03FequKcIXXRMrgzTu5p6oew6F4D3fjcNfeuoTMO20Yn2fbocv9VUKpgKKyIgiOjZu85G-lC_T12hAxV_4zech9mc40ATR94LPbg-ljJbGai-988cyZq6Uz5GsiohJM1Ot-Jm8OtuDuzKETrJ7CJi_F0_hinLKJaNmYN02Ec9");'></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Side Navigation -->
+<aside class="w-64 flex-none hidden md:flex flex-col border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-[#111722] p-4 gap-6">
+<div class="flex flex-col gap-1">
+<h3 class="px-3 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-2">Configuration</h3>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary text-white shadow-sm shadow-primary/20" href="#">
+<span class="material-symbols-outlined text-[20px] fill-current">schedule</span>
+<span class="text-sm font-medium">Scheduler</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-secondary-dark hover:bg-slate-100 dark:hover:bg-border-dark transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+<span class="text-sm font-medium">Synergies</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-secondary-dark hover:bg-slate-100 dark:hover:bg-border-dark transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">terminal</span>
+<span class="text-sm font-medium">Logs</span>
+</a>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="px-3 text-xs font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-2">Monitoring</h3>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-secondary-dark hover:bg-slate-100 dark:hover:bg-border-dark transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+<span class="text-sm font-medium">Metrics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-secondary-dark hover:bg-slate-100 dark:hover:bg-border-dark transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="text-sm font-medium">Alerts</span>
+</a>
+</div>
+<div class="mt-auto p-4 rounded-xl bg-gradient-to-br from-surface-dark to-black dark:from-[#1a2230] dark:to-[#0f131a] border border-border-dark">
+<div class="flex items-center gap-2 mb-2 text-white">
+<span class="material-symbols-outlined text-green-400">check_circle</span>
+<span class="text-sm font-medium">System Optimal</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-1.5 mb-2">
+<div class="bg-green-400 h-1.5 rounded-full w-[94%]"></div>
+</div>
+<p class="text-xs text-text-secondary-dark">Uptime: 99.9%</p>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 md:p-8">
+<div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-end gap-4 border-b border-border-light dark:border-border-dark pb-6">
+<div class="flex flex-col gap-1">
+<h1 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight">Task Orchestration</h1>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-base">Visualize timeline, manage triggers, and monitor real-time execution.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 h-10 px-4 rounded-lg border border-border-light dark:border-border-dark text-slate-700 dark:text-white font-medium text-sm hover:bg-slate-100 dark:hover:bg-border-dark transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                            Filter View
+                        </button>
+<button class="flex items-center gap-2 h-10 px-4 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                            New Task
+                        </button>
+</div>
+</div>
+<!-- Visualization: Gantt Chart -->
+<section class="flex flex-col rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden shadow-sm">
+<div class="flex items-center justify-between px-6 py-4 border-b border-border-light dark:border-border-dark">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">calendar_view_week</span>
+                            Schedule Timeline
+                        </h3>
+<div class="flex bg-slate-100 dark:bg-black/20 rounded-lg p-1">
+<button class="px-3 py-1 rounded bg-white dark:bg-border-dark text-xs font-bold shadow-sm">24H</button>
+<button class="px-3 py-1 rounded text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium hover:text-primary">Week</button>
+<button class="px-3 py-1 rounded text-text-secondary-light dark:text-text-secondary-dark text-xs font-medium hover:text-primary">Month</button>
+</div>
+</div>
+<div class="relative w-full overflow-x-auto p-6 min-h-[240px]">
+<!-- Time Axis -->
+<div class="flex justify-between text-xs text-text-secondary-light dark:text-text-secondary-dark mb-4 pl-32 border-b border-border-light dark:border-border-dark pb-2 font-mono">
+<span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>24:00</span>
+</div>
+<!-- Grid Background -->
+<div class="absolute inset-0 left-[14rem] right-6 top-[5.5rem] bottom-6 flex justify-between pointer-events-none opacity-10">
+<div class="w-px bg-current h-full"></div>
+<div class="w-px bg-current h-full"></div>
+<div class="w-px bg-current h-full"></div>
+<div class="w-px bg-current h-full"></div>
+<div class="w-px bg-current h-full"></div>
+<div class="w-px bg-current h-full"></div>
+<div class="w-px bg-current h-full"></div>
+</div>
+<!-- Rows -->
+<div class="flex flex-col gap-3 relative z-10">
+<!-- Row 1 -->
+<div class="flex items-center group">
+<div class="w-32 flex-none text-sm font-medium text-slate-700 dark:text-slate-300 truncate pr-4">Daily Maintenance</div>
+<div class="flex-1 h-8 bg-slate-100 dark:bg-black/20 rounded-md relative overflow-hidden">
+<div class="absolute left-[8%] width-[16%] h-full top-0 w-[15%] bg-emerald-500/20 border border-emerald-500/50 rounded flex items-center px-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-2"></div>
+<span class="text-xs text-emerald-700 dark:text-emerald-300 font-medium truncate">Running</span>
+</div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="flex items-center group">
+<div class="w-32 flex-none text-sm font-medium text-slate-700 dark:text-slate-300 truncate pr-4">News Simulation</div>
+<div class="flex-1 h-8 bg-slate-100 dark:bg-black/20 rounded-md relative">
+<div class="absolute left-[35%] w-[25%] h-full top-0 bg-primary/20 border border-primary/50 rounded flex items-center px-2 hover:bg-primary/30 cursor-pointer transition-colors">
+<span class="text-xs text-primary dark:text-blue-200 font-medium truncate">08:30 - 14:30</span>
+</div>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="flex items-center group">
+<div class="w-32 flex-none text-sm font-medium text-slate-700 dark:text-slate-300 truncate pr-4">Data Ingestion</div>
+<div class="flex-1 h-8 bg-slate-100 dark:bg-black/20 rounded-md relative">
+<div class="absolute left-[65%] w-[10%] h-full top-0 bg-amber-500/20 border border-amber-500/50 rounded flex items-center px-2">
+<span class="material-symbols-outlined text-[14px] text-amber-500 mr-1">warning</span>
+<span class="text-xs text-amber-700 dark:text-amber-300 font-medium truncate">Retry</span>
+</div>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="flex items-center group">
+<div class="w-32 flex-none text-sm font-medium text-slate-700 dark:text-slate-300 truncate pr-4">Backup Protocol</div>
+<div class="flex-1 h-8 bg-slate-100 dark:bg-black/20 rounded-md relative">
+<div class="absolute left-[90%] w-[5%] h-full top-0 bg-purple-500/20 border border-purple-500/50 rounded flex items-center px-2 justify-center">
+<span class="text-xs text-purple-700 dark:text-purple-300 font-medium">23:00</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Left: Trigger Config -->
+<section class="flex flex-col gap-4">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight px-1">Trigger Configuration</h3>
+<div class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-6">
+<div class="flex flex-col gap-3">
+<label class="flex items-center gap-4 rounded-lg border border-solid border-border-light dark:border-border-dark p-4 bg-background-light dark:bg-black/20 hover:border-primary/50 cursor-pointer transition-colors">
+<input checked="" class="radio-dot-bg h-5 w-5 border-2 border-slate-400 dark:border-slate-600 bg-transparent text-transparent checked:border-primary focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="trigger-type" type="radio"/>
+<div class="flex grow flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">update</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Cron Schedule</p>
+</div>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal leading-normal mt-0.5 ml-7">Execute based on time intervals</p>
+</div>
+</label>
+<label class="flex items-center gap-4 rounded-lg border border-solid border-border-light dark:border-border-dark p-4 bg-background-light dark:bg-black/20 hover:border-primary/50 cursor-pointer transition-colors">
+<input class="radio-dot-bg h-5 w-5 border-2 border-slate-400 dark:border-slate-600 bg-transparent text-transparent checked:border-primary focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="trigger-type" type="radio"/>
+<div class="flex grow flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">bolt</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Event-Based</p>
+</div>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal leading-normal mt-0.5 ml-7">Trigger on system events or webhooks</p>
+</div>
+</label>
+<label class="flex items-center gap-4 rounded-lg border border-solid border-border-light dark:border-border-dark p-4 bg-background-light dark:bg-black/20 hover:border-primary/50 cursor-pointer transition-colors">
+<input class="radio-dot-bg h-5 w-5 border-2 border-slate-400 dark:border-slate-600 bg-transparent text-transparent checked:border-primary focus:outline-none focus:ring-0 focus:ring-offset-0 checked:focus:border-primary" name="trigger-type" type="radio"/>
+<div class="flex grow flex-col">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400">touch_app</span>
+<p class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Manual Trigger</p>
+</div>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-xs font-normal leading-normal mt-0.5 ml-7">User-initiated execution only</p>
+</div>
+</label>
+</div>
+<div class="mt-6 pt-6 border-t border-border-light dark:border-border-dark">
+<label class="block text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark mb-2">CRON EXPRESSION</label>
+<div class="flex gap-2">
+<input class="flex-1 bg-background-light dark:bg-black/20 border border-border-light dark:border-border-dark rounded-lg px-4 py-2 text-sm font-mono text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="text" value="0 0/5 * * * ?"/>
+<button class="bg-primary/10 hover:bg-primary/20 text-primary rounded-lg px-4 text-sm font-medium transition-colors">Save</button>
+</div>
+<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-2">Next run: Today at 14:05:00</p>
+</div>
+</div>
+</section>
+<!-- Right: Cross-System Synergies -->
+<section class="flex flex-col gap-4">
+<div class="flex justify-between items-center px-1">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight">Cross-System Synergies</h3>
+<button class="text-primary text-sm font-medium hover:underline">View Map</button>
+</div>
+<div class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-0 overflow-hidden flex-1 flex flex-col">
+<!-- Synergy Item 1 -->
+<div class="p-4 border-b border-border-light dark:border-border-dark hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-purple-400/10 px-2 py-1 text-xs font-medium text-purple-400 ring-1 ring-inset ring-purple-400/30">Active</span>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Latency: 12ms</span>
+</div>
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark group-hover:text-white transition-colors">more_horiz</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-indigo-400">psychology</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Brain Core</p>
+<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Input Source</p>
+</div>
+</div>
+<div class="flex-1 flex items-center justify-center relative">
+<div class="h-0.5 w-full bg-border-light dark:border-border-dark relative">
+<div class="absolute inset-0 bg-primary w-1/2 animate-pulse"></div>
+</div>
+<div class="bg-surface-light dark:bg-surface-dark absolute p-1 rounded-full border border-border-light dark:border-border-dark">
+<span class="material-symbols-outlined text-[16px] text-text-secondary-light dark:text-text-secondary-dark">arrow_forward</span>
+</div>
+</div>
+<div class="flex items-center gap-3 text-right">
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Playground</p>
+<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Simulation</p>
+</div>
+<div class="size-10 rounded-lg bg-pink-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-pink-400">stadia_controller</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Synergy Item 2 -->
+<div class="p-4 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors group">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center rounded-md bg-slate-400/10 px-2 py-1 text-xs font-medium text-slate-500 dark:text-slate-400 ring-1 ring-inset ring-slate-400/30">Idle</span>
+<span class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Last sync: 2h ago</span>
+</div>
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark group-hover:text-white transition-colors">more_horiz</span>
+</div>
+<div class="flex items-center gap-4 opacity-75">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-400">database</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Archive</p>
+<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Storage</p>
+</div>
+</div>
+<div class="flex-1 flex items-center justify-center relative">
+<div class="h-0.5 w-full bg-border-light dark:border-border-dark border-dashed border-b-2 border-t-0 bg-transparent"></div>
+<div class="bg-surface-light dark:bg-surface-dark absolute p-1 rounded-full border border-border-light dark:border-border-dark">
+<span class="material-symbols-outlined text-[16px] text-text-secondary-light dark:text-text-secondary-dark">pause</span>
+</div>
+</div>
+<div class="flex items-center gap-3 text-right">
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Reporting</p>
+<p class="text-xs text-text-secondary-light dark:text-text-secondary-dark">Output</p>
+</div>
+<div class="size-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-400">analytics</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom: Real-time Logs -->
+<section class="flex flex-col gap-4 pb-8">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold leading-tight px-1">Real-time Execution Log</h3>
+<div class="rounded-xl border border-border-light dark:border-border-dark bg-[#0f131a] p-4 font-mono text-sm overflow-hidden shadow-inner">
+<div class="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-2">
+<div class="flex gap-4 border-b border-white/5 pb-2">
+<span class="text-slate-500 w-24 flex-none">14:02:45</span>
+<span class="text-emerald-400 w-16 flex-none font-bold">INFO</span>
+<span class="text-slate-300 flex-1">Cron Job [Daily Maintenance] started successfully.</span>
+<span class="text-slate-600">System</span>
+</div>
+<div class="flex gap-4 border-b border-white/5 pb-2">
+<span class="text-slate-500 w-24 flex-none">14:02:46</span>
+<span class="text-emerald-400 w-16 flex-none font-bold">INFO</span>
+<span class="text-slate-300 flex-1">Cache cleared for node-region-eu-west.</span>
+<span class="text-slate-600">Worker-04</span>
+</div>
+<div class="flex gap-4 border-b border-white/5 pb-2">
+<span class="text-slate-500 w-24 flex-none">14:03:12</span>
+<span class="text-amber-400 w-16 flex-none font-bold">WARN</span>
+<span class="text-slate-300 flex-1">High latency detected on [Brain Core -&gt; Playground] connection (145ms).</span>
+<span class="text-slate-600">Network</span>
+</div>
+<div class="flex gap-4 border-b border-white/5 pb-2">
+<span class="text-slate-500 w-24 flex-none">14:03:15</span>
+<span class="text-emerald-400 w-16 flex-none font-bold">INFO</span>
+<span class="text-slate-300 flex-1">Auto-scaling group resized to 5 instances.</span>
+<span class="text-slate-600">Orchestrator</span>
+</div>
+<div class="flex gap-4 pb-2 opacity-50">
+<span class="text-slate-500 w-24 flex-none">14:04:00</span>
+<span class="text-blue-400 w-16 flex-none font-bold">DEBUG</span>
+<span class="text-slate-300 flex-1">Polling simulation status...</span>
+<span class="text-slate-600">Sim-Engine</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>System UI Kit: Advanced Flow Visuals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1152d4",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101622",
+            "card-dark": "#192233",
+            "border-dark": "#324467",
+            "text-secondary": "#92a4c9",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation / Header -->
+<header class="border-b border-border-dark bg-card-dark px-8 py-4 flex items-center gap-4">
+<div class="p-2 bg-primary/20 rounded-lg">
+<span class="material-symbols-outlined text-primary">hub</span>
+</div>
+<div>
+<h1 class="text-white text-lg font-bold leading-tight">System UI Kit</h1>
+<p class="text-text-secondary text-sm">Advanced Flow Visuals &amp; Data Inspection</p>
+</div>
+</header>
+<main class="flex-1 px-4 md:px-12 py-8 flex justify-center">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-12">
+<!-- Section 1: Universal Flow Node -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-white text-xl font-bold">Flow Node Component</h2>
+<span class="text-text-secondary text-sm bg-card-dark px-3 py-1 rounded-full border border-border-dark">v2.4.0</span>
+</div>
+<div class="relative group">
+<!-- Input Port Indicator -->
+<div class="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-background-dark z-10 hidden md:block"></div>
+<!-- Main Node Card -->
+<div class="flex flex-col md:flex-row items-stretch justify-between gap-6 rounded-xl bg-card-dark p-6 shadow-lg border border-border-dark relative overflow-hidden">
+<!-- Status Indicator Stripe -->
+<div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+<div class="flex flex-[2] flex-col justify-between gap-6 z-10">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="bg-emerald-500/20 text-emerald-400 text-xs font-medium px-2 py-0.5 rounded uppercase tracking-wide">Running</span>
+<span class="text-text-secondary text-xs">Node ID: #8821X</span>
+</div>
+<h3 class="text-white text-2xl font-bold leading-tight">Data Processor Node</h3>
+<p class="text-text-secondary text-sm leading-normal max-w-md">
+                                        Transforms raw JSON input streams into normalized vector embeddings for the downstream neural network models.
+                                    </p>
+</div>
+<div class="flex gap-3 mt-2">
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary hover:bg-primary/90 text-white text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">settings</span>
+                                        Configure
+                                    </button>
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-background-dark hover:bg-background-dark/80 text-white border border-border-dark text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+                                        View Logs
+                                    </button>
+</div>
+</div>
+<!-- Visual/Media Slot -->
+<div class="w-full md:w-64 bg-background-dark rounded-lg flex items-center justify-center relative overflow-hidden border border-border-dark bg-cover bg-center" data-alt="Abstract server data visualization with glowing blue nodes" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDUOwXgOmDFAU0RwM6k2JkGjQz9kWsZLVXzSprWH8eF2jIgHcrThh93s3N_fstMKx76NtKGx2nw_b44mCzDkexlArnVlsjlyjHVRbM364X1Zt9hXaGTo2zs_NWB_qBGXET0X1L5MvtZeOKGtcaDsbYg3DdK8p5H3fDx6FMZJ9-AWYSf-q2tdcqBfYijdManxpzGVJ2eIT1pP4COuOB97FggwhOp43q5FwXFCKvRkQAYCULjCmCcJXNKn_1nziMaDMyRh-zT9uMspCun");'>
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+</div>
+<!-- Output Port Indicator -->
+<div class="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-background-dark z-10 hidden md:block"></div>
+</div>
+</section>
+<!-- Section 2: Oracle Call Chain & Timeline -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+<!-- Oracle Call Chain -->
+<section class="flex flex-col h-full">
+<h2 class="text-white text-xl font-bold mb-4">Oracle Call Chain</h2>
+<div class="bg-card-dark rounded-xl p-6 border border-border-dark flex-1 overflow-x-auto">
+<!-- Horizontal Chain Visualizer -->
+<div class="flex items-start min-w-[600px] gap-2">
+<!-- Step 1 -->
+<div class="flex-1 flex flex-col gap-3 relative group">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/30">
+<span class="material-symbols-outlined text-[18px]">input</span>
+</div>
+<span class="text-xs font-semibold text-blue-400 uppercase">Input</span>
+<!-- Connector Line -->
+<div class="h-[2px] bg-border-dark flex-1 ml-2 relative top-[1px]"></div>
+<span class="material-symbols-outlined text-border-dark -ml-2 text-[16px]">arrow_right</span>
+</div>
+<div class="bg-background-dark p-3 rounded border border-border-dark">
+<p class="text-white text-sm font-medium">User Query</p>
+<p class="text-text-secondary text-xs mt-1">Receive raw string</p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex-1 flex flex-col gap-3 relative group">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 border border-purple-500/30">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+</div>
+<span class="text-xs font-semibold text-purple-400 uppercase">Reasoning</span>
+<!-- Connector Line -->
+<div class="h-[2px] bg-border-dark flex-1 ml-2 relative top-[1px]"></div>
+<span class="material-symbols-outlined text-border-dark -ml-2 text-[16px]">arrow_right</span>
+</div>
+<div class="bg-background-dark p-3 rounded border border-border-dark">
+<p class="text-white text-sm font-medium">Chain of Thought</p>
+<p class="text-text-secondary text-xs mt-1">Step-by-step logic</p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="flex-1 flex flex-col gap-3 relative group">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/30">
+<span class="material-symbols-outlined text-[18px]">output</span>
+</div>
+<span class="text-xs font-semibold text-emerald-400 uppercase">Output</span>
+</div>
+<div class="bg-background-dark p-3 rounded border border-border-dark">
+<p class="text-white text-sm font-medium">Synthesis</p>
+<p class="text-text-secondary text-xs mt-1">Final response gen</p>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-border-dark flex justify-between items-center text-sm text-text-secondary">
+<span>Total Latency: <span class="text-white">420ms</span></span>
+<span>Tokens: <span class="text-white">1,204</span></span>
+</div>
+</div>
+</section>
+<!-- Step Timeline -->
+<section class="flex flex-col h-full">
+<h2 class="text-white text-xl font-bold mb-4">Execution Step Timeline</h2>
+<div class="bg-card-dark rounded-xl p-6 border border-border-dark flex-1">
+<div class="grid grid-cols-[40px_1fr] gap-x-3">
+<!-- Item 1 -->
+<div class="flex flex-col items-center gap-1 pt-1">
+<span class="material-symbols-outlined text-primary text-[24px]">play_circle</span>
+<div class="w-[2px] bg-border-dark h-full min-h-[32px]"></div>
+</div>
+<div class="flex flex-1 flex-col pb-6">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-medium">Initiate Process</p>
+<span class="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded">Success</span>
+</div>
+<p class="text-text-secondary text-sm mt-1">10:00:01 AM</p>
+</div>
+<!-- Item 2 -->
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-text-secondary text-[24px]">database</span>
+<div class="w-[2px] bg-border-dark h-full min-h-[32px]"></div>
+</div>
+<div class="flex flex-1 flex-col pb-6">
+<p class="text-white text-base font-medium">Load Data Models</p>
+<p class="text-text-secondary text-sm mt-1">10:00:05 AM</p>
+</div>
+<!-- Item 3 -->
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-emerald-400 text-[24px]">memory</span> <!-- Changed to memory/cpu icon -->
+<div class="w-[2px] bg-border-dark h-full min-h-[32px]"></div>
+</div>
+<div class="flex flex-1 flex-col pb-6">
+<div class="flex justify-between items-start">
+<p class="text-white text-base font-medium">Execute Logic Block</p>
+<span class="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded">Active</span>
+</div>
+<p class="text-text-secondary text-sm mt-1">10:01:20 AM</p>
+</div>
+<!-- Item 4 -->
+<div class="flex flex-col items-center gap-1 pb-1">
+<span class="material-symbols-outlined text-text-secondary/50 text-[24px]">check_circle</span>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-text-secondary text-base font-medium">Finalize Output</p>
+<p class="text-text-secondary/50 text-sm mt-1">Pending</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Section 3: Data Inspection & Terminal -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Left: Data Preview -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-white text-xl font-bold">Data Preview</h2>
+<div class="flex gap-2">
+<button class="bg-card-dark hover:bg-border-dark text-white p-2 rounded transition-colors" title="Copy JSON">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+<button class="bg-card-dark hover:bg-border-dark text-white p-2 rounded transition-colors" title="Expand">
+<span class="material-symbols-outlined text-[18px]">open_in_full</span>
+</button>
+</div>
+</div>
+<div class="rounded-xl overflow-hidden bg-card-dark border border-border-dark shadow-sm">
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 bg-background-dark/50">
+<div class="flex flex-col gap-1 border-b border-r border-border-dark p-4">
+<p class="text-text-secondary text-xs uppercase tracking-wider">Format</p>
+<p class="text-white text-sm font-medium">JSON Object</p>
+</div>
+<div class="flex flex-col gap-1 border-b border-border-dark p-4">
+<p class="text-text-secondary text-xs uppercase tracking-wider">Size</p>
+<p class="text-white text-sm font-medium">12.4 KB</p>
+</div>
+<div class="flex flex-col gap-1 border-r border-border-dark p-4">
+<p class="text-text-secondary text-xs uppercase tracking-wider">Encoding</p>
+<p class="text-white text-sm font-medium">UTF-8</p>
+</div>
+<div class="flex flex-col gap-1 p-4">
+<p class="text-text-secondary text-xs uppercase tracking-wider">Schema</p>
+<p class="text-white text-sm font-medium">v1.2 (Strict)</p>
+</div>
+</div>
+<!-- JSON Content -->
+<div class="p-0 border-t border-border-dark relative">
+<div class="absolute top-4 right-4 z-10">
+<span class="bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded font-mono">parsed</span>
+</div>
+<div class="bg-[#0d1117] p-4 overflow-x-auto font-mono text-sm leading-relaxed text-gray-300">
+<pre><code><span class="text-purple-400">{</span>
+  <span class="text-blue-400">"id"</span>: <span class="text-green-400">9921</span>,
+  <span class="text-blue-400">"status"</span>: <span class="text-orange-400">"processed"</span>,
+  <span class="text-blue-400">"timestamp"</span>: <span class="text-orange-400">"2023-10-27T10:01:20Z"</span>,
+  <span class="text-blue-400">"metrics"</span>: <span class="text-purple-400">{</span>
+    <span class="text-blue-400">"latency"</span>: <span class="text-green-400">120</span>,
+    <span class="text-blue-400">"confidence"</span>: <span class="text-green-400">0.985</span>
+  <span class="text-purple-400">}</span>,
+  <span class="text-blue-400">"tags"</span>: <span class="text-purple-400">[</span>
+    <span class="text-orange-400">"ai-generated"</span>,
+    <span class="text-orange-400">"verified"</span>
+  <span class="text-purple-400">]</span>
+<span class="text-purple-400">}</span></code></pre>
+</div>
+</div>
+</div>
+</section>
+<!-- Right: Terminal Console -->
+<section class="flex flex-col h-full">
+<h2 class="text-white text-xl font-bold mb-4">Terminal Console</h2>
+<div class="bg-[#0d1117] rounded-xl border border-border-dark flex flex-col h-full min-h-[300px] overflow-hidden shadow-lg">
+<!-- Terminal Header -->
+<div class="bg-card-dark border-b border-border-dark px-4 py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+<div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+<div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+</div>
+<div class="text-xs text-text-secondary font-mono">node-worker-01 ~ bash</div>
+</div>
+<!-- Terminal Body -->
+<div class="p-4 font-mono text-sm overflow-y-auto flex-1 text-gray-400">
+<div class="mb-2">
+<span class="text-green-500">➜</span> <span class="text-blue-400">~</span> initialize_sequence --verbose
+                                </div>
+<div class="mb-1 opacity-80">[10:00:01] <span class="text-blue-300">INFO</span>  Initializing worker pool...</div>
+<div class="mb-1 opacity-80">[10:00:02] <span class="text-blue-300">INFO</span>  Loaded 4 core modules.</div>
+<div class="mb-1 opacity-80">[10:00:05] <span class="text-yellow-300">WARN</span>  Cache miss for key 'user_prefs_v2'. Retrying...</div>
+<div class="mb-1 opacity-80">[10:00:06] <span class="text-blue-300">INFO</span>  Data fetch completed (145ms).</div>
+<div class="mb-1 opacity-80">[10:01:20] <span class="text-blue-300">INFO</span>  Processing logic block #442.</div>
+<div class="mb-2 opacity-80">[10:01:21] <span class="text-green-400">SUCCESS</span> Output generated successfully.</div>
+<div class="mt-4 flex items-center gap-2">
+<span class="text-green-500">➜</span> <span class="text-blue-400">~</span>
+<span class="animate-pulse w-2 h-4 bg-gray-400 block"></span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

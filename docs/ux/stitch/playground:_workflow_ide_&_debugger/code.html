@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Playground: Workflow IDE &amp; Debugger</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1152d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-dark": "#1a2333",
+                        "border-dark": "#232f48",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for code editor feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111722;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #324467;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a5d82;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex shrink-0 items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-border-dark bg-white dark:bg-[#111722] px-6 py-3">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-6 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Agent Playground</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">File</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Edit</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">View</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Help</a>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-primary/90 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-[18px] mr-2">play_arrow</span>
+<span class="truncate">Run Script</span>
+</button>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-slate-200 dark:bg-border-dark hover:bg-slate-300 dark:hover:bg-[#2e3c5a] transition-colors text-slate-700 dark:text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Save</span>
+</button>
+<div class="w-px h-9 bg-slate-300 dark:bg-border-dark mx-1"></div>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-9 w-9 bg-slate-200 dark:bg-border-dark hover:bg-slate-300 dark:hover:bg-[#2e3c5a] transition-colors text-slate-700 dark:text-white">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-9 w-9 bg-slate-200 dark:bg-border-dark hover:bg-slate-300 dark:hover:bg-[#2e3c5a] transition-colors text-slate-700 dark:text-white">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Sub-header Breadcrumbs -->
+<div class="flex shrink-0 items-center justify-between border-b border-solid border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#151c2a] px-6 py-2">
+<div class="flex gap-2 items-center text-sm">
+<a class="text-slate-500 dark:text-[#92a4c9] font-medium hover:underline" href="#">Playgrounds</a>
+<span class="text-slate-400 dark:text-[#52607f] font-medium">/</span>
+<span class="text-slate-900 dark:text-white font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">article</span>
+                Workflow Alpha 1.0
+            </span>
+</div>
+<div class="flex items-center gap-3 text-xs text-slate-500 dark:text-[#92a4c9]">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500"></span> Ready</span>
+<span>Rhai v1.14</span>
+</div>
+</div>
+<!-- Main Content Area: Split View -->
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Panel: Code Editor -->
+<div class="flex flex-col w-[60%] border-r border-slate-200 dark:border-border-dark bg-[#1e1e1e] text-[#d4d4d4]">
+<!-- Editor Tabs -->
+<div class="flex items-center bg-[#252526] text-sm overflow-x-auto">
+<div class="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] text-white border-t-2 border-primary cursor-pointer">
+<span class="material-symbols-outlined text-[16px] text-yellow-400">code</span>
+                    main.rhai
+                    <span class="material-symbols-outlined text-[14px] ml-2 hover:text-white text-[#858585]">close</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 text-[#969696] hover:bg-[#2a2d2e] cursor-pointer">
+<span class="material-symbols-outlined text-[16px] text-blue-400">data_object</span>
+                    config.json
+                </div>
+</div>
+<!-- Editor Content -->
+<div class="flex flex-1 relative font-mono text-sm leading-6 p-4 overflow-y-auto">
+<!-- Line Numbers -->
+<div class="flex flex-col text-right pr-4 text-[#858585] select-none border-r border-[#404040] mr-4">
+<span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span>
+</div>
+<!-- Code Area -->
+<div class="flex-1 whitespace-pre">
+<span class="text-[#c586c0]">fn</span> <span class="text-[#dcdcaa]">process_data</span>(input) {
+    <span class="text-[#6a9955]">// Initialize agent state</span>
+<span class="text-[#569cd6]">let</span> state = <span class="text-[#4ec9b0]">Agent</span>::<span class="text-[#dcdcaa]">new</span>();
+    
+    <span class="text-[#c586c0]">if</span> input.is_empty() {
+        <span class="text-[#c586c0]">return</span> <span class="text-[#ce9178]">"Error: No Input"</span>;
+    }
+
+    <span class="text-[#6a9955]">// Execute step 1: Analysis</span>
+<span class="text-[#569cd6]">let</span> result = state.<span class="text-[#dcdcaa]">step</span>(<span class="text-[#ce9178]">"analyze"</span>, input);
+    
+    <span class="text-[#c586c0]">if</span> result.score &gt; <span class="text-[#b5cea8]">0.85</span> {
+        <span class="text-[#dcdcaa]">debug</span>(<span class="text-[#ce9178]">"High confidence detection"</span>);
+        state.<span class="text-[#dcdcaa]">step</span>(<span class="text-[#ce9178]">"notify_admin"</span>, result);
+    } <span class="text-[#c586c0]">else</span> {
+        state.<span class="text-[#dcdcaa]">step</span>(<span class="text-[#ce9178]">"retry_with_context"</span>, result);
+    }
+    
+    <span class="text-[#c586c0]">return</span> state.<span class="text-[#dcdcaa]">finalize</span>();
+}
+                </div>
+</div>
+<!-- Breakpoint Debugger Panel (Bottom of Left Split) -->
+<div class="h-[280px] flex flex-col border-t border-[#404040] bg-[#1e1e1e]">
+<div class="flex items-center justify-between px-4 py-2 bg-[#252526] border-b border-[#404040]">
+<h3 class="text-xs font-bold uppercase text-[#cccccc] flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">bug_report</span> Debugger
+                    </h3>
+<div class="flex gap-2">
+<button class="p-1 hover:bg-[#3e3e42] rounded text-[#cccccc]" title="Step Over">
+<span class="material-symbols-outlined text-[18px]">redo</span>
+</button>
+<button class="p-1 hover:bg-[#3e3e42] rounded text-[#cccccc]" title="Step Into">
+<span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+</button>
+<button class="p-1 hover:bg-[#3e3e42] rounded text-primary" title="Continue">
+<span class="material-symbols-outlined text-[18px]">play_arrow</span>
+</button>
+</div>
+</div>
+<div class="flex flex-1 overflow-hidden">
+<div class="w-1/2 border-r border-[#404040] flex flex-col">
+<div class="px-3 py-1 bg-[#2d2d2d] text-xs text-[#969696] font-medium">Variables</div>
+<div class="p-2 overflow-y-auto font-mono text-xs">
+<div class="flex justify-between py-1 hover:bg-[#2a2d2e] cursor-pointer">
+<span class="text-[#9cdcfe]">input</span>
+<span class="text-[#ce9178]">"user_query_v2"</span>
+</div>
+<div class="flex justify-between py-1 hover:bg-[#2a2d2e] cursor-pointer bg-[#37373d]">
+<span class="text-[#9cdcfe]">state.id</span>
+<span class="text-[#b5cea8]">42910</span>
+</div>
+<div class="flex justify-between py-1 hover:bg-[#2a2d2e] cursor-pointer">
+<span class="text-[#9cdcfe]">result.score</span>
+<span class="text-[#b5cea8]">0.87</span>
+</div>
+<div class="flex justify-between py-1 hover:bg-[#2a2d2e] cursor-pointer">
+<span class="text-[#9cdcfe]">step_count</span>
+<span class="text-[#b5cea8]">2</span>
+</div>
+</div>
+</div>
+<div class="w-1/2 flex flex-col">
+<div class="px-3 py-1 bg-[#2d2d2d] text-xs text-[#969696] font-medium">Call Stack</div>
+<div class="p-2 overflow-y-auto font-mono text-xs text-[#cccccc]">
+<div class="py-1 hover:bg-[#2a2d2e] cursor-pointer text-yellow-400">process_data : 12</div>
+<div class="py-1 hover:bg-[#2a2d2e] cursor-pointer opacity-70">main_handler : 45</div>
+<div class="py-1 hover:bg-[#2a2d2e] cursor-pointer opacity-50">runtime::init : 102</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Visualizer & Config -->
+<div class="flex flex-col w-[40%] bg-slate-50 dark:bg-background-dark">
+<!-- Sandbox Config Section -->
+<div class="p-6 border-b border-slate-200 dark:border-border-dark bg-white dark:bg-[#151c2a]">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#92a4c9]">Sandbox Configuration</h3>
+<button class="text-primary text-xs font-medium hover:underline">Reset Defaults</button>
+</div>
+<div class="flex flex-col gap-6">
+<!-- Slider 1 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-700 dark:text-white font-medium">CPU Limit (Cores)</span>
+<span class="text-slate-500 dark:text-[#92a4c9]">2.0</span>
+</div>
+<div class="relative h-2 w-full rounded-full bg-slate-200 dark:bg-[#324467]">
+<div class="absolute h-full w-[40%] rounded-full bg-primary"></div>
+<div class="absolute top-1/2 -translate-y-1/2 left-[40%] h-4 w-4 rounded-full border-2 border-white dark:border-[#111722] bg-primary shadow-md cursor-pointer hover:scale-110 transition-transform"></div>
+</div>
+</div>
+<!-- Slider 2 -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-700 dark:text-white font-medium">Memory Allocation (MB)</span>
+<span class="text-slate-500 dark:text-[#92a4c9]">512</span>
+</div>
+<div class="relative h-2 w-full rounded-full bg-slate-200 dark:bg-[#324467]">
+<div class="absolute h-full w-[25%] rounded-full bg-primary"></div>
+<div class="absolute top-1/2 -translate-y-1/2 left-[25%] h-4 w-4 rounded-full border-2 border-white dark:border-[#111722] bg-primary shadow-md cursor-pointer hover:scale-110 transition-transform"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Execution Tree -->
+<div class="flex flex-col flex-1 bg-slate-50 dark:bg-[#0c1017] relative overflow-hidden">
+<div class="absolute top-4 right-4 z-10 flex gap-2">
+<button class="bg-white dark:bg-[#1e2736] p-2 rounded-lg shadow-sm border border-slate-200 dark:border-border-dark text-slate-500 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">zoom_in</span>
+</button>
+<button class="bg-white dark:bg-[#1e2736] p-2 rounded-lg shadow-sm border border-slate-200 dark:border-border-dark text-slate-500 dark:text-[#92a4c9] hover:text-primary dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">fit_screen</span>
+</button>
+</div>
+<div class="absolute bottom-4 left-4 z-10">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-[#1e2736] rounded-full border border-slate-200 dark:border-border-dark shadow-sm">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs font-medium text-slate-700 dark:text-white">Live Execution</span>
+</div>
+</div>
+<!-- Visualization Area (Simulated Flowchart) -->
+<div class="flex-1 flex items-center justify-center p-8 relative">
+<!-- Dot Grid Background -->
+<div class="absolute inset-0 opacity-10 dark:opacity-20" style="background-image: radial-gradient(#64748b 1px, transparent 1px); background-size: 24px 24px;"></div>
+<div class="relative flex flex-col items-center gap-12 z-0">
+<!-- Start Node -->
+<div class="w-32 h-10 rounded-full bg-slate-200 dark:bg-[#232f48] border-2 border-slate-300 dark:border-[#3a4b6b] flex items-center justify-center shadow-lg">
+<span class="text-xs font-bold text-slate-600 dark:text-[#92a4c9] uppercase tracking-wider">Start</span>
+</div>
+<!-- Connecting Line -->
+<div class="w-0.5 h-12 bg-slate-300 dark:bg-[#3a4b6b] absolute top-10"></div>
+<div class="absolute top-[3.25rem] text-slate-400 dark:text-[#52607f]">
+<span class="material-symbols-outlined text-[20px]">arrow_drop_down</span>
+</div>
+<!-- Step 1: Analyze -->
+<div class="w-64 p-3 rounded-lg bg-white dark:bg-[#1a2333] border-l-4 border-primary shadow-xl flex items-center gap-3 group cursor-pointer hover:-translate-y-1 transition-transform">
+<div class="size-8 rounded bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-800 dark:text-white">step("analyze")</span>
+<span class="text-xs text-slate-500 dark:text-[#92a4c9]">Duration: 124ms</span>
+</div>
+<span class="ml-auto material-symbols-outlined text-green-500 text-[18px]">check_circle</span>
+</div>
+<!-- Connecting Line Branch -->
+<div class="w-0.5 h-12 bg-slate-300 dark:bg-[#3a4b6b] absolute top-[8.5rem]"></div>
+<div class="absolute top-[8.5rem] left-[50%] ml-2 text-xs font-mono text-slate-500 dark:text-[#92a4c9] bg-slate-50 dark:bg-[#0c1017] px-1 z-10">score &gt; 0.85</div>
+<div class="absolute top-[10.5rem] text-slate-400 dark:text-[#52607f]">
+<span class="material-symbols-outlined text-[20px]">arrow_drop_down</span>
+</div>
+<!-- Step 2: Notify -->
+<div class="w-64 p-3 rounded-lg bg-primary/10 dark:bg-[#1152d4]/10 border-l-4 border-yellow-400 shadow-xl flex items-center gap-3 relative ring-2 ring-yellow-400/50">
+<!-- Execution Indicator -->
+<div class="absolute -left-[26px] top-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-yellow-400 animate-pulse">arrow_right_alt</span>
+</div>
+<div class="size-8 rounded bg-yellow-400/20 flex items-center justify-center text-yellow-500">
+<span class="material-symbols-outlined text-[20px]">notifications_active</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-800 dark:text-white">step("notify")</span>
+<span class="text-xs text-yellow-500">Running...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

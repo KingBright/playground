@@ -1,0 +1,12 @@
+{
+  "id": "b246bf96-f26b-4521-bd19-d5323d4c5db1",
+  "source": {
+    "Manual": {
+      "description": "Test"
+    }
+  },
+  "content": "Test content",
+  "content_type": "text/plain",
+  "collected_at": "2026-02-03T19:13:53.232547Z",
+  "metadata": {}
+}

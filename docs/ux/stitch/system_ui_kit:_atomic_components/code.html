@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>System UI Kit: Atomic Components</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#1152d4",
+          "background-light": "#f6f6f8",
+          "background-dark": "#101622",
+        },
+        fontFamily: {
+          "display": ["Inter", "sans-serif"]
+        },
+        borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+      },
+    },
+  }
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-x-hidden antialiased">
+<div class="flex h-screen w-full flex-row overflow-hidden">
+<!-- SideNavBar -->
+<div class="hidden lg:flex w-72 flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111722] p-4 shrink-0">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border dark:border-slate-700" data-alt="abstract AI platform logo gradient" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDV_QmHIEPVFKhK39xnhkAlEprNkD-_fnJOd6tl7E4e4Mf9pyZgPw0XFFJDsRWFB7ag6t3IRI1ko1Q5Ks5c9w_6mrDPg4OrmhXsmi7G3GGWknZK6Od0NWpEKJw_YJ9ltluJdC9q07LsRdsCzfeOvjXQQcRIxYwEObfLJIXvmk4rYcooD-tgZGGhEaxzNhXau2sZIjCb3Ju18lTlXErLI4vFDanKOekJivwpcWx7IqNkHNrwZDJsit8UqG_-b-HCeKF0SZmVWJAEDriu");'></div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-normal">AI Platform</h1>
+<p class="text-slate-500 dark:text-[#92a4c9] text-xs font-normal leading-normal">Design System v2.0</p>
+</div>
+</div>
+<div class="h-px bg-slate-200 dark:bg-slate-800 w-full my-1"></div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c2534] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#92a4c9] group-hover:text-primary" style="font-size: 20px;">home</span>
+<p class="text-slate-700 dark:text-[#92a4c9] text-sm font-medium group-hover:text-slate-900 dark:group-hover:text-white">Overview</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 dark:bg-[#232f48]" href="#">
+<span class="material-symbols-outlined text-primary dark:text-white" style="font-size: 20px;">category</span>
+<p class="text-primary dark:text-white text-sm font-medium">Atomic Components</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c2534] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#92a4c9] group-hover:text-primary" style="font-size: 20px;">layers</span>
+<p class="text-slate-700 dark:text-[#92a4c9] text-sm font-medium group-hover:text-slate-900 dark:group-hover:text-white">Patterns</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c2534] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#92a4c9] group-hover:text-primary" style="font-size: 20px;">view_quilt</span>
+<p class="text-slate-700 dark:text-[#92a4c9] text-sm font-medium group-hover:text-slate-900 dark:group-hover:text-white">Layouts</p>
+</a>
+</div>
+<div class="mt-4">
+<p class="px-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Systems</p>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c2534] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#92a4c9] group-hover:text-primary" style="font-size: 20px;">smart_toy</span>
+<p class="text-slate-700 dark:text-[#92a4c9] text-sm font-medium group-hover:text-slate-900 dark:group-hover:text-white">Agent Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c2534] transition-colors group" href="#">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#92a4c9] group-hover:text-primary" style="font-size: 20px;">memory</span>
+<p class="text-slate-700 dark:text-[#92a4c9] text-sm font-medium group-hover:text-slate-900 dark:group-hover:text-white">Compute</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1c2534] transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-slate-500 dark:text-[#92a4c9] group-hover:text-primary" style="font-size: 20px;">settings</span>
+<p class="text-slate-700 dark:text-[#92a4c9] text-sm font-medium group-hover:text-slate-900 dark:group-hover:text-white">Settings</p>
+</div>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark">
+<div class="max-w-[1200px] mx-auto p-8 pb-20">
+<!-- PageHeading -->
+<div class="flex flex-col gap-2 mb-10">
+<h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Atomic Components</h1>
+<p class="text-slate-500 dark:text-[#92a4c9] text-lg font-normal leading-normal max-w-2xl">
+          Core UI library for the AI Platform showing specialized inputs, typography, layout patterns, and system status indicators in dark mode.
+        </p>
+</div>
+<!-- Section: Typography & Colors -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 24px;">palette</span>
+<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight">Typography &amp; Color Palette</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="flex flex-col gap-4">
+<div class="h-24 w-full bg-background-dark rounded-xl border border-slate-700 flex items-center justify-center relative shadow-sm">
+<span class="text-slate-400 text-xs absolute top-2 left-3">Background Dark</span>
+<span class="text-white font-mono">#101622</span>
+</div>
+<div class="h-24 w-full bg-[#1c2534] rounded-xl border border-slate-700 flex items-center justify-center relative shadow-sm">
+<span class="text-slate-400 text-xs absolute top-2 left-3">Surface</span>
+<span class="text-white font-mono">#1c2534</span>
+</div>
+</div>
+<div class="flex flex-col gap-4">
+<div class="h-24 w-full bg-primary rounded-xl flex items-center justify-center relative shadow-lg shadow-primary/20">
+<span class="text-white/80 text-xs absolute top-2 left-3">Primary</span>
+<span class="text-white font-mono">#1152d4</span>
+</div>
+<div class="h-24 w-full bg-[#92a4c9] rounded-xl flex items-center justify-center relative shadow-sm">
+<span class="text-slate-800 text-xs absolute top-2 left-3">Secondary Text</span>
+<span class="text-slate-900 font-mono">#92a4c9</span>
+</div>
+</div>
+<div class="col-span-2 bg-white dark:bg-[#111722] p-6 rounded-xl border border-slate-200 dark:border-slate-800">
+<h3 class="text-slate-900 dark:text-white text-3xl font-bold mb-2 tracking-tight">Inter Display</h3>
+<p class="text-slate-500 dark:text-[#92a4c9] text-base mb-4">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br/>abcdefghijklmnopqrstuvwxyz<br/>0123456789</p>
+<div class="flex gap-4 text-sm">
+<span class="font-normal text-slate-400">Regular</span>
+<span class="font-medium text-slate-400">Medium</span>
+<span class="font-bold text-slate-400">Bold</span>
+<span class="font-black text-slate-400">Black</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Specialized Inputs -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 24px;">input</span>
+<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight">Specialized Inputs</h2>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+<!-- Prompt Editor -->
+<div class="bg-white dark:bg-[#151b28] rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+<div class="px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-[#1a2130]">
+<span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Prompt Editor</span>
+<div class="flex gap-2">
+<button class="text-xs bg-primary/20 text-primary px-2 py-1 rounded hover:bg-primary/30 transition-colors">Generate</button>
+<button class="text-slate-400 hover:text-white"><span class="material-symbols-outlined text-[18px]">content_copy</span></button>
+</div>
+</div>
+<div class="p-4 font-mono text-sm leading-relaxed text-slate-300">
+<span class="text-purple-400">System:</span> You are a helpful AI assistant.<br/>
+<span class="text-blue-400">User:</span> Write a function to calculate Fibonacci numbers.<br/>
+<span class="text-green-400">Assistant:</span> <span class="bg-slate-800 px-1 rounded text-slate-200">def fibonacci(n):</span> ...<span class="animate-pulse">|</span>
+</div>
+</div>
+<!-- Parameters & Dropdown -->
+<div class="flex flex-col gap-6">
+<!-- LLM Settings -->
+<div class="bg-white dark:bg-[#151b28] rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
+<h3 class="text-slate-900 dark:text-white text-sm font-semibold mb-4">LLM Parameters</h3>
+<div class="mb-5">
+<div class="flex justify-between mb-2">
+<label class="text-xs text-slate-500 dark:text-slate-400 font-medium">Temperature</label>
+<span class="text-xs text-primary font-mono">0.7</span>
+</div>
+<input class="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="1" min="0" step="0.1" type="range" value="0.7"/>
+</div>
+<div class="mb-2">
+<div class="flex justify-between mb-2">
+<label class="text-xs text-slate-500 dark:text-slate-400 font-medium">Maximum Tokens</label>
+<span class="text-xs text-primary font-mono">2048</span>
+</div>
+<input class="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="4096" min="256" step="256" type="range" value="2048"/>
+</div>
+</div>
+<!-- Searchable Dropdown -->
+<div class="bg-white dark:bg-[#151b28] rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-sm">
+<label class="text-slate-900 dark:text-white text-sm font-semibold mb-3 block">Select Agent</label>
+<div class="relative">
+<div class="flex items-center bg-slate-50 dark:bg-[#111722] border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all">
+<span class="material-symbols-outlined text-slate-400 mr-2" style="font-size: 20px;">search</span>
+<input class="bg-transparent border-none outline-none text-slate-900 dark:text-white text-sm w-full placeholder-slate-400 dark:placeholder-slate-600" placeholder="Search agents..." type="text"/>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer" style="font-size: 20px;">expand_more</span>
+</div>
+<!-- Dropdown Menu (Simulated Open State) -->
+<div class="absolute top-full left-0 w-full mt-2 bg-white dark:bg-[#1c2534] border border-slate-200 dark:border-slate-700 rounded-lg shadow-xl z-10 overflow-hidden">
+<div class="p-1">
+<div class="flex items-center gap-3 px-3 py-2 hover:bg-slate-100 dark:hover:bg-[#2a3649] rounded cursor-pointer transition-colors">
+<div class="size-6 rounded bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-bold">C</div>
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-medium">Coder-V1</p>
+<p class="text-slate-500 dark:text-slate-500 text-[10px]">Python, JS expert</p>
+</div>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 bg-primary/10 rounded cursor-pointer transition-colors border-l-2 border-primary">
+<div class="size-6 rounded bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">R</div>
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-medium">Researcher-Pro</p>
+<p class="text-slate-500 dark:text-slate-400 text-[10px]">Web browsing enabled</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Status Indicators -->
+<div class="mb-12">
+<div class="flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-slate-800 pb-2">
+<span class="material-symbols-outlined text-primary" style="font-size: 24px;">monitoring</span>
+<h2 class="text-slate-900 dark:text-white text-[22px] font-bold leading-tight">Status Indicators</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Heartbeat Card -->
+<div class="bg-white dark:bg-[#151b28] p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+<div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase mb-1">System Heartbeat</p>
+<h4 class="text-slate-900 dark:text-white text-xl font-bold">Healthy</h4>
+</div>
+<div class="relative flex items-center justify-center size-12">
+<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-20"></span>
+<div class="relative inline-flex rounded-full size-3 bg-emerald-500"></div>
+</div>
+</div>
+<!-- Memory Usage -->
+<div class="bg-white dark:bg-[#151b28] p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-center">
+<div class="flex justify-between items-end mb-2">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase">Memory Usage</p>
+<p class="text-slate-900 dark:text-white text-sm font-bold">78%</p>
+</div>
+<div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+<div class="bg-gradient-to-r from-primary to-purple-500 h-2 rounded-full" style="width: 78%"></div>
+</div>
+<p class="text-slate-400 dark:text-slate-600 text-[10px] mt-2 text-right">12.4GB / 16GB</p>
+</div>
+<!-- Multi-stage Ring -->
+<div class="bg-white dark:bg-[#151b28] p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+<div class="relative size-14 shrink-0">
+<svg class="size-full -rotate-90" viewbox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<circle class="stroke-current text-slate-100 dark:text-slate-800" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+<circle class="stroke-current text-primary" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="35" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+<span class="text-[10px] font-bold text-slate-900 dark:text-white block">65%</span>
+</div>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-bold">Training Model</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Epoch 3/5 in progress</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Inspector Slide-out Panel -->
+<aside class="hidden xl:flex w-80 flex-col border-l border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111722] p-0 shrink-0 h-full">
+<div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-slate-900 dark:text-white font-bold text-sm">Inspector</h3>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="p-4 flex-1 overflow-y-auto">
+<!-- Object Properties -->
+<div class="mb-6">
+<p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">Selected Object</p>
+<div class="flex items-center gap-3 mb-4">
+<div class="size-10 bg-blue-500/20 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">smart_toy</span>
+</div>
+<div>
+<p class="text-slate-900 dark:text-white text-sm font-semibold">Agent_041</p>
+<p class="text-emerald-500 text-xs flex items-center gap-1"><span class="block size-1.5 rounded-full bg-emerald-500"></span>Active</p>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm py-2 border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-slate-500 dark:text-slate-400">ID</span>
+<span class="text-slate-900 dark:text-slate-200 font-mono text-xs">8f92-a1b</span>
+</div>
+<div class="flex justify-between text-sm py-2 border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-slate-500 dark:text-slate-400">Model</span>
+<span class="text-slate-900 dark:text-slate-200 text-xs">GPT-4-Turbo</span>
+</div>
+<div class="flex justify-between text-sm py-2 border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-slate-500 dark:text-slate-400">Created</span>
+<span class="text-slate-900 dark:text-slate-200 text-xs">2h ago</span>
+</div>
+</div>
+</div>
+<!-- Action Logs -->
+<div>
+<p class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">Recent Activity</p>
+<div class="space-y-4">
+<div class="flex gap-3 relative">
+<div class="flex flex-col items-center">
+<div class="size-2 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+<div class="w-px h-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+</div>
+<div class="pb-2">
+<p class="text-slate-800 dark:text-slate-200 text-xs font-medium">Task Completed</p>
+<p class="text-slate-400 dark:text-slate-500 text-[10px]">Generate summary for...</p>
+<p class="text-slate-400 dark:text-slate-600 text-[10px] mt-1">10:42 AM</p>
+</div>
+</div>
+<div class="flex gap-3 relative">
+<div class="flex flex-col items-center">
+<div class="size-2 rounded-full bg-primary"></div>
+<div class="w-px h-full bg-slate-200 dark:bg-slate-800 my-1"></div>
+</div>
+<div class="pb-2">
+<p class="text-slate-800 dark:text-slate-200 text-xs font-medium">Processing Request</p>
+<p class="text-slate-400 dark:text-slate-500 text-[10px]">Analyzing data set...</p>
+<p class="text-slate-400 dark:text-slate-600 text-[10px] mt-1">10:45 AM</p>
+</div>
+</div>
+<div class="flex gap-3 relative">
+<div class="flex flex-col items-center">
+<div class="size-2 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+</div>
+<div class="pb-2">
+<p class="text-slate-800 dark:text-slate-200 text-xs font-medium">Initialization</p>
+<p class="text-slate-400 dark:text-slate-500 text-[10px]">Agent started</p>
+<p class="text-slate-400 dark:text-slate-600 text-[10px] mt-1">09:00 AM</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#1a2130]">
+<button class="w-full py-2 bg-primary hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-primary/20">
+           View Full Logs
+        </button>
+</div>
+</aside>
+</div>
+</body></html>

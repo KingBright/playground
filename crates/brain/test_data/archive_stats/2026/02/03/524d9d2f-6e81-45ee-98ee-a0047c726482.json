@@ -1,0 +1,12 @@
+{
+  "id": "524d9d2f-6e81-45ee-98ee-a0047c726482",
+  "source": {
+    "Manual": {
+      "description": "Test"
+    }
+  },
+  "content": "Test content",
+  "content_type": "text/plain",
+  "collected_at": "2026-02-03T19:21:14.548509Z",
+  "metadata": {}
+}

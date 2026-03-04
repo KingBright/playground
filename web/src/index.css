@@ -1,0 +1,230 @@
+@import "tailwindcss";
+
+/* 使用系统字体，避免网络依赖 */
+/* 如需使用 Inter 字体，请下载到本地或使用 VPN */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap'); */
+
+@theme {
+  /* Colors */
+  --color-primary: #1152d4;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #0d3aa8;
+
+  --color-background-light: #f6f6f8;
+  --color-background-dark: #101622;
+  --color-surface-dark: #192233;
+  --color-surface-dark-light: #1c2534;
+  --color-border-dark: #324467;
+  --color-text-secondary: #92a4c9;
+  --color-text-muted: #56688a;
+
+  --color-accent-neon: #00f0ff;
+  --color-accent-purple: #bd00ff;
+
+  /* Semantic colors */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+
+  /* Font - 使用系统字体栈，无需网络 */
+  --font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background-light dark:bg-background-dark text-slate-900 dark:text-white;
+    @apply overflow-x-hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background-dark;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-dark-light rounded-md;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border-dark;
+  }
+}
+
+/* Component styles - 不使用 @layer components，避免互相引用问题 */
+
+/* Card styles */
+.card {
+  @apply bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark;
+}
+
+.card-hover {
+  @apply hover:border-primary/50 transition-colors duration-200;
+}
+
+/* Button base styles */
+.btn {
+  @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors;
+  @apply bg-primary hover:bg-primary-light text-white shadow-lg shadow-primary/20;
+}
+
+.btn-secondary {
+  @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors;
+  @apply bg-surface-dark hover:bg-surface-dark-light text-white border border-border-dark;
+}
+
+.btn-ghost {
+  @apply flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors;
+  @apply hover:bg-slate-100 dark:hover:bg-surface-dark-light text-slate-700 dark:text-text-secondary;
+}
+
+/* Input styles */
+.input {
+  @apply w-full bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-text-muted;
+}
+
+.input-wrapper {
+  @apply flex items-center gap-2 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark px-3 py-2.5;
+  @apply focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition-all;
+}
+
+/* Status badges */
+.badge {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide;
+}
+
+.badge-success {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide;
+  @apply bg-emerald-500/20 text-emerald-400;
+}
+
+.badge-warning {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide;
+  @apply bg-yellow-500/20 text-yellow-400;
+}
+
+.badge-error {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide;
+  @apply bg-red-500/20 text-red-400;
+}
+
+.badge-info {
+  @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide;
+  @apply bg-blue-500/20 text-blue-400;
+}
+
+/* Navigation */
+.nav-item {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors;
+}
+
+.nav-item-active {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors;
+  @apply bg-[#232f48] text-white;
+}
+
+.nav-item-inactive {
+  @apply flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors;
+  @apply text-text-secondary hover:bg-[#232f48]/50 hover:text-white;
+}
+
+/* Section headers */
+.section-title {
+  @apply flex items-center gap-2 mb-6 border-b border-slate-200 dark:border-border-dark pb-2;
+}
+
+/* Terminal styles */
+.terminal {
+  @apply bg-[#0d1117] rounded-xl border border-border-dark overflow-hidden font-mono text-sm;
+}
+
+/* Code block */
+.code-block {
+  @apply bg-[#0d1117] p-4 overflow-x-auto font-mono text-sm leading-relaxed rounded-lg;
+}
+
+/* Flow node */
+.flow-node {
+  @apply relative flex flex-col md:flex-row items-stretch justify-between gap-6 rounded-xl bg-surface-dark p-6 shadow-lg border border-border-dark;
+}
+
+.flow-node-port {
+  @apply absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-background-dark z-10;
+}
+
+.flow-node-port-input {
+  @apply absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-background-dark z-10;
+  @apply -translate-x-1/2 left-0;
+}
+
+.flow-node-port-output {
+  @apply absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-primary rounded-full border-2 border-background-dark z-10;
+  @apply translate-x-1/2 right-0;
+}
+
+/* Utilities */
+
+/* Material Symbols fallback - 使用 emoji 作为后备 */
+.material-symbols-outlined {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25em;
+  line-height: 1;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Material Symbols sizing */
+.material-icon-sm {
+  font-size: 18px;
+}
+
+.material-icon-md {
+  font-size: 20px;
+}
+
+.material-icon-lg {
+  font-size: 24px;
+}
+
+/* Text gradient */
+.text-gradient {
+  @apply bg-gradient-to-r from-primary to-accent-purple bg-clip-text text-transparent;
+}
+
+/* Neon glow */
+.neon-glow {
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+/* Glass effect */
+.glass {
+  @apply bg-background-dark/80 backdrop-blur-md;
+}
