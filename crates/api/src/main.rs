@@ -6,14 +6,17 @@ mod models;
 
 use anyhow::Result;
 use axum::{
+    extract::ws::{Message, WebSocket, WebSocketUpgrade},
     body::Body,
-    extract::{Path, State, WebSocketUpgrade},
+    extract::{Path, State},
     http::{header, Method, Response, StatusCode},
     response::{Html, IntoResponse},
     routing::{get, post, delete},
     Json, Router,
 };
 use clap::Parser;
+use serde_json::json;
+use sysinfo::System;
 use models::*;
 use rust_embed::RustEmbed;
 use std::net::SocketAddr;
@@ -58,11 +61,16 @@ impl Default for ServerConfig {
 }
 
 /// Application state with real module integrations
+use synergy::scheduler::MissionControl;
+use synergy::registry::AgentRegistry;
+
 #[derive(Clone)]
 pub struct AppState {
     pub config: ServerConfig,
     pub session_manager: Arc<SessionManager>,
     pub brain_memory: Arc<UnifiedMemory>,
+    pub registry: Arc<AgentRegistry>,
+    pub mission_control: Arc<MissionControl>,
 }
 
 /// Agent Playground API Server
@@ -188,10 +196,27 @@ async fn init_app_state(cli: &Cli) -> Result<AppState> {
         api_only: cli.api_only,
     };
 
+
+    let registry = Arc::new(AgentRegistry::new());
+    let mission_control = Arc::new(MissionControl::new(
+        registry.clone(),
+        synergy::scheduler::SchedulerConfig::default()
+    ));
+
+    // Start the scheduler
+    let mc_clone = mission_control.clone();
+    tokio::spawn(async move {
+        mc_clone.start_scheduler().await;
+    });
+
+    info!("✓ Synergy module initialized and scheduler started");
+
     Ok(AppState {
         config,
         session_manager,
         brain_memory,
+        registry,
+        mission_control,
     })
 }
 
@@ -223,6 +248,7 @@ fn create_api_routes() -> Router<AppState> {
         // WebSocket endpoints
         .route("/ws/sessions/:id", get(session_websocket))
         .route("/ws/missions", get(missions_websocket))
+        .route("/ws/system", get(system_websocket))
 }
 
 /// Create static file routes
@@ -334,18 +360,21 @@ async fn brain_health(State(state): State<AppState>) -> impl IntoResponse {
     }
 }
 
-async fn list_knowledge() -> impl IntoResponse {
-    // Return placeholder data - in real implementation, this would query Brain
-    let slices = vec![
-        KnowledgeSlice {
-            id: "default".to_string(),
-            name: "Default Knowledge Base".to_string(),
-            node_count: 0,
-            status: "active".to_string(),
-            last_updated: chrono::Utc::now().to_rfc3339(),
-            tags: vec!["system".to_string()],
-        },
-    ];
+async fn list_knowledge(State(state): State<AppState>) -> impl IntoResponse {
+    // Basic query to check real memory state
+    let mut slices = Vec::new();
+
+    // Attempt to get stats from brain (currently minimal, but we can return actual size)
+    let node_count = 0; // TODO: Fetch real count from Graph DB
+
+    slices.push(KnowledgeSlice {
+        id: "system-memory-default".to_string(),
+        name: "Primary Brain Memory".to_string(),
+        node_count,
+        status: "active".to_string(),
+        last_updated: chrono::Utc::now().to_rfc3339(),
+        tags: vec!["core".to_string(), "graph".to_string()],
+    });
 
     Json(KnowledgeListResponse { slices })
 }
@@ -385,54 +414,43 @@ async fn list_environments() -> impl IntoResponse {
     }))
 }
 
-async fn list_agents() -> impl IntoResponse {
-    // Return available agent types
-    let agents = vec![
-        Agent {
-            id: "local-agent".to_string(),
-            name: "Local Agent".to_string(),
-            type_: "local".to_string(),
-            description: "Environment-specific agent for simulation scenarios".to_string(),
-            capabilities: vec![
-                "environment_interaction".to_string(),
-                "state_management".to_string(),
-            ],
-            status: "active".to_string(),
-            version: "1.0.0".to_string(),
-            icon: Some("smart_toy".to_string()),
-        },
-        Agent {
-            id: "universal-agent".to_string(),
-            name: "Universal Agent".to_string(),
-            type_: "universal".to_string(),
-            description: "General-purpose agent for knowledge processing".to_string(),
-            capabilities: vec![
-                "knowledge_extraction".to_string(),
-                "summarization".to_string(),
-                "classification".to_string(),
-            ],
-            status: "active".to_string(),
-            version: "1.0.0".to_string(),
-            icon: Some("psychology".to_string()),
-        },
-    ];
+async fn list_agents(State(state): State<AppState>) -> impl IntoResponse {
+    let active_agent_names = state.registry.list().await;
+    let mut agents = Vec::new();
+
+    for name in active_agent_names {
+        if let Some(agent_def) = state.registry.get(&name).await {
+            agents.push(Agent {
+                id: name.clone(), // using name as id for simplicity since registry uses name as key
+                name: agent_def.name.clone(),
+                type_: format!("{:?}", agent_def.agent_type).to_lowercase(),
+                description: agent_def.description.clone().unwrap_or_default(),
+                capabilities: vec![], // Not stored in AgentDefinition directly
+                status: "active".to_string(),
+                version: "1.0.0".to_string(), // placeholder
+                icon: Some("smart_toy".to_string()),
+            });
+        }
+    }
 
     Json(AgentListResponse { agents })
 }
 
-async fn list_tasks() -> impl IntoResponse {
-    // Return placeholder tasks
-    let tasks = vec![
-        ScheduledTask {
-            id: "system-init".to_string(),
-            name: "System Initialization".to_string(),
-            type_: "manual".to_string(),
-            status: "completed".to_string(),
-            schedule: None,
-            last_run: Some(chrono::Utc::now().to_rfc3339()),
+async fn list_tasks(State(state): State<AppState>) -> impl IntoResponse {
+    let missions = state.mission_control.get_active_missions().await;
+    let mut tasks = Vec::new();
+
+    for m in missions {
+        tasks.push(ScheduledTask {
+            id: m.id.to_string(),
+            name: m.name.clone(),
+            type_: "scheduled".to_string(),
+            status: "active".to_string(),
+            schedule: Some("System Scheduled".to_string()),
+            last_run: None,
             next_run: None,
-        },
-    ];
+        });
+    }
 
     Json(TaskListResponse { tasks })
 }
@@ -855,7 +873,6 @@ async fn serve_static_or_embedded(
 // WebSocket Handlers
 // ============================================================================
 
-use axum::extract::ws::{Message, WebSocket};
 use tokio::time::{interval, Duration};
 
 /// Session WebSocket - 实时推送Session状态
@@ -1127,10 +1144,15 @@ pub mod test_helpers {
 
         let brain_memory = Arc::new(UnifiedMemory::new(hot, vector, graph, raw));
 
-        AppState {
+AppState {
             config: ServerConfig::default(),
             session_manager,
             brain_memory,
+            registry: Arc::new(synergy::registry::AgentRegistry::new()),
+            mission_control: Arc::new(synergy::scheduler::MissionControl::new(
+                Arc::new(synergy::registry::AgentRegistry::new()),
+                synergy::scheduler::SchedulerConfig::default()
+            )),
         }
     }
 
@@ -1150,4 +1172,53 @@ pub mod test_helpers {
         Service::call(router, req).await.unwrap()
     }
 
+}
+
+async fn system_websocket(
+    ws: WebSocketUpgrade,
+) -> impl IntoResponse {
+    ws.on_upgrade(move |socket| handle_system_socket(socket))
+}
+
+async fn handle_system_socket(mut socket: WebSocket) {
+    info!("WebSocket connected for system monitoring");
+    let mut sys = System::new_all();
+    let pid = sysinfo::get_current_pid().expect("failed to get PID");
+
+    let mut interval = tokio::time::interval(std::time::Duration::from_secs(2));
+
+    loop {
+        interval.tick().await;
+        sys.refresh_all();
+
+        let mut cpu_usage = 0.0;
+        let mut memory_usage = 0;
+
+        if let Some(process) = sys.process(pid) {
+            cpu_usage = process.cpu_usage();
+            memory_usage = process.memory(); // in bytes
+        }
+
+        let total_memory = sys.total_memory();
+        let memory_percent = if total_memory > 0 {
+            (memory_usage as f64 / total_memory as f64) * 100.0
+        } else {
+            0.0
+        };
+
+        let msg = json!({
+            "type": "system_stats",
+            "data": {
+                "cpu_usage": cpu_usage,
+                "memory_usage_bytes": memory_usage,
+                "memory_usage_percent": memory_percent,
+                "total_memory_bytes": total_memory,
+            }
+        });
+
+        if socket.send(Message::Text(msg.to_string())).await.is_err() {
+            info!("System WebSocket client disconnected");
+            break;
+        }
+    }
 }
