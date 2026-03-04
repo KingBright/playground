@@ -59,7 +59,6 @@ playground/
 │       ├── registry/    # Agent 注册表
 │       └── scheduler/   # 任务调度器
 ├── web/                 # TypeScript 前端
-├── docker-compose.yml   # Docker Compose 配置
 ├── deploy.sh            # 部署脚本
 └── manage.sh            # 项目管理脚本
 ```

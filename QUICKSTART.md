@@ -231,10 +231,8 @@ lsof -i :6379
 
 ```bash
 # 检查 Docker 状态
-docker info
 
 # 清理 Docker 缓存
-docker system prune -f
 
 # 重新构建镜像
 ./deploy.sh build
@@ -281,10 +279,8 @@ docker system prune -f
 
 # 2. 恢复数据（根据备份类型）
 # PostgreSQL
-docker exec -i playground-postgres-1 psql -U postgres agent_platform < backup.sql
 
 # Redis
-docker cp redis.rdb playground-redis-1:/data/dump.rdb
 
 # 3. 重启服务
 ./deploy.sh up

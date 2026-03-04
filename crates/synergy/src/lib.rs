@@ -10,7 +10,9 @@ pub mod scheduler;
 pub use api::SynergyApi;
 pub use events::{Event, EventBus, EventType};
 pub use registry::{AgentDefinition, AgentRegistry, AgentType};
-pub use scheduler::{Mission, MissionControl, MissionExecution, MissionStatus, SchedulerConfig, TriggerType};
+pub use scheduler::{
+    Mission, MissionControl, MissionExecution, MissionStatus, SchedulerConfig, TriggerType,
+};
 
 use common::Result;
 

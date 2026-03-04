@@ -149,7 +149,6 @@ ssh user@server "cd /opt/agent-playground && ./api"
 
 ### 方案 2: Docker 部署
 
-```dockerfile
 FROM rust:1.75 as builder
 WORKDIR /app
 COPY . .
@@ -165,8 +164,6 @@ CMD ["./api"]
 构建和运行：
 
 ```bash
-docker build -t agent-playground .
-docker run -p 8080:8080 agent-playground
 ```
 
 ### 方案 3: Systemd 服务
