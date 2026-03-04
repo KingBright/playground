@@ -3,6 +3,7 @@ export {
     WebSocketClient,
     createSessionWebSocket,
     createMissionsWebSocket,
+    createSystemWebSocket,
     useWebSocket,
     type WebSocketMessage
 } from './websocket';

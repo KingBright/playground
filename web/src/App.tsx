@@ -10,7 +10,7 @@ import { KnowledgeManager } from './pages/brain/KnowledgeManager';
 import { WorkflowEditor } from './pages/playground/WorkflowEditor';
 import { AgentRegistry } from './pages/registry/AgentRegistry';
 import { TaskScheduler } from './pages/scheduler/TaskScheduler';
-import { SystemLogs } from './pages/logs/SystemLogs';
+// import { SystemLogs } from './pages/logs/SystemLogs';
 import { Settings } from './pages/settings/Settings';
 
 const navItems: NavItem[] = [
@@ -80,7 +80,7 @@ const App: React.FC = () => {
                   <Route path="/playground" element={<WorkflowEditor />} />
                   <Route path="/registry" element={<AgentRegistry />} />
                   <Route path="/scheduler" element={<TaskScheduler />} />
-                  <Route path="/logs" element={<SystemLogs />} />
+                  {/* <Route path="/logs" element={<SystemLogs />} /> */}
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/" element={<Navigate to="/dashboard" replace />} />
                 </Routes>

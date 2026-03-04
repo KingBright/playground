@@ -1,47 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../../api';
+import { api, useWebSocket, createSystemWebSocket } from '../../api';
 import { Card, StatCard, Badge } from '../../components/ui';
 import type { Simulation, StatCardData } from '../../types';
+
+interface SystemStats {
+  cpu_usage: number;
+  memory_usage_bytes: number;
+  memory_usage_percent: number;
+  total_memory_bytes: number;
+}
 
 interface DashboardProps {
   stats?: StatCardData[];
   simulations?: Simulation[];
 }
 
-const defaultStats: StatCardData[] = [
-  {
-    label: 'Documents Processed',
-    value: '8,420',
-    change: 12,
-    icon: 'article',
-    iconColor: 'bg-blue-500/10 text-primary',
-    trend: 'up'
-  },
-  {
-    label: 'Graph Nodes Created',
-    value: '1.2M',
-    change: 5,
-    icon: 'hub',
-    iconColor: 'bg-purple-500/10 text-purple-400',
-    trend: 'up'
-  },
-  {
-    label: 'Token Usage (Daily)',
-    value: '450k',
-    change: 0,
-    changeLabel: 'Stable',
-    icon: 'memory',
-    iconColor: 'bg-orange-500/10 text-orange-400',
-    trend: 'stable'
-  },
-  {
-    label: 'Vector DB Storage',
-    value: '64%',
-    icon: 'database',
-    iconColor: 'bg-teal-500/10 text-teal-400',
-    trend: 'up'
-  }
-];
+
 
 const defaultSimulations: Simulation[] = [
   {
@@ -74,15 +48,23 @@ const defaultSimulations: Simulation[] = [
 ];
 
 export const Dashboard: React.FC<DashboardProps> = () => {
-  const [stats, setStats] = useState<StatCardData[]>(defaultStats);
+const [stats, setStats] = useState<StatCardData[]>([]);
   const [simulations, setSimulations] = useState<Simulation[]>(defaultSimulations);
   const [loading, setLoading] = useState(true);
+
+  // System Stats WebSocket
+  const { data: wsSystemStats } = useWebSocket<SystemStats>(
+    () => createSystemWebSocket(),
+    'system_stats'
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await api.dashboard.getStats();
-        setStats(data.dashboardStats);
+        // Base stats from API
+        const baseStats = data.dashboardStats;
+        setStats(baseStats);
         setSimulations(data.activeSimulations);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
@@ -93,6 +75,36 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
     fetchData();
   }, []);
+
+  // Update stats with real-time websocket data
+  useEffect(() => {
+    if (wsSystemStats && stats.length > 0) {
+      setStats(prevStats => {
+        const newStats = [...prevStats];
+
+        // Update System Status to show CPU
+        newStats[1] = {
+          ...newStats[1],
+          value: `${wsSystemStats.cpu_usage.toFixed(1)}%`,
+          label: 'CPU Usage',
+          changeLabel: 'Engine Core Load',
+          icon: 'speed'
+        };
+
+        // Update Memory Backend to show actual RAM
+        const memMB = (wsSystemStats.memory_usage_bytes / 1024 / 1024).toFixed(0);
+        newStats[2] = {
+          ...newStats[2],
+          value: `${memMB} MB`,
+          label: 'RAM Usage',
+          changeLabel: `${wsSystemStats.memory_usage_percent.toFixed(1)}% of System`,
+          icon: 'memory'
+        };
+
+        return newStats;
+      });
+    }
+  }, [wsSystemStats]);
 
   const getStatusBadge = (status: Simulation['status']) => {
     switch (status) {
