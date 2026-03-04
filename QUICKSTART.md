@@ -70,7 +70,6 @@ Agent Playground 提供两种对等的部署模式：
 # 生产模式 - Docker 启动所有服务
 ./manage.sh prod
 
-# 基础设施管理（PostgreSQL, Redis, Qdrant, Neo4j, MinIO）
 ./manage.sh services start    # 启动基础设施
 ./manage.sh services stop     # 停止基础设施
 ./manage.sh services status   # 查看状态
@@ -133,8 +132,6 @@ cd web && npm run dev
 ```bash
 # 查看基础设施日志
 ./manage.sh services logs
-./manage.sh services logs postgres
-./manage.sh services logs redis
 
 # 生产模式查看日志
 ./deploy.sh logs
@@ -175,11 +172,8 @@ cd web && npm run dev
 
 | 服务 | 地址 | 默认凭据 |
 |------|------|----------|
-| PostgreSQL | localhost:5432 | postgres/postgres |
 | Redis | localhost:6379 | - |
 | Qdrant | http://localhost:6333 | - |
-| Neo4j | http://localhost:7474 | neo4j/password |
-| MinIO Console | http://localhost:9001 | minioadmin/minioadmin |
 
 ## 配置
 
@@ -197,8 +191,6 @@ cp .env.example .env
 |------|------|------|
 | API_PORT | 8080 | API 服务端口 |
 | RUST_LOG | info | 日志级别 (error/warn/info/debug/trace) |
-| POSTGRES_PASSWORD | postgres | 数据库密码 |
-| NEO4J_PASSWORD | password | Neo4j 密码 |
 
 ## 故障排查
 
@@ -244,11 +236,6 @@ lsof -i :6379
 
 数据通过 Docker Volumes 持久化，即使删除容器数据也不会丢失：
 
-- `playground_postgres-data` - PostgreSQL 数据
-- `playground_redis-data` - Redis 数据
-- `playground_qdrant-data` - Qdrant 向量数据
-- `playground_neo4j-data` - Neo4j 图数据
-- `playground_minio-data` - MinIO 对象存储
 
 ### 清理数据
 
@@ -278,7 +265,6 @@ lsof -i :6379
 ./deploy.sh down
 
 # 2. 恢复数据（根据备份类型）
-# PostgreSQL
 
 # Redis
 

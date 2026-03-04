@@ -958,7 +958,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_creation() {
-        let registry = Arc::new(AgentRegistry::new(None).await);
+        let registry = Arc::new(AgentRegistry::new());
 
         // 先注册一个Agent
         let definition = AgentDefinition {
@@ -1003,7 +1003,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_execution() {
-        let registry = Arc::new(AgentRegistry::new(None).await);
+        let registry = Arc::new(AgentRegistry::new());
 
         // 注册Agent
         let definition = AgentDefinition {
@@ -1059,7 +1059,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_executions_tracking() {
-        let registry = Arc::new(AgentRegistry::new(None).await);
+        let registry = Arc::new(AgentRegistry::new());
 
         let definition = AgentDefinition {
             id: uuid::Uuid::new_v4(),

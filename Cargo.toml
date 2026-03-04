@@ -27,15 +27,12 @@ anyhow = "1.0"
 thiserror = "1.0"
 
 # Database & Storage
-redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
-sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "chrono"] }
+sqlx = { version = "0.8", features = ["runtime-tokio", "sqlite", "chrono"] }
 
 # Vector Database (choose one)
-# qdrant-client = "1.11"
 # milvus = { version = "0.2", features = ["tracing"] }
 
 # Graph Database
-# neo4j = "0.9"
 
 # Web framework
 axum = { version = "0.7", features = ["macros", "ws"] }

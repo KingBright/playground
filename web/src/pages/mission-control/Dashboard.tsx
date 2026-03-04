@@ -82,24 +82,28 @@ const [stats, setStats] = useState<StatCardData[]>([]);
       setStats(prevStats => {
         const newStats = [...prevStats];
 
-        // Update System Status to show CPU
-        newStats[1] = {
-          ...newStats[1],
-          value: `${wsSystemStats.cpu_usage.toFixed(1)}%`,
-          label: 'CPU Usage',
-          changeLabel: 'Engine Core Load',
-          icon: 'speed'
-        };
+        // Update System Status to show CPU safely
+        if (wsSystemStats.cpu_usage !== undefined && wsSystemStats.cpu_usage !== null) {
+          newStats[1] = {
+            ...newStats[1],
+            value: `${Number(wsSystemStats.cpu_usage).toFixed(1)}%`,
+            label: 'CPU Usage',
+            changeLabel: 'Engine Core Load',
+            icon: 'speed'
+          };
+        }
 
-        // Update Memory Backend to show actual RAM
-        const memMB = (wsSystemStats.memory_usage_bytes / 1024 / 1024).toFixed(0);
-        newStats[2] = {
-          ...newStats[2],
-          value: `${memMB} MB`,
-          label: 'RAM Usage',
-          changeLabel: `${wsSystemStats.memory_usage_percent.toFixed(1)}% of System`,
-          icon: 'memory'
-        };
+        // Update Memory Backend to show actual RAM safely
+        if (wsSystemStats.memory_usage_bytes !== undefined && wsSystemStats.memory_usage_percent !== undefined) {
+          const memMB = (Number(wsSystemStats.memory_usage_bytes) / 1024 / 1024).toFixed(0);
+          newStats[2] = {
+            ...newStats[2],
+            value: `${memMB} MB`,
+            label: 'RAM Usage',
+            changeLabel: `${Number(wsSystemStats.memory_usage_percent).toFixed(1)}% of System`,
+            icon: 'memory'
+          };
+        }
 
         return newStats;
       });
