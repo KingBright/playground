@@ -405,7 +405,7 @@ impl Default for SessionConfig {
 /// Synergy system configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SynergyConfig {
-    /// Database connection URL (e.g. sqlite::memory:)
+    /// Database connection URL (e.g. sqlite://synergy.db)
     pub database_url: String,
 
     /// Agent registry configuration
@@ -418,7 +418,7 @@ pub struct SynergyConfig {
 impl Default for SynergyConfig {
     fn default() -> Self {
         Self {
-            database_url: "sqlite::memory:".to_string(),
+            database_url: "sqlite://synergy.db".to_string(),
             registry: RegistryConfig::default(),
             scheduler: SchedulerConfig::default(),
         }

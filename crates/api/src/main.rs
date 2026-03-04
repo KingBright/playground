@@ -199,7 +199,14 @@ async fn init_app_state(cli: &Cli) -> Result<AppState> {
         api_only: cli.api_only,
     };
 
-    let db_url = "sqlite::memory:"; // Use config in a real app: &cli.config.synergy.database_url
+    // Use a persistent SQLite database instead of in-memory, to satisfy monolithic requirement
+    let db_url = "sqlite://data.db?mode=rwc";
+
+    // Create the database file if it doesn't exist
+    if !std::path::Path::new("data.db").exists() {
+        std::fs::File::create("data.db").unwrap();
+    }
+
     let registry = Arc::new(AgentRegistry::new(Some(db_url)).await);
     let mission_control = Arc::new(MissionControl::new(
         registry.clone(),
