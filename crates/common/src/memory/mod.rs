@@ -6,13 +6,13 @@ use serde::{Deserialize, Serialize};
 /// Types of memory storage
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum MemoryType {
-    /// Hot memory - Redis (24-hour TTL)
+    /// Hot memory - Embedded (e.g., Sled)
     Hot,
 
-    /// Vector memory - Milvus/Qdrant (semantic search)
+    /// Vector memory - SQLite-vec (semantic search)
     Vector,
 
-    /// Graph memory - Neo4j (entity relationships)
+    /// Graph memory - Embedded (e.g., petgraph+sqlite)
     Graph,
 
     /// Raw archive - S3/MinIO (long-term storage)

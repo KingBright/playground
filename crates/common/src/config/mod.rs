@@ -276,8 +276,7 @@ impl Default for VectorMemoryConfig {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum VectorBackend {
     InMemory,
-    Qdrant,
-    Milvus,
+    SqliteVec,
 }
 
 /// Graph memory configuration
@@ -303,7 +302,7 @@ impl Default for GraphMemoryConfig {
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum GraphBackend {
     InMemory,
-    Neo4j,
+    Sqlite,
 }
 
 /// Processing pipeline configuration

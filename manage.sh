@@ -5,8 +5,6 @@
 #
 # 命令列表:
 #   dev       - 开发模式（本地启动所有服务，热重载）
-#   prod      - 生产模式（Docker 启动所有服务）
-#   services  - 基础设施管理（数据库等服务）
 #   build     - 构建项目 (dev, release, frontend, backend)
 #   run       - 单独运行 API 服务
 #   test      - 运行测试 (rust, frontend, all, coverage)
@@ -22,7 +20,6 @@
 #   ./data-migrate.sh restore   - 恢复数据
 #   ./data-migrate.sh export    - 导出数据
 #
-# 注意: dev 和 prod 是对等的，都是启动完整服务，只是方式不同
 
 set -e
 
