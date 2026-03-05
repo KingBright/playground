@@ -100,6 +100,7 @@ impl AgentRegistry {
                     let agent_type_str: String = row.get("agent_type");
                     let config_str: String = row.get("config");
                     let description: Option<String> = row.get("description");
+                    let created_at_ts: i64 = row.get("created_at");
 
                     let id = uuid::Uuid::parse_str(&id_str).unwrap_or_else(|_| uuid::Uuid::new_v4());
                     let agent_type = match agent_type_str.as_str() {
@@ -107,6 +108,8 @@ impl AgentRegistry {
                         _ => AgentType::Universal,
                     };
                     let config = serde_json::from_str(&config_str).unwrap_or_else(|_| serde_json::json!({}));
+                    let created_at = chrono::DateTime::from_timestamp(created_at_ts, 0)
+                        .unwrap_or_else(|| chrono::Utc::now());
 
                     let def = AgentDefinition {
                         id,
@@ -114,7 +117,7 @@ impl AgentRegistry {
                         agent_type,
                         config,
                         description,
-                        created_at: chrono::Utc::now(), // Simplified for now
+                        created_at,
                     };
                     cache.insert(name, def);
                 }

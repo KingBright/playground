@@ -37,7 +37,7 @@ export const SideNavBar: React.FC<SideNavBarProps> = ({
   }, {} as Record<string, NavItem[]>);
 
   return (
-    <div className="hidden lg:flex w-72 flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111722] p-4 shrink-0 h-full">
+    <div className="hidden lg:flex w-72 flex-col justify-between border-r border-[#232f48] bg-[#111722] p-4 shrink-0 h-full">
       <div className="flex flex-col gap-4">
         {/* Logo */}
         <div className="flex items-center gap-3 px-2">
@@ -50,12 +50,12 @@ export const SideNavBar: React.FC<SideNavBarProps> = ({
             </svg>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-slate-900 dark:text-white text-lg font-bold leading-normal">AI Cortex</h1>
-            <p className="text-slate-500 dark:text-[#92a4c9] text-xs font-normal leading-normal">v2.4.0-alpha</p>
+            <h1 className="text-white text-lg font-bold leading-normal">AI Cortex</h1>
+            <p className="text-[#92a4c9] text-xs font-normal leading-normal">v2.4.0-alpha</p>
           </div>
         </div>
 
-        <div className="h-px bg-slate-200 dark:bg-slate-800 w-full my-1"></div>
+        <div className="h-px bg-[#232f48] w-full my-1"></div>
 
         {/* Main Navigation */}
         <div className="flex flex-col gap-1">
