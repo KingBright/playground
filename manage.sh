@@ -148,11 +148,6 @@ check_dependencies() {
         log_info "$cargo_version"
     fi
 
-    # 检查 Docker（可选，用于 services 命令）
-    if ! command -v docker &> /dev/null; then
-        log_warning "Docker 未安装，services 命令将不可用"
-    fi
-
     if [ ${#missing_deps[@]} -ne 0 ]; then
         log_error "缺少以下依赖:"
         for dep in "${missing_deps[@]}"; do
@@ -195,15 +190,6 @@ cmd_dev() {
         sleep 2
     fi
 
-    # 1. 启动基础设施服务（Docker）
-    log_info "启动基础设施服务（数据库等）..."
-    cmd_services_start
-
-    # 等待基础设施就绪
-    log_info "等待基础设施就绪..."
-    sleep 5
-
-    # 2. 启动前端开发服务器和 API 热重载
     log_section "启动应用服务（热重载）"
 
     cd "$PROJECT_ROOT"
@@ -241,9 +227,8 @@ cmd_dev() {
     echo ""
 
     # 使用 concurrently 启动应用服务
-    # 注意：基础设施在后台独立运行，不受 Ctrl+C 影响
     log_info "正在启动 API 和前端服务..."
-    log_info "提示: 按 Ctrl+C 停止 API 和前端（基础设施保持运行）"
+    log_info "提示: 按 Ctrl+C 停止 API 和前端"
 
     # 使用 cargo watch 监视 crates 目录的变化
     # -w: 明确指定监视目录
@@ -268,241 +253,6 @@ cmd_dev() {
 
     echo ""
     log_info "API 和前端服务已停止"
-    log_info "基础设施仍在后台运行"
-    log_info "如需停止基础设施，请运行: ./manage.sh services stop"
-}
-
-# =============================================================================
-# 生产模式 - Docker 启动所有服务
-# =============================================================================
-cmd_prod() {
-    log_section "启动生产模式（Docker）"
-
-    load_env
-
-    # 委托给 deploy.sh
-    if [ -f "$PROJECT_ROOT/deploy.sh" ]; then
-        "$PROJECT_ROOT/deploy.sh" prod
-    else
-        log_error "未找到 deploy.sh 脚本"
-        exit 1
-    fi
-}
-
-# =============================================================================
-# 基础设施服务管理
-# =============================================================================
-cmd_services() {
-    local subcommand=${1:-status}
-    shift || true
-
-    case "$subcommand" in
-        start|up)
-            cmd_services_start
-            ;;
-        stop|down)
-            cmd_services_stop
-            ;;
-        restart)
-            cmd_services_stop
-            sleep 2
-            cmd_services_start
-            ;;
-        status)
-            cmd_services_status
-            ;;
-        logs)
-            cmd_services_logs "$@"
-            ;;
-        clean)
-            cmd_services_clean
-            ;;
-        help|*)
-            cat << 'EOF'
-基础设施服务管理（PostgreSQL, Redis, Qdrant, Neo4j, MinIO）
-
-用法: ./manage.sh services <subcommand>
-
-子命令:
-  start    启动基础设施服务
-  stop     停止基础设施服务
-  restart  重启基础设施服务
-  status   查看服务状态
-  logs     查看服务日志 [service]
-  clean    清理服务数据（警告：会删除数据！）
-  help     显示此帮助
-
-示例:
-  ./manage.sh services start           # 启动所有基础设施
-  ./manage.sh services stop            # 停止所有基础设施
-  ./manage.sh services logs postgres   # 查看 PostgreSQL 日志
-  ./manage.sh services status          # 查看服务状态
-
-EOF
-            ;;
-    esac
-}
-
-# 检测系统架构
-detect_arch() {
-    local arch=$(uname -m)
-    case "$arch" in
-        x86_64|amd64)
-            echo "amd64"
-            ;;
-        arm64|aarch64)
-            echo "arm64"
-            ;;
-        *)
-            echo "$arch"
-            ;;
-    esac
-}
-
-# 获取 Docker 平台信息
-docker_platform() {
-    if command -v docker &> /dev/null; then
-        docker version --format '{{.Server.Os}}/{{.Server.Arch}}' 2>/dev/null || echo "unknown"
-    else
-        echo "unknown"
-    fi
-}
-
-# 启动基础设施服务
-cmd_services_start() {
-    log_section "启动基础设施服务"
-
-    if ! command -v docker &> /dev/null; then
-        log_error "Docker 未安装，无法启动基础设施服务"
-        exit 1
-    fi
-
-    if [ ! -f "$PROJECT_ROOT/docker-compose.yml" ]; then
-        log_error "未找到 docker-compose.yml"
-        exit 1
-    fi
-
-    # 检测架构
-    local host_arch=$(detect_arch)
-    local docker_info=$(docker_platform)
-
-    log_info "系统架构: $host_arch"
-    log_info "Docker 平台: $docker_info"
-
-    # 如果是 Apple Silicon，提供优化提示
-    if [[ "$host_arch" == "arm64" ]] && [[ "$OSTYPE" == "darwin"* ]]; then
-        log_info "检测到 Apple Silicon (M1/M2/M3)"
-        log_info "将使用 ARM64 架构镜像以获得最佳性能"
-
-        # 设置环境变量确保使用 ARM64 镜像
-        export DOCKER_PLATFORM="linux/arm64"
-    fi
-
-    # 使用 docker-compose 只启动基础设施服务
-    local compose_cmd
-    if docker compose version &> /dev/null; then
-        compose_cmd="docker compose"
-    else
-        compose_cmd="docker-compose"
-    fi
-
-    # 启动基础设施服务（不包括 API 和 Web）
-    $compose_cmd -f "$PROJECT_ROOT/docker-compose.yml" up -d \
-        redis postgres qdrant neo4j minio
-
-    log_success "基础设施服务已启动"
-
-    # 等待服务就绪
-    log_info "等待服务就绪..."
-    local max_attempts=30
-    local attempt=1
-
-    while [ $attempt -le $max_attempts ]; do
-        if docker inspect --format='{{.State.Health.Status}}' playground-redis-1 2>/dev/null | grep -q "healthy"; then
-            break
-        fi
-        echo -n "."
-        sleep 2
-        attempt=$((attempt + 1))
-    done
-    echo ""
-
-    # 显示服务状态
-    cmd_services_status
-}
-
-# 停止基础设施服务
-cmd_services_stop() {
-    log_info "停止基础设施服务..."
-
-    local compose_cmd
-    if docker compose version &> /dev/null; then
-        compose_cmd="docker compose"
-    else
-        compose_cmd="docker-compose"
-    fi
-
-    $compose_cmd -f "$PROJECT_ROOT/docker-compose.yml" stop \
-        redis postgres qdrant neo4j minio 2>/dev/null || true
-
-    log_success "基础设施服务已停止"
-}
-
-# 查看基础设施状态
-cmd_services_status() {
-    log_section "基础设施服务状态"
-
-    local compose_cmd
-    if docker compose version &> /dev/null; then
-        compose_cmd="docker compose"
-    else
-        compose_cmd="docker-compose"
-    fi
-
-    $compose_cmd -f "$PROJECT_ROOT/docker-compose.yml" ps redis postgres qdrant neo4j minio 2>/dev/null || {
-        log_warning "服务未运行或未配置"
-    }
-}
-
-# 查看基础设施日志
-cmd_services_logs() {
-    local service=${1:-}
-    local compose_cmd
-
-    if docker compose version &> /dev/null; then
-        compose_cmd="docker compose"
-    else
-        compose_cmd="docker-compose"
-    fi
-
-    if [ -n "$service" ]; then
-        $compose_cmd -f "$PROJECT_ROOT/docker-compose.yml" logs -f "$service"
-    else
-        $compose_cmd -f "$PROJECT_ROOT/docker-compose.yml" logs -f redis postgres qdrant neo4j minio
-    fi
-}
-
-# 清理基础设施数据
-cmd_services_clean() {
-    log_warning "这将删除所有基础设施数据！"
-    read -p "确定要继续吗? (y/N) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        log_info "取消操作"
-        exit 0
-    fi
-
-    local compose_cmd
-    if docker compose version &> /dev/null; then
-        compose_cmd="docker compose"
-    else
-        compose_cmd="docker-compose"
-    fi
-
-    $compose_cmd -f "$PROJECT_ROOT/docker-compose.yml" down -v \
-        redis postgres qdrant neo4j minio 2>/dev/null || true
-
-    log_success "基础设施数据已清理"
 }
 
 # =============================================================================
@@ -852,8 +602,6 @@ cmd_help() {
 
 核心命令:
   dev                          开发模式（本地进程启动所有服务，热重载）
-  prod                         生产模式（Docker 启动所有服务）
-  services [start|stop|logs]   基础设施服务管理（PostgreSQL, Redis等）
 
 项目命令:
   build [dev|release|frontend|backend]  构建项目
@@ -868,21 +616,11 @@ cmd_help() {
 
 详细说明:
 
-  dev / prod (对等的两种模式)
+  dev
     dev  - 本地进程启动所有服务（API + 前端 + 数据库），支持热重载
            前端: http://localhost:5173 (Vite 热重载)
            API:  http://localhost:8080
            API 文档: http://localhost:8080/api/docs
-    prod - Docker 启动所有服务（优化镜像 + 完整基础设施）
-           所有服务: http://localhost:8080
-
-  services (基础设施管理)
-    start   - 启动基础设施服务（PostgreSQL, Redis, Qdrant, Neo4j, MinIO）
-    stop    - 停止基础设施服务
-    restart - 重启基础设施服务
-    status  - 查看服务状态
-    logs    - 查看服务日志
-    clean   - 清理服务数据（警告：会删除数据！）
 
   build
     dev      - 开发模式构建（默认）
@@ -909,9 +647,6 @@ cmd_help() {
 
 示例:
   ./manage.sh dev                    # 开发模式（本地热重载）
-  ./manage.sh prod                   # 生产模式（Docker）
-  ./manage.sh services start         # 只启动基础设施
-  ./manage.sh services logs postgres # 查看 PostgreSQL 日志
   ./manage.sh check                  # 运行完整检查
 
 工作流示例:
@@ -919,24 +654,11 @@ cmd_help() {
   1. 首次开发:
      ./manage.sh install              # 安装依赖
      ./manage.sh dev                  # 启动所有服务
-     # 按 Ctrl+C 停止 API 和前端，数据库继续运行
-     ./manage.sh services stop        # 停止基础设施
+     # 按 Ctrl+C 停止 API 和前端
 
   2. 日常开发:
-     ./manage.sh services start       # 启动基础设施（如果未运行）
      ./manage.sh run                  # 只运行 API
      # 或同时运行前端: cd web && npm run dev
-
-  3. 生产部署:
-     ./manage.sh prod                 # Docker 部署所有服务
-
-数据迁移:
-  ./data-migrate.sh backup           # 创建数据备份
-  ./data-migrate.sh restore <path>   # 恢复数据
-  ./data-migrate.sh export [path]    # 导出数据
-  ./data-migrate.sh list             # 查看备份列表
-
-详见: DATA_MIGRATION.md
 
 EOF
 }
@@ -962,12 +684,6 @@ main() {
     case "$command" in
         dev)
             cmd_dev "$@"
-            ;;
-        prod)
-            cmd_prod "$@"
-            ;;
-        services)
-            cmd_services "$@"
             ;;
         build)
             cmd_build "$@"

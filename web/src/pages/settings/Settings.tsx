@@ -185,8 +185,6 @@ export const Settings: React.FC = () => {
           className="bg-surface-dark-light border border-border-dark rounded px-3 py-1.5 text-white text-sm"
         >
           <option value="in-memory">In-Memory</option>
-          <option value="qdrant">Qdrant</option>
-          <option value="milvus">Milvus</option>
         </select>
       </div>
 
@@ -201,7 +199,6 @@ export const Settings: React.FC = () => {
           className="bg-surface-dark-light border border-border-dark rounded px-3 py-1.5 text-white text-sm"
         >
           <option value="in-memory">In-Memory</option>
-          <option value="neo4j">Neo4j</option>
         </select>
       </div>
 
@@ -216,7 +213,6 @@ export const Settings: React.FC = () => {
           className="bg-surface-dark-light border border-border-dark rounded px-3 py-1.5 text-white text-sm"
         >
           <option value="in-memory">In-Memory</option>
-          <option value="redis">Redis</option>
         </select>
       </div>
 

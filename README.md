@@ -59,7 +59,6 @@ playground/
 │       ├── registry/    # Agent 注册表
 │       └── scheduler/   # 任务调度器
 ├── web/                 # TypeScript 前端
-├── docker-compose.yml   # Docker Compose 配置
 ├── deploy.sh            # 部署脚本
 └── manage.sh            # 项目管理脚本
 ```
@@ -113,7 +112,6 @@ playground/
 | 后端 | Rust, Tokio, Axum |
 | 前端 | React, TypeScript, Vite |
 | 脚本 | Rhai |
-| 存储 | PostgreSQL, Redis, Qdrant, Neo4j, MinIO |
 | 部署 | Docker, Docker Compose, Kubernetes |
 
 ## 系统架构
@@ -138,7 +136,6 @@ playground/
 │                                                                             │
 │  ┌─────────┐  ┌──────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐          │
 │  │  Hot    │  │  Vector  │  │  Graph  │  │   Raw   │  │  Meta   │          │
-│  │ (Redis) │  │ (Qdrant) │  │ (Neo4j) │  │ (MinIO) │  │(Postgres)│         │
 │  └─────────┘  └──────────┘  └─────────┘  └─────────┘  └─────────┘          │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -162,7 +159,6 @@ playground/
 ### 本地开发
 - Rust 1.75+
 - Node.js 18+
-- PostgreSQL 15+
 - Redis 7+
 
 ## 默认端口
@@ -171,20 +167,13 @@ playground/
 |------|------|------|
 | API | 8080 | REST API 服务 |
 | Web | 3000 | 前端开发服务器 |
-| PostgreSQL | 5432 | 关系型数据库 |
 | Redis | 6379 | 缓存 |
 | Qdrant | 6333 | 向量数据库 |
-| Neo4j | 7474 | 图数据库浏览器 |
-| MinIO | 9000 | 对象存储 API |
-| MinIO Console | 9001 | 对象存储控制台 |
 
 ## 默认凭据
 
 | 服务 | 用户名 | 密码 |
 |------|--------|------|
-| PostgreSQL | postgres | postgres |
-| Neo4j | neo4j | password |
-| MinIO | minioadmin | minioadmin |
 
 ## 测试
 

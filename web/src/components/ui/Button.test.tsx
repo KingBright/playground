@@ -19,4 +19,19 @@ describe('Button', () => {
     render(<Button loading>Loading</Button>)
     expect(screen.getByText('Loading')).toBeDisabled()
   })
+
+  it('renders icon when provided', () => {
+    render(<Button icon="add">Add</Button>)
+    expect(screen.getByText('add')).toBeInTheDocument()
+  })
+
+  it('applies correct variant styles', () => {
+    const { container } = render(<Button variant="danger">Danger</Button>)
+    expect(container.firstChild).toHaveClass('bg-red-600')
+  })
+
+  it('applies full width class when fullWidth is true', () => {
+    const { container } = render(<Button fullWidth>Full Width</Button>)
+    expect(container.firstChild).toHaveClass('w-full')
+  })
 })

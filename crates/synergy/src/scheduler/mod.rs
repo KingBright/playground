@@ -9,14 +9,14 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::{RwLock, Semaphore};
-use tokio::time::{interval, Duration, timeout};
+use tokio::time::{interval, timeout, Duration};
 use tracing::{error, info, warn};
 
 // Engine integration for mission execution
-use engine::workflow::{WorkflowConfig, WorkflowEngine, WorkflowScript};
 use engine::agent::OracleProtocol;
-use engine::session::{Session, SessionConfig};
 use engine::environment::{Environment, EnvironmentState, StateSnapshot, StateUpdate};
+use engine::session::{Session, SessionConfig};
+use engine::workflow::{WorkflowConfig, WorkflowEngine, WorkflowScript};
 
 // Brain integration for knowledge queries
 use brain::storage::UnifiedMemory;
@@ -70,10 +70,7 @@ mod cron_parser {
 
         // 处理逗号分隔的列表
         if pattern.contains(',') {
-            let nums: Vec<i32> = pattern
-                .split(',')
-                .filter_map(|s| s.parse().ok())
-                .collect();
+            let nums: Vec<i32> = pattern.split(',').filter_map(|s| s.parse().ok()).collect();
             return nums.contains(&value);
         }
 
@@ -401,7 +398,8 @@ impl MissionControl {
                                     registry_clone,
                                     executions_clone,
                                     active_missions_clone,
-                                ).await;
+                                )
+                                .await;
                                 // permit 在这里自动释放
                             });
                         }
@@ -513,12 +511,16 @@ impl MissionControl {
             history.iter().find(|m| m.id == mission_id).cloned()
         };
 
-        let mission = mission.ok_or_else(|| Error::NotFound(format!("Mission {} not found", mission_id)))?;
+        let mission =
+            mission.ok_or_else(|| Error::NotFound(format!("Mission {} not found", mission_id)))?;
 
         info!("Manually triggering mission: {}", mission.name);
 
         // 尝试获取信号量许可
-        let _permit = self.concurrency_semaphore.acquire().await
+        let _permit = self
+            .concurrency_semaphore
+            .acquire()
+            .await
             .map_err(|e| Error::Internal(format!("Failed to acquire semaphore: {}", e)))?;
 
         // 创建执行记录
@@ -557,7 +559,15 @@ impl MissionControl {
         let max_retries = self.config.max_retries;
 
         tokio::spawn(async move {
-            Self::run_mission_with_timeout(&mission, registry, executions, active_missions, timeout_sec, max_retries).await;
+            Self::run_mission_with_timeout(
+                &mission,
+                registry,
+                executions,
+                active_missions,
+                timeout_sec,
+                max_retries,
+            )
+            .await;
         });
 
         Ok(execution)
@@ -570,7 +580,8 @@ impl MissionControl {
         executions: Arc<RwLock<HashMap<uuid::Uuid, Vec<MissionExecution>>>>,
         active_missions: Arc<RwLock<Vec<Mission>>>,
     ) {
-        Self::run_mission_with_timeout(mission, registry, executions, active_missions, 300, 3).await;
+        Self::run_mission_with_timeout(mission, registry, executions, active_missions, 300, 3)
+            .await;
     }
 
     /// 实际执行任务（带超时和重试）
@@ -582,7 +593,10 @@ impl MissionControl {
         timeout_sec: u64,
         max_retries: u32,
     ) {
-        info!("Running mission: {} (timeout: {}s, max_retries: {})", mission.name, timeout_sec, max_retries);
+        info!(
+            "Running mission: {} (timeout: {}s, max_retries: {})",
+            mission.name, timeout_sec, max_retries
+        );
 
         // 更新执行状态为Running
         {
@@ -595,13 +609,17 @@ impl MissionControl {
             }
         }
 
-        let mut final_result: Result<serde_json::Value> = Err(Error::Internal("Not executed".to_string()));
+        let mut final_result: Result<serde_json::Value> =
+            Err(Error::Internal("Not executed".to_string()));
         let mut attempts = 0;
 
         // 重试循环
         while attempts <= max_retries {
             if attempts > 0 {
-                info!("Retrying mission {} (attempt {}/{})", mission.name, attempts, max_retries);
+                info!(
+                    "Retrying mission {} (attempt {}/{})",
+                    mission.name, attempts, max_retries
+                );
                 tokio::time::sleep(Duration::from_secs(1)).await;
             }
 
@@ -609,7 +627,8 @@ impl MissionControl {
             let timeout_duration = Duration::from_secs(timeout_sec);
             let execution_result = timeout(timeout_duration, async {
                 Self::execute_mission_once(mission, registry.clone()).await
-            }).await;
+            })
+            .await;
 
             match execution_result {
                 Ok(Ok(result)) => {
@@ -617,12 +636,18 @@ impl MissionControl {
                     break;
                 }
                 Ok(Err(e)) => {
-                    error!("Mission {} failed (attempt {}): {}", mission.name, attempts, e);
+                    error!(
+                        "Mission {} failed (attempt {}): {}",
+                        mission.name, attempts, e
+                    );
                     final_result = Err(e);
                 }
                 Err(_) => {
                     error!("Mission {} timed out after {}s", mission.name, timeout_sec);
-                    final_result = Err(Error::Timeout(format!("Mission timed out after {}s", timeout_sec)));
+                    final_result = Err(Error::Timeout(format!(
+                        "Mission timed out after {}s",
+                        timeout_sec
+                    )));
                 }
             }
 
@@ -667,10 +692,7 @@ impl MissionControl {
         let agent_def = registry.get(&mission.target_agent).await;
 
         if let Some(def) = agent_def {
-            info!(
-                "Executing agent {} for mission {}",
-                def.name, mission.name
-            );
+            info!("Executing agent {} for mission {}", def.name, mission.name);
 
             // 如果有工作流脚本，使用WorkflowEngine执行
             if let Some(script_content) = &mission.workflow_script {
@@ -694,22 +716,19 @@ impl MissionControl {
 
                 // 创建WorkflowEngine
                 let workflow_config = WorkflowConfig::default();
-                let workflow_engine = WorkflowEngine::new(
-                    workflow_config,
-                    session,
-                    oracle,
-                );
+                let workflow_engine = WorkflowEngine::new(workflow_config, session, oracle);
 
                 // 创建Workflow脚本
-                let script = WorkflowScript::new(
-                    mission.name.clone(),
-                    script_content.clone(),
-                ).with_description(format!("Mission {} workflow", mission.name));
+                let script = WorkflowScript::new(mission.name.clone(), script_content.clone())
+                    .with_description(format!("Mission {} workflow", mission.name));
 
                 // 执行脚本
                 match workflow_engine.execute(&script).await {
                     Ok(result) => {
-                        info!("Workflow executed successfully for mission {}", mission.name);
+                        info!(
+                            "Workflow executed successfully for mission {}",
+                            mission.name
+                        );
                         Ok(serde_json::json!({
                             "status": "completed",
                             "agent": def.name,
@@ -723,8 +742,14 @@ impl MissionControl {
                         }))
                     }
                     Err(e) => {
-                        error!("Workflow execution failed for mission {}: {}", mission.name, e);
-                        Err(Error::WorkflowError(format!("Workflow execution failed: {}", e)))
+                        error!(
+                            "Workflow execution failed for mission {}: {}",
+                            mission.name, e
+                        );
+                        Err(Error::WorkflowError(format!(
+                            "Workflow execution failed: {}",
+                            e
+                        )))
                     }
                 }
             } else {
@@ -760,7 +785,8 @@ impl MissionControl {
         trigger: TriggerType,
         parameters: serde_json::Value,
     ) -> Result<Mission> {
-        self.create_mission_with_script(name, target_agent, trigger, parameters, None).await
+        self.create_mission_with_script(name, target_agent, trigger, parameters, None)
+            .await
     }
 
     /// 创建带工作流脚本的任务
@@ -838,7 +864,8 @@ impl MissionControl {
             self.active_missions.clone(),
             self.config.task_timeout_sec,
             self.config.max_retries,
-        ).await;
+        )
+        .await;
 
         // 返回执行结果
         let execs = self.executions.read().await;
@@ -868,7 +895,11 @@ impl MissionControl {
     }
 
     /// 查询知识库（简化的 Brain 集成）
-    pub async fn query_knowledge(&self, query: &str, limit: usize) -> Result<Vec<serde_json::Value>> {
+    pub async fn query_knowledge(
+        &self,
+        query: &str,
+        limit: usize,
+    ) -> Result<Vec<serde_json::Value>> {
         if let Some(_brain) = self.brain.clone() {
             // Brain 集成：可以通过 brain.search_archive 进行基础搜索
             // 注意：实际项目中需要嵌入向量才能使用 search_vector
@@ -885,7 +916,12 @@ impl MissionControl {
     }
 
     /// 存储知识到 Brain（简化的 Brain 集成）
-    pub async fn store_knowledge(&self, title: &str, content: &str, _tags: Vec<String>) -> Result<uuid::Uuid> {
+    pub async fn store_knowledge(
+        &self,
+        title: &str,
+        content: &str,
+        _tags: Vec<String>,
+    ) -> Result<uuid::Uuid> {
         if let Some(_brain) = self.brain.clone() {
             // Brain 集成：可以通过 brain.archive_raw 存储原始数据
             // 或者通过 brain.store_hot 存储热数据
@@ -900,7 +936,8 @@ impl MissionControl {
     /// 发布事件
     pub fn publish_event(&self, event_type: EventType, payload: serde_json::Value) -> Result<()> {
         let event = Event::new(event_type, payload);
-        self.event_bus.publish(event)
+        self.event_bus
+            .publish(event)
             .map_err(|e| Error::Internal(format!("Failed to publish event: {}", e)))
     }
 }
@@ -912,7 +949,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_control_creation() {
-        let registry = Arc::new(AgentRegistry::new());
+        let registry = Arc::new(AgentRegistry::new(None).await);
         let config = SchedulerConfig::default();
 
         let mc = MissionControl::new(registry, config);
@@ -921,7 +958,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_creation() {
-        let registry = Arc::new(AgentRegistry::new());
+        let registry = Arc::new(AgentRegistry::new(None).await);
 
         // 先注册一个Agent
         let definition = AgentDefinition {
@@ -966,7 +1003,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_execution() {
-        let registry = Arc::new(AgentRegistry::new());
+        let registry = Arc::new(AgentRegistry::new(None).await);
 
         // 注册Agent
         let definition = AgentDefinition {
@@ -1022,7 +1059,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_mission_executions_tracking() {
-        let registry = Arc::new(AgentRegistry::new());
+        let registry = Arc::new(AgentRegistry::new(None).await);
 
         let definition = AgentDefinition {
             id: uuid::Uuid::new_v4(),

@@ -17,10 +17,7 @@ uuid.workspace = true
 chrono.workspace = true
 
 # Storage
-redis.workspace = true
 petgraph.workspace = true
-# qdrant-client.workspace = true
-# neo4j.workspace = true
 
 # Data Collection
 reqwest.workspace = true

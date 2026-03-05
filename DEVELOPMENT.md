@@ -224,7 +224,6 @@ cargo run -p api -- --bind 0.0.0.0:3000
 
 ### Docker 部署
 
-```dockerfile
 FROM rust:1.75 as builder
 WORKDIR /app
 COPY . .

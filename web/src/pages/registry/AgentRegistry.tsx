@@ -45,7 +45,9 @@ export const AgentRegistry: React.FC = () => {
     const fetchData = async () => {
       try {
         const data = await api.synergy.getAgents();
-        setAgents(data.agents);
+        if (data && data.agents) {
+          setAgents(data.agents);
+        }
       } catch (error) {
         console.error('Failed to fetch agents:', error);
       } finally {

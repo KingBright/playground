@@ -37,20 +37,25 @@ export const SideNavBar: React.FC<SideNavBarProps> = ({
   }, {} as Record<string, NavItem[]>);
 
   return (
-    <div className="hidden lg:flex w-72 flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111722] p-4 shrink-0 h-full">
+    <div className="hidden lg:flex w-72 flex-col justify-between border-r border-[#232f48] bg-[#111722] p-4 shrink-0 h-full">
       <div className="flex flex-col gap-4">
         {/* Logo */}
         <div className="flex items-center gap-3 px-2">
-          <div className="bg-primary/20 rounded-full size-10 flex items-center justify-center text-primary">
-            <span className="material-symbols-outlined">hub</span>
+          <div className="bg-transparent rounded-full size-10 flex items-center justify-center text-blue-500">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L15 8H9L12 2Z" fill="currentColor"/>
+              <path d="M5 10L8 16H2L5 10Z" fill="currentColor"/>
+              <path d="M19 10L22 16H16L19 10Z" fill="currentColor"/>
+              <circle cx="12" cy="14" r="3" fill="currentColor"/>
+            </svg>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-slate-900 dark:text-white text-base font-bold leading-normal">AI Platform</h1>
-            <p className="text-slate-500 dark:text-[#92a4c9] text-xs font-normal leading-normal">v2.4.0-alpha</p>
+            <h1 className="text-white text-lg font-bold leading-normal">AI Cortex</h1>
+            <p className="text-[#92a4c9] text-xs font-normal leading-normal">v2.4.0-alpha</p>
           </div>
         </div>
 
-        <div className="h-px bg-slate-200 dark:bg-slate-800 w-full my-1"></div>
+        <div className="h-px bg-[#232f48] w-full my-1"></div>
 
         {/* Main Navigation */}
         <div className="flex flex-col gap-1">
@@ -120,29 +125,12 @@ export const SideNavBar: React.FC<SideNavBarProps> = ({
         {/* Footer Action */}
         {footerAction && (
           <button
-            className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-blue-700 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-blue-900/20"
+            className="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1152d4] hover:bg-blue-600 transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]"
             onClick={footerAction.onClick}
           >
             <span className="mr-2 material-symbols-outlined text-[18px]">{footerAction.icon}</span>
             <span className="truncate">{footerAction.label}</span>
           </button>
-        )}
-
-        {/* User Profile */}
-        {user && (
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#92a4c9] hover:bg-[#232f48]/50 hover:text-white cursor-pointer transition-colors">
-            {user.avatar ? (
-              <img src={user.avatar} alt={user.name} className="size-8 rounded-full" />
-            ) : (
-              <div className="size-8 rounded-full bg-gradient-to-tr from-accent-purple to-primary flex items-center justify-center text-white text-xs font-bold">
-                {user.name.charAt(0)}
-              </div>
-            )}
-            <div className="flex flex-col">
-              <p className="text-white text-sm font-medium">{user.name}</p>
-              <p className="text-[#92a4c9] text-xs">{user.role}</p>
-            </div>
-          </div>
         )}
       </div>
     </div>

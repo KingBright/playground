@@ -14,11 +14,9 @@ import { TaskScheduler } from './pages/scheduler/TaskScheduler';
 import { Settings } from './pages/settings/Settings';
 
 const navItems: NavItem[] = [
-  { id: 'dashboard', label: 'Mission Control', icon: 'dashboard', path: '/dashboard' },
+  { id: 'dashboard', label: 'Mission Control', icon: 'grid_view', path: '/dashboard' },
   { id: 'brain', label: 'External Brain', icon: 'psychology', path: '/brain' },
   { id: 'playground', label: 'Agent Playground', icon: 'smart_toy', path: '/playground' },
-  { id: 'registry', label: 'Agent Registry', icon: 'apps', path: '/registry' },
-  { id: 'scheduler', label: 'Task Scheduler', icon: 'schedule', path: '/scheduler' },
   { id: 'logs', label: 'System Logs', icon: 'description', path: '/logs' },
   { id: 'settings', label: 'Settings', icon: 'settings', path: '/settings' },
 ];
@@ -48,10 +46,10 @@ const App: React.FC = () => {
             }}
           />
 
-          <main className="flex-1 flex flex-col h-full overflow-hidden">
+          <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#101622]">
             {/* Header */}
-            <header className="h-16 border-b border-border-dark flex items-center justify-between px-6 bg-background-dark/80 backdrop-blur-md sticky top-0 z-10">
-              <div className="flex items-center text-text-secondary">
+            <header className="h-16 border-b border-[#232f48] flex items-center justify-between px-8 bg-[#101622] sticky top-0 z-10">
+              <div className="flex items-center text-[#92a4c9]">
                 <Icon name="home" className="mr-2" />
                 <span className="mx-2 text-xs">/</span>
                 <span className="text-sm font-medium text-white">
@@ -60,19 +58,19 @@ const App: React.FC = () => {
               </div>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => setDarkMode(!darkMode)}
-                  className="p-2 text-text-secondary hover:text-white rounded hover:bg-surface-dark transition-colors"
+                  className="px-4 py-1.5 rounded-full border border-[#232f48] text-[#92a4c9] text-sm hover:text-white hover:bg-[#1a2333] transition-colors flex items-center gap-2"
                 >
-                  <Icon name={darkMode ? 'light_mode' : 'dark_mode'} />
+                  <Icon name="cloud_upload" className="text-[18px]" />
+                  Knowledge Ingestion
                 </button>
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs cursor-pointer">
+                <div className="h-8 w-8 rounded-full bg-[#1152d4] flex items-center justify-center text-white font-bold text-xs cursor-pointer">
                   AI
                 </div>
               </div>
             </header>
 
             {/* Page Content */}
-            <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex-1 overflow-y-auto p-8">
               <div className="max-w-7xl mx-auto h-full">
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />

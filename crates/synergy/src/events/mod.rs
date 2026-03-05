@@ -53,7 +53,9 @@ impl Event {
 }
 
 /// 事件处理器类型
-type EventHandler = Arc<dyn Fn(Event) -> std::pin::Pin<Box<dyn std::future::Future<Output = ()> + Send>> + Send + Sync>;
+type EventHandler = Arc<
+    dyn Fn(Event) -> std::pin::Pin<Box<dyn std::future::Future<Output = ()> + Send>> + Send + Sync,
+>;
 
 /// 事件总线
 pub struct EventBus {
@@ -93,9 +95,7 @@ impl EventBus {
         F: Fn(Event) -> Fut + Send + Sync + 'static,
         Fut: std::future::Future<Output = ()> + Send + 'static,
     {
-        let wrapped_handler: EventHandler = Arc::new(move |event| {
-            Box::pin(handler(event))
-        });
+        let wrapped_handler: EventHandler = Arc::new(move |event| Box::pin(handler(event)));
 
         let mut subs = self.subscribers.write().await;
         subs.entry(event_name.to_string())
@@ -114,7 +114,8 @@ impl EventBus {
 
     /// 发布事件
     pub fn publish(&self, event: Event) -> Result<(), String> {
-        self.sender.send(event)
+        self.sender
+            .send(event)
             .map_err(|e| format!("Failed to publish event: {}", e))
     }
 
@@ -179,7 +180,8 @@ mod tests {
                 let mut r = received.write().await;
                 *r = true;
             }
-        }).await;
+        })
+        .await;
 
         // 启动分发循环（在后台运行）
         let bus_clone = EventBus {

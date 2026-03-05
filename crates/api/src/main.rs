@@ -6,22 +6,22 @@ mod models;
 
 use anyhow::Result;
 use axum::{
-    extract::ws::{Message, WebSocket, WebSocketUpgrade},
     body::Body,
+    extract::ws::{Message, WebSocket, WebSocketUpgrade},
     extract::{Path, State},
     http::{header, Method, Response, StatusCode},
     response::{Html, IntoResponse},
-    routing::{get, post, delete},
+    routing::{delete, get, post},
     Json, Router,
 };
 use clap::Parser;
-use serde_json::json;
-use sysinfo::System;
 use models::*;
 use rust_embed::RustEmbed;
+use serde_json::json;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
+use sysinfo::System;
 use tower_http::{
     cors::{Any, CorsLayer},
     trace::TraceLayer,
@@ -30,8 +30,10 @@ use tracing::{error, info, warn};
 
 // Import module components
 use brain::storage::{
-    hot_memory::InMemoryHotMemory, graph_memory::InMemoryGraphStore,
-    raw_archive::{FileSystemRawArchive, RawArchiveConfig}, vector_memory::InMemoryVectorStore,
+    graph_memory::InMemoryGraphStore,
+    hot_memory::InMemoryHotMemory,
+    raw_archive::{FileSystemRawArchive, RawArchiveConfig},
+    vector_memory::InMemoryVectorStore,
     GraphMemoryBackend, HotMemoryBackend, RawArchiveBackend, UnifiedMemory, VectorMemoryBackend,
 };
 use engine::session::SessionManager;
@@ -60,9 +62,9 @@ impl Default for ServerConfig {
     }
 }
 
+use synergy::registry::AgentRegistry;
 /// Application state with real module integrations
 use synergy::scheduler::MissionControl;
-use synergy::registry::AgentRegistry;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -173,7 +175,8 @@ async fn init_app_state(cli: &Cli) -> Result<AppState> {
 
     // Initialize Brain storage
     let hot = Arc::new(InMemoryHotMemory::new()) as Arc<dyn HotMemoryBackend>;
-    let vector = Arc::new(InMemoryVectorStore::with_default_config()) as Arc<dyn VectorMemoryBackend>;
+    let vector =
+        Arc::new(InMemoryVectorStore::with_default_config()) as Arc<dyn VectorMemoryBackend>;
     let graph = Arc::new(InMemoryGraphStore::new()) as Arc<dyn GraphMemoryBackend>;
 
     // Initialize raw archive with temp directory
@@ -196,11 +199,18 @@ async fn init_app_state(cli: &Cli) -> Result<AppState> {
         api_only: cli.api_only,
     };
 
+    // Use a persistent SQLite database instead of in-memory, to satisfy monolithic requirement
+    let db_url = "sqlite://data.db?mode=rwc";
 
-    let registry = Arc::new(AgentRegistry::new());
+    // Create the database file if it doesn't exist
+    if !std::path::Path::new("data.db").exists() {
+        std::fs::File::create("data.db").unwrap();
+    }
+
+    let registry = Arc::new(AgentRegistry::new(Some(db_url)).await);
     let mission_control = Arc::new(MissionControl::new(
         registry.clone(),
-        synergy::scheduler::SchedulerConfig::default()
+        synergy::scheduler::SchedulerConfig::default(),
     ));
 
     // Start the scheduler
@@ -230,12 +240,18 @@ fn create_api_routes() -> Router<AppState> {
         // Dashboard API
         .route("/dashboard/stats", get(get_dashboard_stats))
         // Brain API
-        .route("/brain/knowledge", get(list_knowledge).post(create_knowledge))
+        .route(
+            "/brain/knowledge",
+            get(list_knowledge).post(create_knowledge),
+        )
         .route("/brain/knowledge/:id", delete(delete_knowledge))
         .route("/brain/health", get(brain_health))
         // Engine API
         .route("/engine/sessions", get(list_sessions).post(create_session))
-        .route("/engine/sessions/:id", get(get_session).delete(delete_session))
+        .route(
+            "/engine/sessions/:id",
+            get(get_session).delete(delete_session),
+        )
         .route("/engine/sessions/:id/start", post(start_session))
         .route("/engine/sessions/:id/pause", post(pause_session))
         .route("/engine/sessions/:id/stop", post(stop_session))
@@ -497,9 +513,7 @@ struct CreateTaskRequest {
 
 // Brain API handlers
 
-async fn create_knowledge(
-    Json(request): Json<CreateKnowledgeRequest>,
-) -> impl IntoResponse {
+async fn create_knowledge(Json(request): Json<CreateKnowledgeRequest>) -> impl IntoResponse {
     let id = Uuid::new_v4().to_string();
     Json(serde_json::json!({
         "id": id,
@@ -510,9 +524,7 @@ async fn create_knowledge(
     }))
 }
 
-async fn delete_knowledge(
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn delete_knowledge(Path(id): Path<String>) -> impl IntoResponse {
     Json(serde_json::json!({
         "id": id,
         "status": "deleted",
@@ -538,7 +550,14 @@ async fn create_session(
     let env_builder = EnvironmentBuilder::new(&request.environment_type, "1.0.0");
     match env_builder.build() {
         Ok(environment) => {
-            match state.session_manager.create_session(config, Box::new(environment) as Box<dyn engine::environment::Environment>).await {
+            match state
+                .session_manager
+                .create_session(
+                    config,
+                    Box::new(environment) as Box<dyn engine::environment::Environment>,
+                )
+                .await
+            {
                 Ok(session) => {
                     let stats = session.stats().await;
                     Json(serde_json::json!({
@@ -547,29 +566,31 @@ async fn create_session(
                         "status": format!("{:?}", stats.status).to_lowercase(),
                         "created_at": stats.created_at.to_rfc3339(),
                         "message": "Session created successfully"
-                    })).into_response()
+                    }))
+                    .into_response()
                 }
-                Err(e) => {
-                    (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
+                Err(e) => (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(serde_json::json!({
                         "error": format!("Failed to create session: {}", e),
                         "code": "SESSION_CREATE_ERROR"
-                    }))).into_response()
-                }
+                    })),
+                )
+                    .into_response(),
             }
         }
-        Err(e) => {
-            (StatusCode::BAD_REQUEST, Json(serde_json::json!({
+        Err(e) => (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
                 "error": format!("Failed to create environment: {}", e),
                 "code": "ENVIRONMENT_ERROR"
-            }))).into_response()
-        }
+            })),
+        )
+            .into_response(),
     }
 }
 
-async fn get_session(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn get_session(State(state): State<AppState>, Path(id): Path<String>) -> impl IntoResponse {
     match id.parse::<Uuid>() {
         Ok(uuid) => {
             if let Some(session) = state.session_manager.get_session(uuid).await {
@@ -580,20 +601,27 @@ async fn get_session(
                     "status": format!("{:?}", stats.status).to_lowercase(),
                     "created_at": stats.created_at.to_rfc3339(),
                     "environment": "Default"
-                })).into_response()
+                }))
+                .into_response()
             } else {
-                (StatusCode::NOT_FOUND, Json(serde_json::json!({
-                    "error": "Session not found",
-                    "code": "NOT_FOUND"
-                }))).into_response()
+                (
+                    StatusCode::NOT_FOUND,
+                    Json(serde_json::json!({
+                        "error": "Session not found",
+                        "code": "NOT_FOUND"
+                    })),
+                )
+                    .into_response()
             }
         }
-        Err(_) => {
-            (StatusCode::BAD_REQUEST, Json(serde_json::json!({
+        Err(_) => (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
                 "error": "Invalid session ID",
                 "code": "INVALID_ID"
-            }))).into_response()
-        }
+            })),
+        )
+            .into_response(),
     }
 }
 
@@ -602,36 +630,42 @@ async fn delete_session(
     Path(id): Path<String>,
 ) -> impl IntoResponse {
     match id.parse::<Uuid>() {
-        Ok(uuid) => {
-            match state.session_manager.delete_session(uuid).await {
-                Ok(true) => Json(serde_json::json!({
-                    "id": id,
-                    "status": "deleted",
-                    "message": "Session deleted successfully"
-                })).into_response(),
-                Ok(false) => (StatusCode::NOT_FOUND, Json(serde_json::json!({
+        Ok(uuid) => match state.session_manager.delete_session(uuid).await {
+            Ok(true) => Json(serde_json::json!({
+                "id": id,
+                "status": "deleted",
+                "message": "Session deleted successfully"
+            }))
+            .into_response(),
+            Ok(false) => (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({
                     "error": "Session not found",
                     "code": "NOT_FOUND"
-                }))).into_response(),
-                Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
+                })),
+            )
+                .into_response(),
+            Err(e) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
                     "error": format!("Failed to delete session: {}", e),
                     "code": "DELETE_ERROR"
-                }))).into_response(),
-            }
-        }
-        Err(_) => {
-            (StatusCode::BAD_REQUEST, Json(serde_json::json!({
+                })),
+            )
+                .into_response(),
+        },
+        Err(_) => (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
                 "error": "Invalid session ID",
                 "code": "INVALID_ID"
-            }))).into_response()
-        }
+            })),
+        )
+            .into_response(),
     }
 }
 
-async fn start_session(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn start_session(State(state): State<AppState>, Path(id): Path<String>) -> impl IntoResponse {
     match id.parse::<Uuid>() {
         Ok(uuid) => {
             if let Some(session) = state.session_manager.get_session(uuid).await {
@@ -642,33 +676,41 @@ async fn start_session(
                             "id": id,
                             "status": format!("{:?}", stats.status).to_lowercase(),
                             "message": "Session started successfully"
-                        })).into_response()
+                        }))
+                        .into_response()
                     }
-                    Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
-                        "error": format!("Failed to start session: {}", e),
-                        "code": "START_ERROR"
-                    }))).into_response(),
+                    Err(e) => (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        Json(serde_json::json!({
+                            "error": format!("Failed to start session: {}", e),
+                            "code": "START_ERROR"
+                        })),
+                    )
+                        .into_response(),
                 }
             } else {
-                (StatusCode::NOT_FOUND, Json(serde_json::json!({
-                    "error": "Session not found",
-                    "code": "NOT_FOUND"
-                }))).into_response()
+                (
+                    StatusCode::NOT_FOUND,
+                    Json(serde_json::json!({
+                        "error": "Session not found",
+                        "code": "NOT_FOUND"
+                    })),
+                )
+                    .into_response()
             }
         }
-        Err(_) => {
-            (StatusCode::BAD_REQUEST, Json(serde_json::json!({
+        Err(_) => (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
                 "error": "Invalid session ID",
                 "code": "INVALID_ID"
-            }))).into_response()
-        }
+            })),
+        )
+            .into_response(),
     }
 }
 
-async fn pause_session(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn pause_session(State(state): State<AppState>, Path(id): Path<String>) -> impl IntoResponse {
     match id.parse::<Uuid>() {
         Ok(uuid) => {
             if let Some(session) = state.session_manager.get_session(uuid).await {
@@ -679,33 +721,41 @@ async fn pause_session(
                             "id": id,
                             "status": format!("{:?}", stats.status).to_lowercase(),
                             "message": "Session paused successfully"
-                        })).into_response()
+                        }))
+                        .into_response()
                     }
-                    Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
-                        "error": format!("Failed to pause session: {}", e),
-                        "code": "PAUSE_ERROR"
-                    }))).into_response(),
+                    Err(e) => (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        Json(serde_json::json!({
+                            "error": format!("Failed to pause session: {}", e),
+                            "code": "PAUSE_ERROR"
+                        })),
+                    )
+                        .into_response(),
                 }
             } else {
-                (StatusCode::NOT_FOUND, Json(serde_json::json!({
-                    "error": "Session not found",
-                    "code": "NOT_FOUND"
-                }))).into_response()
+                (
+                    StatusCode::NOT_FOUND,
+                    Json(serde_json::json!({
+                        "error": "Session not found",
+                        "code": "NOT_FOUND"
+                    })),
+                )
+                    .into_response()
             }
         }
-        Err(_) => {
-            (StatusCode::BAD_REQUEST, Json(serde_json::json!({
+        Err(_) => (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
                 "error": "Invalid session ID",
                 "code": "INVALID_ID"
-            }))).into_response()
-        }
+            })),
+        )
+            .into_response(),
     }
 }
 
-async fn stop_session(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn stop_session(State(state): State<AppState>, Path(id): Path<String>) -> impl IntoResponse {
     match id.parse::<Uuid>() {
         Ok(uuid) => {
             if let Some(session) = state.session_manager.get_session(uuid).await {
@@ -716,34 +766,43 @@ async fn stop_session(
                             "id": id,
                             "status": format!("{:?}", stats.status).to_lowercase(),
                             "message": "Session stopped successfully"
-                        })).into_response()
+                        }))
+                        .into_response()
                     }
-                    Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(serde_json::json!({
-                        "error": format!("Failed to stop session: {}", e),
-                        "code": "STOP_ERROR"
-                    }))).into_response(),
+                    Err(e) => (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        Json(serde_json::json!({
+                            "error": format!("Failed to stop session: {}", e),
+                            "code": "STOP_ERROR"
+                        })),
+                    )
+                        .into_response(),
                 }
             } else {
-                (StatusCode::NOT_FOUND, Json(serde_json::json!({
-                    "error": "Session not found",
-                    "code": "NOT_FOUND"
-                }))).into_response()
+                (
+                    StatusCode::NOT_FOUND,
+                    Json(serde_json::json!({
+                        "error": "Session not found",
+                        "code": "NOT_FOUND"
+                    })),
+                )
+                    .into_response()
             }
         }
-        Err(_) => {
-            (StatusCode::BAD_REQUEST, Json(serde_json::json!({
+        Err(_) => (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
                 "error": "Invalid session ID",
                 "code": "INVALID_ID"
-            }))).into_response()
-        }
+            })),
+        )
+            .into_response(),
     }
 }
 
 // Synergy API handlers
 
-async fn register_agent(
-    Json(request): Json<RegisterAgentRequest>,
-) -> impl IntoResponse {
+async fn register_agent(Json(request): Json<RegisterAgentRequest>) -> impl IntoResponse {
     let id = Uuid::new_v4().to_string();
     Json(serde_json::json!({
         "id": id,
@@ -757,9 +816,7 @@ async fn register_agent(
     }))
 }
 
-async fn unregister_agent(
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn unregister_agent(Path(id): Path<String>) -> impl IntoResponse {
     Json(serde_json::json!({
         "id": id,
         "status": "unregistered",
@@ -767,9 +824,7 @@ async fn unregister_agent(
     }))
 }
 
-async fn create_task(
-    Json(request): Json<CreateTaskRequest>,
-) -> impl IntoResponse {
+async fn create_task(Json(request): Json<CreateTaskRequest>) -> impl IntoResponse {
     let id = Uuid::new_v4().to_string();
     Json(serde_json::json!({
         "id": id,
@@ -781,9 +836,7 @@ async fn create_task(
     }))
 }
 
-async fn delete_task(
-    Path(id): Path<String>,
-) -> impl IntoResponse {
+async fn delete_task(Path(id): Path<String>) -> impl IntoResponse {
     Json(serde_json::json!({
         "id": id,
         "status": "deleted",
@@ -805,11 +858,7 @@ async fn serve_index(State(state): State<AppState>) -> impl IntoResponse {
                     let content = String::from_utf8_lossy(file.data.as_ref());
                     Html(content.to_string()).into_response()
                 }
-                None => (
-                    StatusCode::NOT_FOUND,
-                    "index.html not found",
-                )
-                    .into_response(),
+                None => (StatusCode::NOT_FOUND, "index.html not found").into_response(),
             }
         }
     }
@@ -891,9 +940,11 @@ async fn handle_session_socket(mut socket: WebSocket, session_id: String, state:
     let session_uuid = match uuid::Uuid::parse_str(&session_id) {
         Ok(id) => id,
         Err(_) => {
-            let _ = socket.send(Message::Text(
-                serde_json::json!({"error": "Invalid session ID"}).to_string()
-            )).await;
+            let _ = socket
+                .send(Message::Text(
+                    serde_json::json!({"error": "Invalid session ID"}).to_string(),
+                ))
+                .await;
             return;
         }
     };
@@ -904,7 +955,11 @@ async fn handle_session_socket(mut socket: WebSocket, session_id: String, state:
         "session_id": session_id,
         "message": "Session WebSocket connected"
     });
-    if socket.send(Message::Text(welcome.to_string())).await.is_err() {
+    if socket
+        .send(Message::Text(welcome.to_string()))
+        .await
+        .is_err()
+    {
         return;
     }
 
@@ -980,7 +1035,11 @@ async fn handle_missions_socket(mut socket: WebSocket) {
         "message": "Missions WebSocket connected",
         "subscriptions": ["mission_updates", "execution_progress"]
     });
-    if socket.send(Message::Text(welcome.to_string())).await.is_err() {
+    if socket
+        .send(Message::Text(welcome.to_string()))
+        .await
+        .is_err()
+    {
         return;
     }
 
@@ -1129,7 +1188,8 @@ pub mod test_helpers {
         let session_manager = Arc::new(SessionManager::new());
 
         let hot = Arc::new(InMemoryHotMemory::new()) as Arc<dyn HotMemoryBackend>;
-        let vector = Arc::new(InMemoryVectorStore::with_default_config()) as Arc<dyn VectorMemoryBackend>;
+        let vector =
+            Arc::new(InMemoryVectorStore::with_default_config()) as Arc<dyn VectorMemoryBackend>;
         let graph = Arc::new(InMemoryGraphStore::new()) as Arc<dyn GraphMemoryBackend>;
 
         let raw_dir = std::env::temp_dir().join("agent-playground-test-raw");
@@ -1144,14 +1204,14 @@ pub mod test_helpers {
 
         let brain_memory = Arc::new(UnifiedMemory::new(hot, vector, graph, raw));
 
-AppState {
+        AppState {
             config: ServerConfig::default(),
             session_manager,
             brain_memory,
-            registry: Arc::new(synergy::registry::AgentRegistry::new()),
+            registry: Arc::new(synergy::registry::AgentRegistry::new(None).await),
             mission_control: Arc::new(synergy::scheduler::MissionControl::new(
-                Arc::new(synergy::registry::AgentRegistry::new()),
-                synergy::scheduler::SchedulerConfig::default()
+                Arc::new(synergy::registry::AgentRegistry::new(None).await),
+                synergy::scheduler::SchedulerConfig::default(),
             )),
         }
     }
@@ -1171,12 +1231,9 @@ AppState {
         use tower::Service;
         Service::call(router, req).await.unwrap()
     }
-
 }
 
-async fn system_websocket(
-    ws: WebSocketUpgrade,
-) -> impl IntoResponse {
+async fn system_websocket(ws: WebSocketUpgrade) -> impl IntoResponse {
     ws.on_upgrade(move |socket| handle_system_socket(socket))
 }
 

@@ -131,9 +131,6 @@ impl Config {
         let get_env = |suffix: &str| std::env::var(format!("AGENT_PLAYGROUND_{}", suffix)).ok();
 
         // Brain config overrides
-        if let Some(val) = get_env("BRAIN_REDIS_URL") {
-            self.brain.redis_url = val;
-        }
         if let Some(val) = get_env("BRAIN_HOT_TTL_HOURS") {
             self.brain.hot_ttl_hours = val
                 .parse()
@@ -179,11 +176,6 @@ impl Config {
     /// Validate configuration
     fn validate(&self) -> Result<()> {
         // Validate brain config
-        if self.brain.redis_url.is_empty() {
-            return Err(Error::ConfigError(
-                "BRAIN_REDIS_URL cannot be empty".to_string(),
-            ));
-        }
         if self.brain.hot_ttl_hours == 0 {
             return Err(Error::ConfigError(
                 "BRAIN_HOT_TTL_HOURS must be > 0".to_string(),
@@ -229,9 +221,6 @@ struct ConfigPartial {
 /// Brain system configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BrainConfig {
-    /// Redis connection URL
-    pub redis_url: String,
-
     /// Hot memory TTL in hours
     pub hot_ttl_hours: u64,
 
@@ -251,7 +240,6 @@ pub struct BrainConfig {
 impl Default for BrainConfig {
     fn default() -> Self {
         Self {
-            redis_url: "redis://localhost:6379".to_string(),
             hot_ttl_hours: 24,
             vector: VectorMemoryConfig::default(),
             graph: GraphMemoryConfig::default(),
@@ -417,7 +405,7 @@ impl Default for SessionConfig {
 /// Synergy system configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SynergyConfig {
-    /// PostgreSQL connection URL
+    /// Database connection URL (e.g. sqlite://synergy.db)
     pub database_url: String,
 
     /// Agent registry configuration
@@ -430,7 +418,7 @@ pub struct SynergyConfig {
 impl Default for SynergyConfig {
     fn default() -> Self {
         Self {
-            database_url: "postgresql://localhost/agent_playground".to_string(),
+            database_url: "sqlite://synergy.db".to_string(),
             registry: RegistryConfig::default(),
             scheduler: SchedulerConfig::default(),
         }
