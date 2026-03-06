@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { api, useWebSocket, createSystemWebSocket } from '../../api';
-import { Card, StatCard, Badge } from '../../components/ui';
+import { StatCard, Badge } from '../../components/ui';
 import type { Simulation, StatCardData } from '../../types';
 
 interface SystemStats {
@@ -275,14 +275,7 @@ const [stats, setStats] = useState<StatCardData[]>([]);
                     </td>
                     <td className="px-6 py-4 text-[#92a4c9]">{sim.environment}</td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${
-                          sim.status === 'running' ? 'bg-green-500' :
-                          sim.status === 'paused' ? 'bg-yellow-500' :
-                          sim.status === 'completed' ? 'bg-blue-500' : 'bg-red-500'
-                        }`}></span>
-                        <span className="text-white capitalize">{sim.status === 'completed' ? 'Completed' : sim.status}</span>
-                      </div>
+                      {getStatusBadge(sim.status)}
                     </td>
                     <td className="px-6 py-4 text-[#92a4c9] font-mono text-xs">
                        {/* Calculate a mock duration from startTime for display since real duration isn't in API yet */}

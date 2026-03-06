@@ -23,7 +23,7 @@ const navItems: NavItem[] = [
 
 const App: React.FC = () => {
   const [activeItemId, setActiveItemId] = useState('dashboard');
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode] = useState(true);
 
   const handleNavItemClick = (item: NavItem) => {
     setActiveItemId(item.id);

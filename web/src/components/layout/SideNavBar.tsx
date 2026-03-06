@@ -26,7 +26,6 @@ export const SideNavBar: React.FC<SideNavBarProps> = ({
   activeItemId,
   onItemClick,
   systemStatus,
-  user,
   footerAction
 }) => {
   const groupedItems = items.reduce((acc, item) => {
