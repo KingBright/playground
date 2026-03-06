@@ -1,7 +1,7 @@
 //! Storage layer for the Brain system
 //!
 //! This module provides all storage implementations:
-//! - Hot Memory: Fast Redis-based cache with TTL
+//! - Hot Memory: Fast embedded cache with TTL
 //! - Vector Memory: Semantic search with embeddings
 //! - Graph Memory: Knowledge graph for entity relationships
 //! - Raw Archive: Long-term file-based storage
@@ -22,7 +22,7 @@ pub use memory::{
 };
 
 pub use graph_memory::InMemoryGraphStore;
-pub use hot_memory::{InMemoryHotMemory, RedisConfig, RedisMetrics}; // RedisHotMemory temporarily disabled
+pub use hot_memory::{InMemoryHotMemory, HotMemoryConfig, HotMemoryMetrics}; // RedisHotMemory temporarily disabled
 pub use raw_archive::{FileSystemRawArchive, RawArchiveConfig};
 pub use unified_memory::{HealthStatus, UnifiedMemory, UnifiedMemoryConfig, UnifiedMemoryMetrics};
 pub use vector_memory::InMemoryVectorStore;

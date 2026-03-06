@@ -3,7 +3,7 @@
 //! This module provides:
 //! - In-memory vector store using cosine similarity
 //! - Production-ready indexing for moderate datasets
-//! - Clean interface for future Qdrant/Milvus integration
+//! - Clean interface for future SQLite-vec integration
 //! - Efficient top-K search
 //! - Metadata filtering
 

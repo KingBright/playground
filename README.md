@@ -6,9 +6,11 @@
 - **Agent Playground**: 基于 ECS 的仿真引擎
 - **System Synergy**: 任务调度与协同中心
 
+本平台采用**单体程序架构 (Monolithic Architecture)**和**嵌入式存储**方案，无需依赖外部的 Docker、Kubernetes 或独立运行的数据库服务，开箱即用。
+
 ## 快速开始
 
-### 方式一：开发模式（推荐，3 分钟启动）
+### 开发模式（推荐，3 分钟启动）
 
 ```bash
 # 1. 克隆项目
@@ -27,18 +29,7 @@ cd playground
 # 文档: http://localhost:8080/api/docs
 
 # 5. 停止服务
-# 按 Ctrl+C 停止 API 和前端，数据库继续运行
-# 如需停止数据库: ./manage.sh services stop
-```
-
-### 方式二：生产模式（Docker 部署）
-
-```bash
-# 一键 Docker 部署
-./manage.sh prod
-
-# 或直接使用 deploy.sh
-./deploy.sh prod
+# 按 Ctrl+C 停止 API 和前端
 ```
 
 ## 项目结构
@@ -59,7 +50,6 @@ playground/
 │       ├── registry/    # Agent 注册表
 │       └── scheduler/   # 任务调度器
 ├── web/                 # TypeScript 前端
-├── deploy.sh            # 部署脚本
 └── manage.sh            # 项目管理脚本
 ```
 
@@ -70,15 +60,6 @@ playground/
 ```bash
 # 开发模式 - 本地进程启动所有服务（热重载）
 ./manage.sh dev
-
-# 生产模式 - Docker 启动所有服务
-./manage.sh prod
-
-# 基础设施管理（数据库等）
-./manage.sh services start    # 启动基础设施
-./manage.sh services stop     # 停止基础设施
-./manage.sh services status   # 查看状态
-./manage.sh services logs     # 查看日志
 ```
 
 ### 项目命令 (`./manage.sh`)
@@ -94,17 +75,6 @@ playground/
 ./manage.sh clean         # 清理构建产物
 ```
 
-### Docker 部署 (`./deploy.sh`)
-
-```bash
-./deploy.sh prod          # 生产部署
-./deploy.sh up            # 启动服务
-./deploy.sh down          # 停止服务
-./deploy.sh status        # 查看状态
-./deploy.sh logs          # 查看日志
-./deploy.sh backup        # 备份数据
-```
-
 ## 技术栈
 
 | 层级 | 技术 |
@@ -112,7 +82,7 @@ playground/
 | 后端 | Rust, Tokio, Axum |
 | 前端 | React, TypeScript, Vite |
 | 脚本 | Rhai |
-| 部署 | Docker, Docker Compose, Kubernetes |
+| 存储 | 嵌入式方案 (如 SQLite, in-memory) |
 
 ## 系统架构
 
@@ -131,7 +101,7 @@ playground/
 │  └──────────────┘  └──────────────┘  └──────────────┘                      │
 │                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                           Data Storage Layer                                 │
+│                           Embedded Data Storage Layer                        │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌─────────┐  ┌──────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐          │
@@ -144,22 +114,14 @@ playground/
 ## 文档
 
 - [快速开始指南](./QUICKSTART.md)
-- [部署指南](./DEPLOYMENT.md)
 - [开发文档](./DEVELOPMENT.md)
 - [API 文档](http://localhost:8080/api/docs) (启动服务后访问)
 
 ## 环境要求
 
-### Docker 部署
-- Docker 20.10+
-- Docker Compose 2.0+
-- 4GB+ 内存
-- 10GB+ 磁盘空间
-
 ### 本地开发
 - Rust 1.75+
 - Node.js 18+
-- Redis 7+
 
 ## 默认端口
 
@@ -167,8 +129,6 @@ playground/
 |------|------|------|
 | API | 8080 | REST API 服务 |
 | Web | 3000 | 前端开发服务器 |
-| Redis | 6379 | 缓存 |
-| Qdrant | 6333 | 向量数据库 |
 
 ## 默认凭据
 

@@ -298,9 +298,9 @@ examples/
 
 - [x] WebSocket实时推送 ✅ 已完成
 - [x] 事件驱动触发器 ✅ 已完成
-- [ ] Redis集成（API适配）
-- [ ] 真正的Vector DB (Qdrant/Milvus)
-- [ ] Graph DB (Neo4j) 集成
+- [ ] 嵌入式 Hot Memory集成
+- [ ] 生产级Vector DB (如 SQLite-vec)
+- [ ] 嵌入式Graph DB 集成
 
 ---
 
@@ -337,9 +337,9 @@ examples/
 
 ### 中期（1个月）
 3. **外部服务集成**
-   - Redis Hot Memory适配
-   - Qdrant Vector Store
-   - Neo4j Graph Store
+   - 嵌入式 Hot Memory适配 (如 Sled)
+   - SQLite-vec Vector Store
+   - 嵌入式 Graph Store
 
 4. **前端功能完善**
    - Workflow编辑器执行功能

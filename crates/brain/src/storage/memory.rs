@@ -125,7 +125,7 @@ pub struct Entity {
 // Storage Backend Traits
 // ============================================================================
 
-/// Hot Memory Backend - Fast, short-term storage (Redis)
+/// Hot Memory Backend - Fast, short-term storage (Embedded Hot Memory (e.g. Sled))
 #[async_trait]
 pub trait HotMemoryBackend: Send + Sync + Debug {
     /// Store data with TTL
@@ -156,7 +156,7 @@ pub trait HotMemoryBackend: Send + Sync + Debug {
     async fn health_check(&self) -> Result<bool>;
 }
 
-/// Vector Memory Backend - Semantic search (Qdrant/Milvus/In-Memory)
+/// Vector Memory Backend - Semantic search (SQLite-vec/In-Memory)
 #[async_trait]
 pub trait VectorMemoryBackend: Send + Sync + Debug {
     /// Store document with embedding
@@ -226,7 +226,7 @@ pub struct SearchFilters {
     pub metadata: Option<HashMap<String, String>>,
 }
 
-/// Graph Memory Backend - Knowledge graph (Neo4j/petgraph)
+/// Graph Memory Backend - Knowledge graph (Sqlite/petgraph)
 #[async_trait]
 pub trait GraphMemoryBackend: Send + Sync + Debug {
     /// Add node to graph

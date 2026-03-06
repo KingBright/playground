@@ -222,20 +222,6 @@ cargo run -p api -- --bind 0.0.0.0:3000
 # 二进制位置: target/release/api
 ```
 
-### Docker 部署
-
-FROM rust:1.75 as builder
-WORKDIR /app
-COPY . .
-RUN ./build.sh release
-
-FROM debian:bookworm-slim
-WORKDIR /app
-COPY --from=builder /app/target/release/api .
-EXPOSE 8080
-CMD ["./api"]
-```
-
 ### Systemd 服务
 
 ```ini

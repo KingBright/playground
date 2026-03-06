@@ -1,6 +1,6 @@
-//! Hot Memory implementation using Redis
+//! Hot Memory implementation using Embedded Hot Memory (e.g. Sled)
 //!
-//! This module provides a production-ready Redis backend with:
+//! This module provides a production-ready Embedded Hot Memory (e.g. Sled) backend with:
 //! - Connection pooling with bb8 or redis-rs connection manager
 //! - Automatic retry with exponential backoff
 //! - Health checks
@@ -15,10 +15,10 @@ use std::time::Duration;
 use tokio::sync::RwLock;
 use tracing::{debug, error, info, warn};
 
-/// Redis configuration
+/// Embedded Hot Memory (e.g. Sled) configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct RedisConfig {
-    /// Redis connection URL
+pub struct HotMemoryConfig {
+    /// Embedded Hot Memory (e.g. Sled) connection URL
     pub url: String,
 
     /// Connection pool size
@@ -40,10 +40,10 @@ pub struct RedisConfig {
     pub retry_delay_ms: u64,
 }
 
-impl Default for RedisConfig {
+impl Default for HotMemoryConfig {
     fn default() -> Self {
         Self {
-            url: "redis://localhost:6379".to_string(),
+            url: "embedded://memory".to_string(),
             pool_size: 10,
             default_ttl_sec: 24 * 60 * 60, // 24 hours
             connect_timeout_ms: 5000,
@@ -54,9 +54,9 @@ impl Default for RedisConfig {
     }
 }
 
-/// Redis metrics
+/// Hot Memory metrics
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
-pub struct RedisMetrics {
+pub struct HotMemoryMetrics {
     pub total_operations: u64,
     pub successful_operations: u64,
     pub failed_operations: u64,

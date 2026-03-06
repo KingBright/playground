@@ -21,13 +21,13 @@ use tracing::{debug, info, warn};
 /// Unified memory combining all backends
 #[derive(Debug)]
 pub struct UnifiedMemory {
-    /// Hot memory backend (Redis)
+    /// Hot memory backend (Embedded Hot Memory (e.g. Sled))
     hot: Arc<dyn HotMemoryBackend>,
 
     /// Vector memory backend (Qdrant/In-Memory)
     vector: Arc<dyn VectorMemoryBackend>,
 
-    /// Graph memory backend (Neo4j/petgraph)
+    /// Graph memory backend (Sqlite/petgraph)
     graph: Arc<dyn GraphMemoryBackend>,
 
     /// Raw archive backend (S3/FileSystem)

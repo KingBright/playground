@@ -6,7 +6,7 @@
 //! - Graph traversal algorithms
 //! - Path finding
 //! - Subgraph extraction
-//! - Clean interface for future Neo4j integration
+//! - Clean interface for future Embedded Graph Store (petgraph+sqlite) integration
 
 use crate::storage::{GraphMemoryBackend, GraphStats};
 use common::memory::{GraphEdge, GraphNode, GraphResponse};
