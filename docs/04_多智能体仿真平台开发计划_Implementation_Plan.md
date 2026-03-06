@@ -18,7 +18,7 @@
   - ✅ Phase 6: Synergy 系统 (70% - 基础调度功能)
   - ✅ Phase 7: API 集成 (100% - 20个端点，全部测试通过)
 - **进行中**: ⚠️ Synergy调度器完善、WebSocket支持
-- **依赖**: tokio, serde, axum, rhai, redis, sqlx 等已配置
+- **依赖**: tokio, serde, axum, rhai, sqlx 等已配置
 
 ---
 
@@ -296,7 +296,7 @@ pub struct SandboxLimits {
 ```rust
 pub struct AgentRegistry {
     agents: HashMap<String, AgentDefinition>,
-    storage: Arc<dyn RegistryStorage>,  // PostgreSQL
+    storage: Arc<dyn RegistryStorage>,  // SQLite
 }
 
 impl AgentRegistry {
@@ -471,7 +471,7 @@ pub struct MockClient { /* 用于测试 */ }
 
 #### 第二批文件 (Brain 存储)
 - `crates/brain/src/storage/memory.rs` - 存储 Trait
-- `crates/brain/src/storage/hot_memory.rs` - Redis 实现
+- `crates/brain/src/storage/hot_memory.rs` - 内存/Sled 实现
 - `crates/brain/src/storage/unified_memory.rs` - 统一 Facade
 
 ## 下一步行动 (已更新)
