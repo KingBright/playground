@@ -328,19 +328,7 @@ build_backend() {
 }
 
 copy_static_files() {
-    log_info "复制静态文件到 Rust 目录..."
-
-    # 创建静态文件目录
-    mkdir -p "$STATIC_DIR"
-
-    # 复制构建产物
-    if [ -d "$WEB_DIR/dist" ]; then
-        cp -r "$WEB_DIR/dist"/* "$STATIC_DIR/"
-        log_success "静态文件复制完成: $STATIC_DIR"
-    else
-        log_error "前端构建产物不存在: $WEB_DIR/dist"
-        exit 1
-    fi
+    log_info "静态文件已由 Vite 构建到: $STATIC_DIR"
 }
 
 # =============================================================================
