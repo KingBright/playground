@@ -22,7 +22,7 @@ pub use memory::{
 };
 
 pub use graph_memory::InMemoryGraphStore;
-pub use hot_memory::{InMemoryHotMemory, HotMemoryConfig, HotMemoryMetrics}; // RedisHotMemory temporarily disabled
+pub use hot_memory::{InMemoryHotMemory, HotMemoryConfig, HotMemoryMetrics};
 pub use raw_archive::{FileSystemRawArchive, RawArchiveConfig};
 pub use unified_memory::{HealthStatus, UnifiedMemory, UnifiedMemoryConfig, UnifiedMemoryMetrics};
 pub use vector_memory::InMemoryVectorStore;
